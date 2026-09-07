@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-title" content="TablePing">
 
 
-<title>TablePing v1.3.0 — Supabase</title>
+<title>TablePing v1.3.3 — Supabase</title>
 <style>
 :root{
   --primary:#20312b;--secondary:#a9c7b7;--psoft:#eef3f0;--ssoft:#f1f6f3;
@@ -120,7 +120,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--primary);box-shadow:0
 .suggest{display:flex;align-items:center;justify-content:space-between;gap:8px;border:1px solid var(--line);border-radius:12px;padding:9px;margin-top:7px}.suggest.best{border-color:var(--primary);background:var(--ssoft)}
 .actionGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.actionGrid .btn{width:100%}
 .statusLine{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)}.statusDot{width:8px;height:8px;border-radius:99px}.statusDot.free{background:var(--free)}.statusDot.reserved{background:var(--reserved)}.statusDot.dining{background:var(--dining)}.statusDot.cleaning{background:var(--cleaning)}
-.reserveInfo{padding:10px 11px;border:1px solid var(--line);border-radius:12px;background:var(--ssoft)}.groupBox{background:linear-gradient(180deg,var(--ssoft),#fff);border:1px solid var(--line);border-radius:16px;padding:10px;margin:10px 0}.tile.selected,.tableListRow.selected{outline:2px solid var(--primary);outline-offset:-2px}.bulkbar{position:sticky;bottom:68px;z-index:25;background:#111;color:#fff;border-radius:15px;padding:9px 10px;margin-top:10px}.historyRow{display:grid;grid-template-columns:76px minmax(0,1fr) auto;gap:9px;align-items:start;border-bottom:1px solid var(--line);padding:9px 0}.histTime{font-size:10px;color:var(--muted)}.histTitle{font-size:12px;font-weight:850}.histSub{font-size:10px;color:var(--muted);margin-top:2px}@media print{.topbar,.bottomnav,.quickbar,.btn,.chips,.viewToggle{display:none!important}.wrap{padding:0}.card{border:0}.historyRow{break-inside:avoid}}
+.reserveInfo{padding:10px 11px;border:1px solid var(--line);border-radius:12px;background:var(--ssoft)}.groupBox{background:linear-gradient(180deg,var(--ssoft),#fff);border:1px solid var(--line);border-radius:16px;padding:10px;margin:10px 0}.tile.selected,.tableListRow.selected{outline:2px solid var(--primary);outline-offset:-2px}.bulkbar{position:sticky;bottom:68px;z-index:25;background:#111;color:#fff;border-radius:15px;padding:9px 10px;margin-top:10px}.historyRow{display:grid;grid-template-columns:76px minmax(0,1fr) auto;gap:9px;align-items:start;border-bottom:1px solid var(--line);padding:9px 0}.histTime{font-size:10px;color:var(--muted)}.histTitle{font-size:12px;font-weight:850}.histSub{font-size:10px;color:var(--muted);margin-top:2px}@media print{.topbar,.bottomnav,.bottomDock,.quickbar,.btn,.chips,.viewToggle{display:none!important}.wrap{padding:0}.card{border:0}.historyRow{break-inside:avoid}}
 .themePairs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.themePair{border:1px solid var(--line);background:#fff;border-radius:13px;padding:9px;text-align:left}.themePair.selected{border-color:var(--primary);box-shadow:0 0 0 1px var(--primary)}
 .pairDots{display:flex;gap:5px;margin-bottom:6px}.pairDot{width:18px;height:18px;border-radius:7px}
 .themeInputs{display:grid;grid-template-columns:1fr 1fr;gap:9px}.colorInput{display:flex;align-items:center;gap:8px}.colorInput input[type=color]{width:46px;min-height:38px;height:38px;padding:3px;margin:0;border-radius:10px}
@@ -208,6 +208,205 @@ body.offlineMode #appScreen input,
 body.offlineMode #appScreen select,
 body.offlineMode #appScreen textarea{pointer-events:none;opacity:.72}
 
+
+/* public footer */
+.publicFooter{position:fixed;left:0;right:0;bottom:10px;z-index:120;text-align:center;font-size:9px;font-weight:500;color:#a2aaa6;letter-spacing:.005em}
+.publicFooter span{opacity:.55;margin:0 4px}
+.publicFooter a{color:#929b96;text-decoration:none;font-weight:600}
+.publicFooter a:hover{color:#69736e;text-decoration:underline}
+
+/* six statuses in one row */
+.metrics{display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr));gap:1px!important;overflow:visible!important;padding:4px 0 5px!important;width:100%}
+.metric{min-width:0!important;border:0!important;background:transparent!important;border-radius:10px!important;padding:2px 0!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:4px!important;box-shadow:none!important}
+.metricCount{width:34px;height:34px;border-radius:50%;display:flex!important;align-items:center;justify-content:center;font-size:13px!important;line-height:1!important;font-weight:950!important;letter-spacing:-.03em!important;background:#f1f3f2;color:#35403a;border:1px solid transparent;transition:.14s ease}
+.metricLabel{font-size:9px;line-height:1;font-weight:800;color:#7d8782;white-space:nowrap;letter-spacing:-.01em}
+.metric[data-status-filter="free"] .metricCount{background:#edf7f0;color:#3f7451}
+.metric[data-status-filter="dining"] .metricCount{background:#edf3f9;color:#426b98}
+.metric[data-status-filter="reserved"] .metricCount{background:#fff6e4;color:#886423}
+.metric[data-status-filter="cleaning"] .metricCount{background:#f4eff8;color:#71588d}
+.metric[data-status-filter="waiting"] .metricCount{background:#fff0eb;color:#92594a}
+.metric.active .metricCount{border-color:currentColor;box-shadow:0 0 0 2px rgba(32,49,43,.06)}
+.metric.active .metricLabel{color:#303a35;font-weight:950}
+.metric:active .metricCount{transform:scale(.96)}
+.statusHint{font-size:9px!important;color:#9aa29e!important;padding:0 2px 3px!important;min-height:12px}
+
+/* table tiles */
+.floorgrid{gap:8px!important}
+.tile{min-height:116px!important;border-color:#e0e5e2!important;border-radius:15px!important;padding:10px!important;box-shadow:0 1px 0 rgba(31,48,41,.025);transition:.12s ease}
+.tile:hover{border-color:#cad2ce!important;box-shadow:0 5px 15px rgba(31,48,41,.045)}
+.tile:active{transform:scale(.985)}
+.tile::after{left:11px!important;right:11px!important;height:3px!important}
+.tname{font-size:16px!important;line-height:1.05!important;font-weight:950!important;letter-spacing:-.035em!important}
+.tileStatus{font-size:8px!important;font-weight:900!important;padding:3px 6px!important;border-radius:999px!important}
+.tileStatus.free{background:#edf7f0!important;color:#3f7451!important}
+.tileStatus.dining{background:#edf3f9!important;color:#426b98!important}
+.tileStatus.reserved{background:#fff6e4!important;color:#886423!important}
+.tileStatus.cleaning{background:#f4eff8!important;color:#71588d!important}
+.seatNum{font-size:27px!important;line-height:.96!important}
+.seatLabel{font-size:8px!important;margin-top:4px!important;letter-spacing:.1em!important}
+.occupancy{font-size:9px!important;font-weight:800!important;color:#7d8782!important;margin-top:4px!important}
+.capacityBar{height:3px!important;width:56px!important;background:#edf0ee!important;margin-top:7px!important}
+.tmeta{font-size:9px!important;color:#78827d!important}
+.tableListRow{border-color:#e0e5e2!important;border-radius:14px!important;padding:9px 10px!important}
+.listName{font-size:14px!important}
+.listOccupancy{font-size:10px!important}
+.listCapacity{font-size:9px!important;color:#929b96!important}
+
+/* free table seat sheet */
+.freeSeatHead{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:1px 1px 7px}
+.freeSeatHead b{font-size:15px}
+.freeSeatMeta{font-size:10px;color:var(--muted);margin-top:2px}
+.waitChoiceList{display:flex;flex-direction:column;gap:6px;margin-top:7px}
+.waitChoice{width:100%;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;border:1px solid var(--line);border-radius:13px;background:#fff;padding:9px 10px;text-align:left}
+.waitChoice.best{border-color:#b9cfc2;background:#f8fbf9}
+.waitChoiceName{font-size:12px;font-weight:900}
+.waitChoiceMeta{font-size:9px;color:var(--muted);margin-top:2px}
+.bestMini{font-size:8px;font-weight:900;color:#49745a;background:#eaf5ee;border-radius:999px;padding:2px 5px;margin-left:4px}
+.freeQuickActions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}
+.freeQuickActions .btn{min-height:42px}
+
+/* Persistent command box */
+.bottomnav{display:none!important}
+.bottomDock{
+  position:fixed;left:0;right:0;bottom:0;z-index:70;
+  padding:7px 9px calc(8px + env(safe-area-inset-bottom));
+  pointer-events:none;
+}
+.dockInner{width:min(720px,100%);margin:auto;pointer-events:auto}
+.guestComposer{
+  display:grid;
+  grid-template-columns:34px 34px minmax(0,1fr) 36px;
+  align-items:center;
+  gap:2px;
+  min-height:50px;
+  padding:5px 6px;
+  background:rgba(255,255,255,.97);
+  border:1px solid #d9dfdc;
+  border-radius:27px;
+  box-shadow:0 10px 34px rgba(31,48,41,.14);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  transition:border-color .15s ease,box-shadow .15s ease,transform .15s ease;
+}
+.guestComposer:focus-within{
+  border-color:#bcc8c1;
+  box-shadow:0 11px 38px rgba(31,48,41,.17),0 0 0 2px rgba(32,49,43,.035)
+}
+.guestComposer input{
+  margin:0!important;
+  width:100%;
+  min-width:0;
+  min-height:38px!important;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  outline:0!important;
+  padding:7px 5px!important;
+  font-size:13px!important;
+  line-height:20px!important;
+  color:var(--text)!important
+}
+.guestComposer input::placeholder{color:#9ba39f!important;font-weight:500}
+.composerIcon,.composerSend{
+  width:34px;height:34px;
+  border:0;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  flex:0 0 auto;
+  transition:background .12s ease,transform .12s ease,opacity .12s ease
+}
+.composerIcon{background:transparent;color:#5e6a64}
+.composerIcon:hover,.composerIcon:focus-visible{background:#f0f3f1}
+.composerIcon:active,.composerSend:active{transform:scale(.94)}
+.composerIcon svg,.composerSend svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.composerHome svg{width:17px;height:17px}
+.composerMore[aria-expanded="true"]{background:#e9eeeb;color:#33433b}
+.composerSend{
+  width:36px;height:36px;
+  background:var(--primary);
+  color:#fff
+}
+.composerSend:disabled{background:#e6eae8;color:#9ca5a0;opacity:1;cursor:default}
+.composerSend:not(:disabled):hover{filter:brightness(.96)}
+.brandHome{border:0;background:transparent;padding:0;margin:0;display:flex;border-radius:10px}
+.brandHome:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+
+/* Quick actions popover above composer */
+.quickMenu{
+  position:fixed;
+  left:50%;
+  bottom:calc(70px + env(safe-area-inset-bottom));
+  z-index:69;
+  transform:translateX(-50%);
+  width:min(410px,calc(100% - 18px));
+  padding:8px;
+  border:1px solid #dde3e0;
+  border-radius:18px;
+  background:rgba(255,255,255,.985);
+  box-shadow:0 14px 42px rgba(31,48,41,.16);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px)
+}
+.quickMenuGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+.quickMenuItem{
+  min-width:0;
+  min-height:66px;
+  border:0;
+  border-radius:13px;
+  background:transparent;
+  padding:8px 5px 7px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
+  color:#4d5b54;
+  text-align:center
+}
+.quickMenuItem:hover,.quickMenuItem:focus-visible{background:#f3f5f4}
+.quickMenuItem:active{background:#edf1ef}
+.quickMenuItem svg{
+  width:19px;height:19px;
+  fill:none;stroke:currentColor;stroke-width:1.75;
+  stroke-linecap:round;stroke-linejoin:round
+}
+.quickMenuItem b{font-size:10px;line-height:1.1;font-weight:850}
+.quickMenuFoot{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:8px;border-top:1px solid #edf0ee;margin-top:6px;padding:7px 4px 1px
+}
+.quickMenuFoot .tiny{font-size:8px;color:#a0a8a4}
+.quickLogout{border:0;background:transparent;color:#8b5550;font-size:9px;font-weight:800;padding:5px 7px;border-radius:8px}
+.quickLogout:hover{background:#fff1ef}
+
+/* keep content clear of the persistent command box */
+.wrap{padding-bottom:91px!important}
+.bulkbar{bottom:84px!important}
+.toast{bottom:94px!important}
+
+@media(max-width:350px){
+  .guestComposer{grid-template-columns:31px 31px minmax(0,1fr) 34px;padding-left:4px;padding-right:5px}
+  .composerIcon{width:31px;height:31px}
+  .composerSend{width:34px;height:34px}
+  .guestComposer input{font-size:12px!important;padding-left:3px!important}
+  .quickMenuGrid{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(min-width:860px){
+  .bottomDock{bottom:7px;padding-bottom:7px}
+  .quickMenu{bottom:82px}
+  .wrap{padding-bottom:85px!important}
+}
+@media(max-width:350px){
+  .metricCount{width:30px;height:30px;font-size:12px!important}
+  .metricLabel{font-size:8px}
+  .tname{font-size:14px!important}
+  .seatNum{font-size:24px!important}
+  .guestComposer input{font-size:11px!important}
+}
+@media(min-width:860px){
+  .bottomDock{bottom:8px}
+  .wrap{padding-bottom:78px!important}
+}
+
 </style>
 </head>
 <body>
@@ -218,19 +417,19 @@ body.offlineMode #appScreen textarea{pointer-events:none;opacity:.72}
   <div class="center" style="max-width:620px">
     <div class="brand"><div class="logo">T</div>TablePing</div>
     <div style="height:28px"></div>
-    <h1>Tables, without<br>the chaos.</h1>
-    <p class="muted">Choose how you want to continue.</p>
+    <h1>Tables, made simple.</h1>
+    <p class="muted">Set up your business or sign in to continue.</p>
     <div class="entryChoices">
       <button id="openSetupBtn" class="entryChoice">
-        <div><b>Setup</b><div class="tiny muted" style="margin-top:4px">For a new business</div></div>
-        <span>Enter Business Code + Setup Key, configure tables, create Admin and Staff users.</span>
+        <div><b>Setup</b><div class="tiny muted" style="margin-top:4px">New business</div></div>
+        <span>Set up your tables and team.</span>
       </button>
       <button id="openLoginBtn" class="entryChoice">
-        <div><b>Login</b><div class="tiny muted" style="margin-top:4px">For existing users</div></div>
-        <span>Enter your unique username and PIN. TablePing automatically opens the correct entity.</span>
+        <div><b>Login</b><div class="tiny muted" style="margin-top:4px">Existing user</div></div>
+        <span>Sign in with your username and PIN.</span>
       </button>
     </div>
-    <div class="notice" style="margin-top:12px">Each username is unique across TablePing. Every user and operational record remains linked to its Entity ID.</div>
+    
   </div>
 </section>
 
@@ -239,7 +438,7 @@ body.offlineMode #appScreen textarea{pointer-events:none;opacity:.72}
   <div class="center" style="max-width:520px">
     <div class="row between"><div class="brand"><div class="logo">T</div>TablePing</div><button id="setupAccessBack" class="btn sm">Back</button></div>
     <div style="height:22px"></div>
-    <h2>Set up an entity</h2>
+    <h2>Set up your business</h2>
     <p class="muted small">Use the setup details provided for your business.</p>
     <div class="card stack">
       <label>Business Code<input id="restaurantCode" autocomplete="off" placeholder="e.g. GREENLEAF01"></label>
@@ -357,7 +556,7 @@ E8-4 seats</textarea></label>
     <div style="height:22px"></div>
     <div class="loginHero">
       <h2>Welcome back</h2>
-      <div class="small muted">Username identifies your entity automatically.</div>
+      <div class="small muted">Enter your username and PIN.</div>
     </div>
     <div class="card stack">
       <label>Username<input id="loginUsername" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="johndoe"></label>
@@ -371,7 +570,7 @@ E8-4 seats</textarea></label>
 <!-- APP -->
 <div id="appScreen" class="hidden">
 <header class="topbar"><div class="topin">
-  <div class="row grow"><div class="logo" style="width:28px;height:28px;border-radius:9px">T</div><div class="grow"><div id="topShop" class="shop"></div><div id="topUser" class="sub"></div><div class="tiny muted">My view · v1.3.0</div></div></div>
+  <div class="row grow"><button id="brandHomeBtn" class="brandHome" type="button" aria-label="Home" title="Home"><span class="logo" style="width:28px;height:28px;border-radius:9px">T</span></button><div class="grow"><div id="topShop" class="shop"></div><div id="topUser" class="sub"></div><div class="tiny muted">My view · v1.3.3</div></div></div>
   <div class="row">
     <button id="saveBtn" class="syncChip syncing" title="Refresh latest data"><span class="syncDot"></span><span id="syncText">Connecting</span></button>
     <button id="logoutTopBtn" class="btn sm">Log out</button>
@@ -382,11 +581,18 @@ E8-4 seats</textarea></label>
 <main class="wrap">
 
 <section id="floorView" class="view">
-  <div class="metrics"><button class="metric active" data-status-filter="all"><span class="tiny muted">All</span><b id="mAll">0</b></button><button class="metric" data-status-filter="free"><span class="tiny muted">Free</span><b id="mFree">0</b></button><button class="metric" data-status-filter="dining"><span class="tiny muted">Dining</span><b id="mDining">0</b></button><button class="metric" data-status-filter="reserved"><span class="tiny muted">Reserved</span><b id="mReserved">0</b></button><button class="metric" data-status-filter="cleaning"><span class="tiny muted">Cleaning</span><b id="mCleaning">0</b></button><button class="metric" data-status-filter="waiting"><span class="tiny muted">Waiting</span><b id="mWaiting">0</b></button></div><div id="statusHint" class="statusHint">Showing all tables</div>
+  <div class="metrics" aria-label="Table status">
+  <button class="metric active" data-status-filter="all"><b id="mAll" class="metricCount">0</b><span class="metricLabel">All</span></button>
+  <button class="metric" data-status-filter="free"><b id="mFree" class="metricCount">0</b><span class="metricLabel">Free</span></button>
+  <button class="metric" data-status-filter="dining"><b id="mDining" class="metricCount">0</b><span class="metricLabel">Dining</span></button>
+  <button class="metric" data-status-filter="reserved"><b id="mReserved" class="metricCount">0</b><span class="metricLabel">Reserved</span></button>
+  <button class="metric" data-status-filter="cleaning"><b id="mCleaning" class="metricCount">0</b><span class="metricLabel">Cleaning</span></button>
+  <button class="metric" data-status-filter="waiting"><b id="mWaiting" class="metricCount">0</b><span class="metricLabel">Waiting</span></button>
+</div><div id="statusHint" class="statusHint">All tables</div>
   <div class="ops">
     <aside class="desktopSide"><div class="card"><div class="row between"><h3>Waiting</h3><span id="waitSideCount" class="small muted"></span></div><div id="waitSide" class="list" style="margin-top:8px"></div></div></aside>
     <div>
-      <div class="sectionHead"><div><h2>Tables</h2><div class="tiny muted">Tap a table for actions</div></div><div class="row"><button id="selectBtn" class="btn sm">Select</button><button id="reserveTopBtn" class="btn sm">Reserve</button><button id="guestTopBtn" class="btn sm primary">+ Guest</button></div></div>
+      <div class="sectionHead"><div><h2>Tables</h2><div class="tiny muted">Tap a table to seat or manage</div></div><div class="row"><button id="selectBtn" class="btn sm">Select</button><button id="reserveTopBtn" class="hidden">Reserve</button><button id="guestTopBtn" class="hidden">+ Guest</button></div></div>
       <div class="floorControls"><div id="areaChips" class="chips"></div><div class="viewToggle"><button id="tileModeBtn" class="viewModeBtn active">▦ Tiles</button><button id="listModeBtn" class="viewModeBtn">≡ List</button></div></div>
       <div id="combinedBox" class="groupBox hidden"><div class="row between"><div><h3>Combined Tables</h3><div class="tiny muted">Temporary combinations</div></div><span id="combinedCount" class="badge"></span></div><div id="combinedTiles" class="floorgrid" style="margin-top:8px"></div><div id="combinedList" class="tableListView hidden"></div></div>
       <div class="row between" style="margin:10px 0 7px"><h3>Physical Tables</h3><span id="physicalCount" class="tiny muted"></span></div>
@@ -394,7 +600,7 @@ E8-4 seats</textarea></label>
       <div id="floorList" class="tableListView hidden"></div>
       <div id="bulkBar" class="bulkbar hidden"><div class="row between wraprow"><b><span id="selectedCount">0</span> selected</b><div class="row wraprow"><button id="bulkFree" class="btn sm">Free</button><button id="bulkClean" class="btn sm">Clean</button><button id="bulkReserve" class="btn sm">Reserve</button><button id="bulkCancel" class="btn sm">Cancel</button></div></div></div>
       <div class="mobileWait"><div class="sectionHead"><h3>Waiting</h3><span id="waitMobileCount" class="small muted"></span></div><div id="waitMobile" class="list"></div></div>
-      <form id="quickGuestForm" class="quickbar"><div class="quickrow"><input id="quickGuest" placeholder="Don 9876543210 4"><button class="btn" type="submit">Add</button></div></form>
+      
     </div>
   </div>
 </section>
@@ -405,13 +611,13 @@ E8-4 seats</textarea></label>
 </section>
 
 <section id="manageView" class="view hidden">
-  <div id="manageDenied" class="notice hidden">Only Admin can change entity setup.</div>
+  <div id="manageDenied" class="notice hidden">Only Admin can change business setup.</div>
   <div id="manageContent">
     <div class="sectionHead"><div><h2>Manage</h2><div class="tiny muted">Owner settings</div></div><button id="addManageTableBtn" class="btn sm primary">+ Table</button></div>
 
     <div class="card">
-      <h3>Entity</h3>
-      <div class="grid2" style="margin-top:10px"><label>Entity Name<input id="manageShopName"></label><label>Typical Dining Time (minutes)<input id="manageDining" type="number" min="10" max="300"></label><label>Contact Person<input id="manageContactName"></label><label>Mobile Number<input id="manageContactPhone" inputmode="numeric" maxlength="10"></label></div>
+      <h3>Business</h3>
+      <div class="grid2" style="margin-top:10px"><label>Business Name<input id="manageShopName"></label><label>Typical Dining Time (minutes)<input id="manageDining" type="number" min="10" max="300"></label><label>Contact Person<input id="manageContactName"></label><label>Mobile Number<input id="manageContactPhone" inputmode="numeric" maxlength="10"></label></div>
       <div class="toggleRow" style="margin-top:12px;padding-top:10px;border-top:1px solid var(--line)"><div><b>Allow table sharing</b><div class="tiny muted">Unused seats become immediately available to another party.</div></div><label class="switch"><input id="allowSharing" type="checkbox"><span class="slider"></span></label></div><button id="saveRestaurantBtn" class="btn primary" style="margin-top:10px">Save</button>
     </div>
 
@@ -457,9 +663,30 @@ E8-4 seats</textarea></label>
 
 </main>
 
-<nav class="bottomnav"><div class="bottomin">
-  <button class="navbtn active" data-view="floor"><span class="navico">▦</span>Tables</button><button class="navbtn" data-view="wait"><span class="navico">☰</span>Wait</button><button class="navbtn" data-view="reports"><span class="navico">◷</span>Reports</button><button class="navbtn" data-view="manage"><span class="navico">⚙</span>Manage</button>
-</div></nav>
+<div id="quickMenu" class="quickMenu hidden" role="menu" aria-label="More options"></div>
+
+<div id="bottomDock" class="bottomDock hidden">
+  <div class="dockInner">
+    <form id="quickGuestForm" class="guestComposer" autocomplete="off">
+      <button id="homeDockBtn" class="composerIcon composerHome" type="button" aria-label="Home" title="Home">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 10.8 12 3.8l8.5 7v8.7a1 1 0 0 1-1 1h-5v-6h-5v6h-5a1 1 0 0 1-1-1z"/></svg>
+      </button>
+      <button id="moreDockBtn" class="composerIcon composerMore" type="button" aria-label="More options" aria-expanded="false" title="More">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+      </button>
+      <input id="quickGuest" autocomplete="off" enterkeyhint="send" aria-label="Quick add guest" placeholder="Add guest… e.g. John 4">
+      <button id="quickSendBtn" class="composerSend" type="submit" aria-label="Add guest" title="Add guest" disabled>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5m-6 6 6-6 6 6"/></svg>
+      </button>
+    </form>
+  </div>
+</div>
+</div>
+
+
+<div id="publicFooter" class="publicFooter">
+  v1.3.3<span>·</span>Powered by
+  <a href="https://www.letmedoit.in" target="_blank" rel="noopener">LetMeDoIt</a>
 </div>
 
 <!-- MODAL -->
@@ -478,7 +705,7 @@ const base={activated:false,setup:false,locked:true,selectedUser:null,license:{r
 let state=load(),setupStep=1,toastTimer=null,selectMode=false,selected=new Set(),reportRange=null;
 const SB_URL='https://bfmsoerewmiqianxmcck.supabase.co';
 const SB_KEY='sb_publishable_v8jc47i36pfQIkQ2gXC0MA_V0hWBld9';
-const APP_VERSION='1.3.0';
+const APP_VERSION='1.3.3';
 let remoteToken=sessionStorage.getItem('tp_remote_token')||'';
 let remoteRevision=0;
 let remoteEvents=[];
@@ -540,14 +767,15 @@ function setSyncLabel(label,bad=false){
   const strip=$('#offlineStrip');
   if(strip)strip.classList.toggle('hidden',lastConnectivityState!=='offline');
   document.body.classList.toggle('offlineMode',lastConnectivityState==='offline');
+  if(typeof updateQuickSend==='function')updateQuickSend();
 }
 
 function isOffline(){return !networkOnline||lastConnectivityState==='offline'}
 function offlineNotice(){toast("You're offline. View only until you're back online.")}
 function isOfflineAllowedClick(el){
   if(!el)return true;
-  if(el.id==='logoutTopBtn'||el.id==='logoutReportBtn'||el.id==='modalClose'||el.id==='saveBtn')return true;
-  if(el.classList.contains('navbtn')||el.classList.contains('reportPreset')||el.classList.contains('viewModeBtn'))return true;
+  if(el.id==='logoutTopBtn'||el.id==='logoutReportBtn'||el.id==='modalClose'||el.id==='saveBtn'||el.id==='homeDockBtn'||el.id==='brandHomeBtn'||el.id==='moreDockBtn'||el.id==='quickLogout')return true;
+  if(el.classList.contains('navbtn')||el.classList.contains('quickNav')||el.classList.contains('reportPreset')||el.classList.contains('viewModeBtn'))return true;
   const a=el.dataset?.action||'';
   return ['open-unit','area-filter'].includes(a);
 }
@@ -773,7 +1001,14 @@ async function persistEntityRemote(){
   }catch(e){toast(e.message||'Entity save failed')}
 }
 
-function show(id){['activateScreen','setupAccessScreen','setupScreen','loginScreen','appScreen'].forEach(x=>$('#'+x).classList.add('hidden'));$('#'+id).classList.remove('hidden')}
+function show(id){
+  ['activateScreen','setupAccessScreen','setupScreen','loginScreen','appScreen'].forEach(x=>$('#'+x).classList.add('hidden'));
+  $('#'+id).classList.remove('hidden');
+  const isApp=id==='appScreen';
+  const pf=$('#publicFooter');if(pf)pf.classList.toggle('hidden',isApp);
+  const dock=$('#bottomDock');if(dock)dock.classList.toggle('hidden',!isApp);
+  if(!isApp)closeQuickMenu();
+}
 function route(){applyTheme();if(remoteToken&&!state.locked&&state.selectedUser){show('appScreen');renderAll();return}if(state.activated&&!state.setup){show('setupScreen');renderSetup();return}show('activateScreen')}
 function mixWhite(hex,amount){const h=(hex||'#000000').replace('#','');if(!/^[0-9a-fA-F]{6}$/.test(h))return '#f1f4f2';const n=parseInt(h,16),r=n>>16,g=(n>>8)&255,b=n&255,m=v=>Math.round(v+(255-v)*amount);return '#'+[m(r),m(g),m(b)].map(v=>v.toString(16).padStart(2,'0')).join('')}
 function applyTheme(){const p=state.theme.primary||'#20312b',q=state.theme.secondary||'#a9c7b7';document.documentElement.style.setProperty('--primary',p);document.documentElement.style.setProperty('--secondary',q);document.documentElement.style.setProperty('--psoft',mixWhite(p,.9));document.documentElement.style.setProperty('--ssoft',mixWhite(q,.82));document.documentElement.style.setProperty('--bg',mixWhite(q,.955));const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=p}
@@ -1010,13 +1245,27 @@ function listHTML(u){const used=u.usedSeats||0,free=u.freeSeats??u.seats;if(u.ki
 $('#loginPin').addEventListener('keydown',e=>{if(e.key==='Enter')$('#loginBtn').click()});
 $('#loginUsername').addEventListener('keydown',e=>{if(e.key==='Enter')$('#loginPin').focus()});
 
-function renderFloor(){const c=counts();$('#mAll').textContent=c.all;$('#mFree').textContent=c.free;$('#mDining').textContent=c.dining;$('#mReserved').textContent=c.reserved;$('#mCleaning').textContent=c.cleaning;$('#mWaiting').textContent=state.wait.length;$$('[data-status-filter]').forEach(b=>b.classList.toggle('active',b.dataset.statusFilter===state.statusFilter));$('#statusHint').textContent=state.statusFilter==='all'?'Showing all tables':state.statusFilter==='waiting'?'Showing waiting guests':`Showing ${statusLabel(state.statusFilter).toLowerCase()} tables`;const areas=['All',...state.areas];if(!areas.includes(state.activeArea))state.activeArea='All';$('#areaChips').innerHTML=areas.map(a=>`<button class="chip ${state.activeArea===a?'active':''}" data-action="area-filter" data-area="${esc(a)}">${esc(a)}</button>`).join('');let all=displayUnits().filter(u=>state.activeArea==='All'||u.area===state.activeArea);if(state.statusFilter!=='all'&&state.statusFilter!=='waiting')all=all.filter(u=>u.status===state.statusFilter);const groups=all.filter(u=>u.kind==='group'),tables=all.filter(u=>u.kind==='table'),list=state.floorMode==='list';$('#combinedBox').classList.toggle('hidden',!groups.length);$('#combinedCount').textContent=groups.length;$('#combinedTiles').innerHTML=groups.map(tileHTML).join('');$('#combinedList').innerHTML=groups.map(listHTML).join('');$('#floorGrid').innerHTML=tables.length?tables.map(tileHTML).join(''):'<div class="notice" style="grid-column:1/-1">No tables match this filter.</div>';$('#floorList').innerHTML=tables.length?tables.map(listHTML).join(''):'<div class="notice">No tables match this filter.</div>';$('#physicalCount').textContent=`${tables.length} shown`;$('#combinedTiles').classList.toggle('hidden',list);$('#combinedList').classList.toggle('hidden',!list);$('#floorGrid').classList.toggle('hidden',list);$('#floorList').classList.toggle('hidden',!list);$('#tileModeBtn').classList.toggle('active',!list);$('#listModeBtn').classList.toggle('active',list);$('#selectBtn').textContent=selectMode?'Done':'Select';$('#bulkBar').classList.toggle('hidden',!selectMode);$('#selectedCount').textContent=selected.size}
+function renderFloor(){const c=counts();$('#mAll').textContent=c.all;$('#mFree').textContent=c.free;$('#mDining').textContent=c.dining;$('#mReserved').textContent=c.reserved;$('#mCleaning').textContent=c.cleaning;$('#mWaiting').textContent=state.wait.length;$$('[data-status-filter]').forEach(b=>b.classList.toggle('active',b.dataset.statusFilter===state.statusFilter));$('#statusHint').textContent=state.statusFilter==='all'?'All tables':state.statusFilter==='waiting'?'Waiting guests':statusLabel(state.statusFilter);const areas=['All',...state.areas];if(!areas.includes(state.activeArea))state.activeArea='All';$('#areaChips').innerHTML=areas.map(a=>`<button class="chip ${state.activeArea===a?'active':''}" data-action="area-filter" data-area="${esc(a)}">${esc(a)}</button>`).join('');let all=displayUnits().filter(u=>state.activeArea==='All'||u.area===state.activeArea);if(state.statusFilter!=='all'&&state.statusFilter!=='waiting')all=all.filter(u=>u.status===state.statusFilter);const groups=all.filter(u=>u.kind==='group'),tables=all.filter(u=>u.kind==='table'),list=state.floorMode==='list';$('#combinedBox').classList.toggle('hidden',!groups.length);$('#combinedCount').textContent=groups.length;$('#combinedTiles').innerHTML=groups.map(tileHTML).join('');$('#combinedList').innerHTML=groups.map(listHTML).join('');$('#floorGrid').innerHTML=tables.length?tables.map(tileHTML).join(''):'<div class="notice" style="grid-column:1/-1">No tables match this filter.</div>';$('#floorList').innerHTML=tables.length?tables.map(listHTML).join(''):'<div class="notice">No tables match this filter.</div>';$('#physicalCount').textContent=`${tables.length} shown`;$('#combinedTiles').classList.toggle('hidden',list);$('#combinedList').classList.toggle('hidden',!list);$('#floorGrid').classList.toggle('hidden',list);$('#floorList').classList.toggle('hidden',!list);$('#tileModeBtn').classList.toggle('active',!list);$('#listModeBtn').classList.toggle('active',list);$('#selectBtn').textContent=selectMode?'Done':'Select';$('#bulkBar').classList.toggle('hidden',!selectMode);$('#selectedCount').textContent=selected.size}
 $('#tileModeBtn').addEventListener('click',()=>{state.floorMode='tile';cacheLocal();queuePreferenceSave();renderFloor()});$('#listModeBtn').addEventListener('click',()=>{state.floorMode='list';cacheLocal();queuePreferenceSave();renderFloor()});
 
 function minutes(ts){return ts?Math.max(0,Math.floor((Date.now()-ts)/60000)):0}
 function parseGuest(text){const phone=text.match(/(?:\+?91[-\s]?)?[6-9]\d{9}/)?.[0]||'';const nums=[...text.matchAll(/\b(\d{1,2})\b/g)].map(m=>Number(m[1])).filter(n=>n>0&&n<=30);const party=nums.length?nums[nums.length-1]:2;let name=text;if(phone)name=name.replace(phone,' ');nums.forEach(n=>name=name.replace(new RegExp(`\\b${n}\\b`),' '));name=name.replace(/\b(people|persons|pax|guests?)\b/gi,' ').replace(/\s+/g,' ').trim()||'Guest';return{id:uid('g'),name,phone,party,added:Date.now()}}
 function addGuest(g){state.wait.push(g);logEvent('addGuest','Guest added to waitlist','guest',g.id,g.name,`${g.party} people`);save();renderAll();openAllocation(g.id)}
-$('#quickGuestForm').addEventListener('submit',e=>{e.preventDefault();const v=$('#quickGuest').value.trim();if(!v)return;$('#quickGuest').value='';addGuest(parseGuest(v))});
+const quickGuestInput=$('#quickGuest'),quickSendBtn=$('#quickSendBtn');
+function updateQuickSend(){
+  if(!quickGuestInput||!quickSendBtn)return;
+  quickSendBtn.disabled=!quickGuestInput.value.trim()||isOffline();
+}
+quickGuestInput.addEventListener('input',updateQuickSend);
+$('#quickGuestForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const v=quickGuestInput.value.trim();
+  if(!v||isOffline()){if(isOffline())offlineNotice();return}
+  quickGuestInput.value='';
+  updateQuickSend();
+  addGuest(parseGuest(v));
+});
+updateQuickSend();
 $('#guestTopBtn').addEventListener('click',openGuestModal);$('#guestWaitBtn').addEventListener('click',openGuestModal);
 
 function renderWait(){const item=g=>`<div class="waititem"><div><b>${esc(g.name)} · ${g.party}</b><div class="tiny muted">${g.phone?esc(g.phone)+' · ':''}${minutes(g.added)} min waiting</div></div><div class="row"><button class="btn sm primary" data-action="seat-wait" data-id="${g.id}">Seat</button><button class="btn sm danger" data-action="cancel-wait" data-id="${g.id}" aria-label="Remove ${esc(g.name)}">×</button></div></div>`;const h=state.wait.length?state.wait.map(item).join(''):'<div class="notice">No one waiting.</div>';$('#waitSide').innerHTML=h;$('#waitMobile').innerHTML=h;$('#waitFull').innerHTML=h;$('#waitSideCount').textContent=state.wait.length;$('#waitMobileCount').textContent=state.wait.length}
@@ -1055,7 +1304,58 @@ function freeGroup(g){const name=groupInfo(g).name;g.tableIds.forEach(id=>{const
 function finishGroup(g,mode){const name=groupInfo(g).name;const aids=[...new Set(g.tableIds.flatMap(id=>activeAllocsForTable(id).map(a=>a.id)))];aids.forEach(aid=>{const a=state.seatAllocations.find(x=>x.id===aid);if(a)a.active=false});g.tableIds.forEach(id=>{const t=state.tables.find(x=>x.id===id);if(t){t.status=mode;t.guest=null;t.start=null;t.reservation=null;t.mergeGroup=null}});state.groups=state.groups.filter(x=>x.id!==g.id);logEvent(mode==='cleaning'?'cleanGroup':'freeGroup',mode==='cleaning'?'Clean Combined Tables':'Free Combined Tables','group',g.id,name,'');save();closeModal();renderAll()}
 function endGroup(g){openModal('End dining · '+groupInfo(g).name,`<div class="notice">Temporary merge will end automatically.</div><div class="actionGrid" style="margin-top:10px"><button class="btn primary" data-action="finish-group" data-id="${g.id}" data-mode="free">Free all now</button><button class="btn" data-action="finish-group" data-id="${g.id}" data-mode="cleaning">Send all to cleaning</button></div>`)}
 
-function openTable(id){const t=state.tables.find(x=>x.id===id);if(!t)return;const allocs=allocationParties(t.id),used=usedSeats(t.id),free=freeSeats(t.id),status=used>0?'dining':t.status;let detail='';if(allocs.length)detail=`<div class="stack" style="margin-top:10px">${allocs.map(a=>`<div class="partyCard"><div class="row between"><div><b>${esc(a.name)}</b><div class="partySeats">${a.seats} seats · ${minutes(a.startedAt)} min</div></div><button class="btn sm" data-end-party="${a.id}">End</button></div></div>`).join('')}</div>`;else if(status==='reserved')detail=`<div class="reserveInfo" style="margin-top:10px"><b>${esc(t.reservation?.name||'Reserved')}</b><div class="small muted">${t.reservation?.party||''} people${t.reservation?.time?' · '+esc(t.reservation.time):''}</div></div>`;const body=`<div class="row between"><div class="statusLine"><span class="statusDot ${status}"></span><b>${statusLabel(status)}</b>${allocs.length&&free>0&&state.allowSharing?'<span class="sharedTag">Shared</span>':''}</div><span class="small muted">${used}/${t.seats} used · ${free} free</span></div>${detail}<div class="floatingActions"><button class="btn primary" data-action="free-table" data-id="${t.id}">Free Now</button><button class="btn" data-action="clean-table" data-id="${t.id}">Clean Now</button><button class="btn" data-action="reserve-table" data-id="${t.id}">Reserve</button>${free>0&&state.allowSharing?`<button class="btn" data-seat-shared="${t.id}">+ Party</button>`:''}${status==='free'?`<button class="btn" data-action="merge-from" data-id="${t.id}">Combine</button>`:''}</div>`;openModal(t.name,body);liveModalContext={kind:'table',id:t.id};$$('[data-end-party]').forEach(b=>b.onclick=()=>{const a=state.seatAllocations.find(x=>x.id===b.dataset.endParty);if(!a)return;const share=a.shares.find(x=>x.tableId===t.id)?.seats||0;if(usedSeats(t.id)-share>0){removeAllocation(a.id,'free');closeModal()}else{openModal('End '+a.name,`<div class="notice">Last active party on ${esc(t.name)}.</div><div class="floatingActions"><button class="btn primary" id="endFree">Free Now</button><button class="btn" id="endClean">Clean Now</button></div>`);$('#endFree').onclick=()=>{removeAllocation(a.id,'free');closeModal()};$('#endClean').onclick=()=>{removeAllocation(a.id,'cleaning');closeModal()}}});document.querySelector(`[data-seat-shared="${t.id}"]`)?.addEventListener('click',()=>openSharedParty(t.id))}
+
+function openFreeTable(id){
+  const t=state.tables.find(x=>x.id===id);if(!t)return;
+  const suitable=state.wait
+    .filter(g=>Number(g.party)<=t.seats)
+    .sort((a,b)=>(t.seats-Number(a.party))-(t.seats-Number(b.party)) || Number(a.added||0)-Number(b.added||0))
+    .slice(0,4);
+  const list=suitable.length?`
+    <div class="row between" style="margin-top:7px"><b class="small">Waiting</b><span class="tiny muted">${state.wait.length} total</span></div>
+    <div class="waitChoiceList">${suitable.map((g,i)=>`
+      <div class="waitChoice ${i===0?'best':''}">
+        <div>
+          <div class="waitChoiceName">${esc(g.name)} · ${g.party}${i===0?'<span class="bestMini">Best fit</span>':''}</div>
+          <div class="waitChoiceMeta">${minutes(g.added)} min waiting${g.phone?' · '+esc(g.phone):''}</div>
+        </div>
+        <button class="btn sm primary" data-action="seat-unit" data-kind="table" data-unit="${t.id}" data-guest="${g.id}">Seat</button>
+      </div>`).join('')}</div>`:
+    `<div class="notice" style="margin-top:8px">No suitable guests waiting.</div>`;
+  openModal(t.name,`
+    <div class="freeSeatHead"><div><b>Seat guest</b><div class="freeSeatMeta">${t.seats} seats · ${esc(shortArea(t.area))}</div></div><span class="tileStatus free">Free</span></div>
+    ${list}
+    <div class="freeQuickActions">
+      <button class="btn primary" id="newGuestForTable">+ New guest</button>
+      <button class="btn" data-action="reserve-table" data-id="${t.id}">Reserve</button>
+      <button class="btn" data-action="merge-from" data-id="${t.id}">Combine</button>
+      <button class="btn" id="freeTableClose">Close</button>
+    </div>`);
+  liveModalContext={kind:'table',id:t.id};
+  $('#newGuestForTable').onclick=()=>openNewGuestForTable(t.id);
+  $('#freeTableClose').onclick=closeModal;
+}
+function openNewGuestForTable(tableId){
+  const t=state.tables.find(x=>x.id===tableId);if(!t)return;
+  const avail=tableAvailableSeats(t);
+  openModal('New guest · '+t.name,`
+    <div class="seatInfo"><div class="seatInfoTitle">${avail} seats available</div><div class="seatInfoText">Add the guest and seat them now.</div></div>
+    <div class="stack" style="margin-top:10px">
+      <label>Name<input id="ngName" placeholder="Guest name"></label>
+      <label>People<input id="ngParty" type="number" min="1" max="${avail}" value="${Math.min(2,avail)}"></label>
+      <label>Phone <span class="tiny muted">(optional)</span><input id="ngPhone" inputmode="tel" maxlength="10" placeholder="10 digit mobile"></label>
+    </div>
+    <div class="floatingActions"><button class="btn" id="ngBack">Back</button><button class="btn primary" id="ngNext">Continue</button></div>`);
+  $('#ngBack').onclick=()=>openFreeTable(tableId);
+  $('#ngNext').onclick=()=>{
+    const party=Number($('#ngParty').value),name=$('#ngName').value.trim()||'Guest',phone=$('#ngPhone').value.trim();
+    if(party<1||party>avail)return toast(`Maximum ${avail} guests`);
+    if(phone&&!mobileOk(phone,true))return toast('Check mobile number');
+    allocateSingleGuest({id:uid('ng'),name,party,phone},tableId,'shared');
+  };
+}
+
+function openTable(id){const t=state.tables.find(x=>x.id===id);if(!t)return;if(t.status==='free'&&usedSeats(t.id)===0)return openFreeTable(id);const allocs=allocationParties(t.id),used=usedSeats(t.id),free=freeSeats(t.id),status=used>0?'dining':t.status;let detail='';if(allocs.length)detail=`<div class="stack" style="margin-top:10px">${allocs.map(a=>`<div class="partyCard"><div class="row between"><div><b>${esc(a.name)}</b><div class="partySeats">${a.seats} seats · ${minutes(a.startedAt)} min</div></div><button class="btn sm" data-end-party="${a.id}">End</button></div></div>`).join('')}</div>`;else if(status==='reserved')detail=`<div class="reserveInfo" style="margin-top:10px"><b>${esc(t.reservation?.name||'Reserved')}</b><div class="small muted">${t.reservation?.party||''} people${t.reservation?.time?' · '+esc(t.reservation.time):''}</div></div>`;const body=`<div class="row between"><div class="statusLine"><span class="statusDot ${status}"></span><b>${statusLabel(status)}</b>${allocs.length&&free>0&&state.allowSharing?'<span class="sharedTag">Shared</span>':''}</div><span class="small muted">${used}/${t.seats} used · ${free} free</span></div>${detail}<div class="floatingActions"><button class="btn primary" data-action="free-table" data-id="${t.id}">Free Now</button><button class="btn" data-action="clean-table" data-id="${t.id}">Clean Now</button><button class="btn" data-action="reserve-table" data-id="${t.id}">Reserve</button>${free>0&&state.allowSharing?`<button class="btn" data-seat-shared="${t.id}">+ Party</button>`:''}${status==='free'?`<button class="btn" data-action="merge-from" data-id="${t.id}">Combine</button>`:''}</div>`;openModal(t.name,body);liveModalContext={kind:'table',id:t.id};$$('[data-end-party]').forEach(b=>b.onclick=()=>{const a=state.seatAllocations.find(x=>x.id===b.dataset.endParty);if(!a)return;const share=a.shares.find(x=>x.tableId===t.id)?.seats||0;if(usedSeats(t.id)-share>0){removeAllocation(a.id,'free');closeModal()}else{openModal('End '+a.name,`<div class="notice">Last active party on ${esc(t.name)}.</div><div class="floatingActions"><button class="btn primary" id="endFree">Free Now</button><button class="btn" id="endClean">Clean Now</button></div>`);$('#endFree').onclick=()=>{removeAllocation(a.id,'free');closeModal()};$('#endClean').onclick=()=>{removeAllocation(a.id,'cleaning');closeModal()}}});document.querySelector(`[data-seat-shared="${t.id}"]`)?.addEventListener('click',()=>openSharedParty(t.id))}
 
 function openSharedParty(tableId){const t=state.tables.find(x=>x.id===tableId),avail=freeSeats(tableId);if(!t||avail<=0)return;openModal('Add Party · '+t.name,`<div class="seatInfo"><div class="seatInfoTitle">${avail} seats available</div><div class="seatInfoText">Enter the guest count. On the next screen TablePing reserves all remaining seats by default; reduce them if you want to keep some available.</div></div><div class="stack" style="margin-top:10px"><label>Name<input id="spName" placeholder="Guest name"></label><label>People<input id="spParty" type="number" min="1" max="${avail}" value="${Math.min(2,avail)}"></label></div><div class="floatingActions"><button class="btn" id="spCancel">Cancel</button><button class="btn primary" id="spNext">Continue</button></div>`);$('#spCancel').onclick=closeModal;$('#spNext').onclick=()=>{const party=Number($('#spParty').value),name=$('#spName').value.trim()||'Guest';if(party<1||party>avail)return toast(`Maximum ${avail} guests`);allocateSingleGuest({id:uid('sg'),name,party},tableId,'shared')}}
 function openGroup(id){const g=state.groups.find(x=>x.id===id);if(!g)return;const i=groupInfo(g),allocIds=[...new Set(g.tableIds.flatMap(tid=>activeAllocsForTable(tid).map(a=>a.id)))],allocs=allocIds.map(aid=>state.seatAllocations.find(a=>a.id===aid)).filter(Boolean),used=g.tableIds.reduce((a,tid)=>a+usedSeats(tid),0),free=g.tableIds.reduce((a,tid)=>a+freeSeats(tid),0),status=used>0?'dining':g.status;let detail=allocs.length?`<div class="stack" style="margin-top:10px">${allocs.map(a=>`<div class="partyCard"><div class="row between"><div><b>${esc(a.name)}</b><div class="partySeats">${a.party} people · ${minutes(a.startedAt)} min</div></div><button class="btn sm" data-end-group-party="${a.id}">End</button></div></div>`).join('')}</div>`:'';if(status==='free')detail+=`<div class="stack" style="margin-top:10px">${g.tableIds.map(tid=>{const t=state.tables.find(x=>x.id===tid);return`<div class="areaItem"><div><b>${esc(t.name)}</b><div class="tiny muted">${t.seats} seats · ${esc(shortArea(t.area))}</div></div><button class="btn sm danger" data-remove-combo="${tid}">Remove</button></div>`}).join('')}</div>`;const body=`<div class="row between"><div class="statusLine"><span class="statusDot ${status}"></span><b>${statusLabel(status)}</b></div><span class="small muted">${i.seats} total · ${used} used · ${free} free</span></div>${detail}<div class="floatingActions"><button class="btn primary" data-action="free-group" data-id="${g.id}">Free Now</button><button class="btn" data-action="clean-group" data-id="${g.id}">Clean Now</button><button class="btn" data-action="reserve-group" data-id="${g.id}">Reserve</button>${status==='free'?`<button class="btn" data-action="unmerge" data-id="${g.id}">Uncombine</button>`:''}</div>`;openModal(i.name,body);liveModalContext={kind:'group',id:g.id};$$('[data-remove-combo]').forEach(b=>b.onclick=()=>{if(g.tableIds.length<=2)return toast('Combination needs at least 2 tables');const oldName=state.tables.find(x=>x.id===b.dataset.removeCombo)?.name||'';g.tableIds=g.tableIds.filter(x=>x!==b.dataset.removeCombo);const t=state.tables.find(x=>x.id===b.dataset.removeCombo);if(t)t.mergeGroup=null;logEvent('removeCombinedTable','Removed table from combination','group',g.id,i.name,oldName);save();openGroup(g.id);renderAll()});$$('[data-end-group-party]').forEach(b=>b.onclick=()=>{removeAllocation(b.dataset.endGroupParty,'free');closeModal()})}
@@ -1165,6 +1465,79 @@ function switchView(v,persist=true){
 }
 $$('[data-status-filter]').forEach(b=>b.addEventListener('click',()=>{const f=b.dataset.statusFilter;state.statusFilter=f;cacheLocal();queuePreferenceSave();if(f==='waiting'){switchView('wait')}else{switchView('floor');renderFloor()}}));
 $$('.navbtn').forEach(b=>b.addEventListener('click',()=>switchView(b.dataset.view)));
+
+
+function quickIcon(name){
+  const icons={
+    guest:'<svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3.8 19c.6-3 2.2-5 5.2-5s4.6 2 5.2 5M18 7v6M15 10h6"/></svg>',
+    wait:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 7v5l3 2"/></svg>',
+    reserve:'<svg viewBox="0 0 24 24"><rect x="4" y="5.5" width="16" height="14" rx="2"/><path d="M8 3.5v4M16 3.5v4M4 10h16M9 14h6"/></svg>',
+    combine:'<svg viewBox="0 0 24 24"><rect x="3.5" y="6" width="7" height="12" rx="2"/><rect x="13.5" y="6" width="7" height="12" rx="2"/><path d="M10.5 12h3"/></svg>',
+    reports:'<svg viewBox="0 0 24 24"><path d="M5 19V9M12 19V5M19 19v-7"/></svg>',
+    manage:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1l2-1.5-2-3.4-2.4 1a8 8 0 0 0-1.7-1L14.5 3h-5l-.3 3.1a8 8 0 0 0-1.7 1l-2.4-1-2 3.4 2 1.5a7 7 0 0 0 0 2l-2 1.5 2 3.4 2.4-1a8 8 0 0 0 1.7 1l.3 3.1h5l.3-3.1a8 8 0 0 0 1.7-1l2.4 1 2-3.4-2-1.5a7 7 0 0 0 .1-1z"/></svg>'
+  };
+  return icons[name]||'';
+}
+function closeQuickMenu(){
+  const m=$('#quickMenu'),b=$('#moreDockBtn');
+  if(m)m.classList.add('hidden');
+  if(b)b.setAttribute('aria-expanded','false');
+}
+function openMoreMenu(){
+  if(!remoteToken)return;
+  const admin=isAdmin(),m=$('#quickMenu');
+  m.innerHTML=`<div class="quickMenuGrid">
+    <button class="quickMenuItem" id="quickNewGuest">${quickIcon('guest')}<b>New guest</b></button>
+    <button class="quickMenuItem quickNav" data-quick-view="wait">${quickIcon('wait')}<b>Waiting</b></button>
+    <button class="quickMenuItem" id="quickReserve">${quickIcon('reserve')}<b>Reserve</b></button>
+    <button class="quickMenuItem" id="quickCombine">${quickIcon('combine')}<b>Combine</b></button>
+    <button class="quickMenuItem quickNav" data-quick-view="reports">${quickIcon('reports')}<b>Reports</b></button>
+    ${admin?`<button class="quickMenuItem quickNav" data-quick-view="manage">${quickIcon('manage')}<b>Manage</b></button>`:''}
+  </div>
+  <div class="quickMenuFoot">
+    <span class="tiny">Quick actions</span>
+    <button id="quickLogout" class="quickLogout">Log out</button>
+  </div>`;
+  m.classList.remove('hidden');
+  $('#moreDockBtn').setAttribute('aria-expanded','true');
+
+  $('#quickNewGuest').onclick=()=>{closeQuickMenu();openGuestModal()};
+  $$('[data-quick-view]').forEach(b=>b.onclick=()=>{closeQuickMenu();switchView(b.dataset.quickView)});
+  $('#quickReserve').onclick=()=>{closeQuickMenu();openReservationPicker()};
+  $('#quickCombine').onclick=()=>{closeQuickMenu();openMergeBuilder()};
+  $('#quickLogout').onclick=()=>{closeQuickMenu();logout()};
+}
+function toggleQuickMenu(){
+  const m=$('#quickMenu');
+  if(m.classList.contains('hidden'))openMoreMenu();else closeQuickMenu();
+}
+
+function openReservationPicker(){
+  const free=state.tables.filter(t=>!t.mergeGroup&&t.status==='free');
+  if(!free.length)return toast('No free table available');
+  openModal('Reserve table',`<div class="choicegrid">${free.map(t=>`<button class="choice" data-reserve-pick="${t.id}"><b>${esc(t.name)}</b><div class="tiny">${t.seats} seats · ${esc(shortArea(t.area))}</div></button>`).join('')}</div>`);
+  $$('[data-reserve-pick]').forEach(b=>b.onclick=()=>openReservation('table',b.dataset.reservePick));
+}
+function goHome(){
+  closeQuickMenu();
+  if(state.statusFilter==='waiting'){
+    state.statusFilter='all';
+    cacheLocal();
+    queuePreferenceSave();
+  }
+  switchView('floor');
+}
+$('#homeDockBtn').addEventListener('click',goHome);
+$('#brandHomeBtn').addEventListener('click',goHome);
+$('#moreDockBtn').addEventListener('click',toggleQuickMenu);
+$('#quickGuest').addEventListener('focus',closeQuickMenu);
+document.addEventListener('pointerdown',e=>{
+  const m=$('#quickMenu'),b=$('#moreDockBtn');
+  if(!m||m.classList.contains('hidden'))return;
+  if(m.contains(e.target)||b.contains(e.target))return;
+  closeQuickMenu();
+});
+
 async function remoteLogout(callServer=true){
   stopAutoRefresh();
   const token=remoteToken;
