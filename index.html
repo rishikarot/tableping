@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-title" content="TablePing">
 
 
-<title>TablePing v1.4.2 — Supabase</title>
+<title>TablePing v1.4.3 — Supabase</title>
 <style>
 :root{
   --primary:#20312b;--secondary:#a9c7b7;--psoft:#eef3f0;--ssoft:#f1f6f3;
@@ -408,7 +408,7 @@ body.offlineMode #appScreen textarea{pointer-events:none;opacity:.72}
 }
 
 
-/* v1.4.2 — table cards are status surfaces, not white cards with tiny badges */
+/* v1.4.3 — table cards are status surfaces, not white cards with tiny badges */
 .tile::after{display:none!important}
 .tile{
   min-height:104px!important;
@@ -507,7 +507,7 @@ body.composerFocused .quickMenu{display:none!important}
 }
 
 
-/* v1.4.2 minimalist UI inspired by the supplied mobile mock */
+/* v1.4.3 minimalist UI inspired by the supplied mobile mock */
 :root{--bg:#f5f6f4;--card:#fff;--line:#e6e8e5;--soft:#f7f8f6}
 body{background:var(--bg)!important}
 .topbar{position:sticky;top:0;z-index:30;padding:0 14px;background:linear-gradient(180deg,var(--bg),rgba(245,246,244,.95) 72%,rgba(245,246,244,.65))}
@@ -621,7 +621,7 @@ body.composerFocused .guestComposer input{font-size:13px!important}
 }
 
 
-/* v1.4.2 — soft editorial / pastel refinement inspired by the supplied design */
+/* v1.4.3 — soft editorial / pastel refinement inspired by the supplied design */
 :root{
   --primary:#3d6f63!important;
   --secondary:#e8c3cf!important;
@@ -927,7 +927,7 @@ body{
 }
 
 
-/* v1.4.2 — multi-select as a focused action mode */
+/* v1.4.3 — multi-select as a focused action mode */
 body.selectionMode #bottomDock{display:none!important}
 .bulkbar{
   position:fixed!important;
@@ -985,6 +985,66 @@ body.selectionMode .tile.selected::after{
   .bulkAction{min-width:56px;height:38px;padding:0 7px}
   .bulkAction b{font-size:9px}
   .bulkClose{width:36px;height:36px}
+}
+
+
+/* v1.4.3 — persistent personal status selection */
+.metric{
+  position:relative!important;
+  --status-selected:#45514c;
+  --status-soft:#f5f6f5;
+}
+.metric[data-status-filter="all"]{--status-selected:#3f4945;--status-soft:#f2f3f2}
+.metric[data-status-filter="free"]{--status-selected:#3e7b59;--status-soft:#eaf7ef}
+.metric[data-status-filter="dining"]{--status-selected:#b86d24;--status-soft:#fdf1e6}
+.metric[data-status-filter="reserved"]{--status-selected:#9c7a1d;--status-soft:#fff7dc}
+.metric[data-status-filter="cleaning"]{--status-selected:#7b61a0;--status-soft:#f6effa}
+.metric[data-status-filter="waiting"]{--status-selected:#b45764;--status-soft:#fdeef0}
+
+.metric .metricCount,
+.metric .metricLabel{
+  transition:background .15s ease,color .15s ease,border-color .15s ease,
+             box-shadow .15s ease,transform .15s ease;
+}
+.metric.active .metricCount{
+  background:var(--status-selected)!important;
+  color:#fff!important;
+  border-color:var(--status-selected)!important;
+  box-shadow:
+    0 0 0 3px rgba(255,255,255,.95),
+    0 0 0 4.5px color-mix(in srgb,var(--status-selected) 35%,transparent),
+    0 4px 10px color-mix(in srgb,var(--status-selected) 18%,transparent)!important;
+  transform:translateY(-1px);
+}
+.metric.active .metricLabel{
+  color:var(--status-selected)!important;
+  font-weight:900!important;
+}
+.metric.active::after{
+  content:"";
+  width:14px;
+  height:3px;
+  border-radius:999px;
+  background:var(--status-selected);
+  position:absolute;
+  left:50%;
+  bottom:-6px;
+  transform:translateX(-50%);
+}
+.metric:not(.active):hover .metricCount{
+  border-color:color-mix(in srgb,var(--status-selected) 38%,#d7dcda)!important;
+}
+.metric:focus-visible{
+  outline:2px solid color-mix(in srgb,var(--status-selected) 45%,transparent)!important;
+  outline-offset:4px!important;
+  border-radius:14px!important;
+}
+
+/* fallback for browsers without color-mix */
+@supports not (color:color-mix(in srgb,red 50%,blue)){
+  .metric.active .metricCount{
+    box-shadow:0 0 0 3px #fff,0 0 0 5px rgba(61,111,99,.22)!important;
+  }
 }
 
 </style>
@@ -1165,7 +1225,7 @@ E8-4 seats</textarea></label>
       </button>
       <button id="logoutTopBtn" class="btn sm ghostBtn">Logout</button>
     </div>
-    <div class="topVersion tiny muted">v1.4.2 · Powered by <a href="https://www.letmedoit.in" target="_blank" rel="noopener">LetMeDoIt</a></div>
+    <div class="topVersion tiny muted">v1.4.3 · Powered by <a href="https://www.letmedoit.in" target="_blank" rel="noopener">LetMeDoIt</a></div>
   </div>
 </header>
 <div id="offlineStrip" class="offlineStrip hidden">Offline · showing last saved data</div>
@@ -1294,7 +1354,7 @@ E8-4 seats</textarea></label>
 
 
 <div id="publicFooter" class="publicFooter">
-  v1.4.2<span>·</span>Powered by
+  v1.4.3<span>·</span>Powered by
   <a href="https://www.letmedoit.in" target="_blank" rel="noopener">LetMeDoIt</a>
 </div>
 
@@ -1314,7 +1374,7 @@ const base={activated:false,setup:false,locked:true,selectedUser:null,license:{r
 let state=load(),setupStep=1,toastTimer=null,selectMode=false,selected=new Set(),reportRange=null;
 const SB_URL='https://bfmsoerewmiqianxmcck.supabase.co';
 const SB_KEY='sb_publishable_v8jc47i36pfQIkQ2gXC0MA_V0hWBld9';
-const APP_VERSION='1.4.2';
+const APP_VERSION='1.4.3';
 let remoteToken=sessionStorage.getItem('tp_remote_token')||'';
 let remoteRevision=0;
 let remoteEvents=[];
@@ -1409,6 +1469,7 @@ function applyUserPreferences(p){
   p=p||{};
   currentPage=['floor','wait','reports','manage'].includes(p.currentPage)?p.currentPage:'floor';
   state.statusFilter=['all','free','dining','reserved','cleaning','waiting'].includes(p.statusFilter)?p.statusFilter:'all';
+  if(currentPage==='wait')state.statusFilter='waiting';
   state.activeArea=p.areaFilter||'All';
   state.floorMode=p.viewMode==='list'?'list':'tile';
   currentReportPreset=p.reportPreset||'today';
@@ -1933,7 +1994,12 @@ $('#loginPin').addEventListener('keydown',e=>{if(e.key==='Enter')$('#loginBtn').
 $('#loginUsername').addEventListener('keydown',e=>{if(e.key==='Enter')$('#loginPin').focus()});
 
 let floorClockTimer=setInterval(()=>{if(remoteToken&&currentPage==='floor'&&!document.hidden)renderFloor()},30000);
-function renderFloor(){const c=counts();$('#mAll').textContent=c.all;$('#mFree').textContent=c.free;$('#mDining').textContent=c.dining;$('#mReserved').textContent=c.reserved;$('#mCleaning').textContent=c.cleaning;$('#mWaiting').textContent=state.wait.length;$$('[data-status-filter]').forEach(b=>b.classList.toggle('active',b.dataset.statusFilter===state.statusFilter));$('#statusHint').textContent=state.statusFilter==='all'?'All tables':state.statusFilter==='waiting'?'Waiting guests':statusLabel(state.statusFilter);const areas=['All',...state.areas];if(!areas.includes(state.activeArea))state.activeArea='All';$('#areaChips').innerHTML=areas.map(a=>`<button class="chip ${state.activeArea===a?'active':''}" data-action="area-filter" data-area="${esc(a)}">${esc(a)}</button>`).join('');let all=displayUnits().filter(u=>state.activeArea==='All'||u.area===state.activeArea);if(state.statusFilter!=='all'&&state.statusFilter!=='waiting')all=all.filter(u=>u.status===state.statusFilter);const groups=all.filter(u=>u.kind==='group'),tables=all.filter(u=>u.kind==='table'),list=state.floorMode==='list';$('#combinedBox').classList.toggle('hidden',!groups.length);$('#combinedCount').textContent=groups.length;$('#combinedTiles').innerHTML=groups.map(tileHTML).join('');$('#combinedList').innerHTML=groups.map(listHTML).join('');$('#floorGrid').innerHTML=tables.length?tables.map(tileHTML).join(''):'<div class="notice" style="grid-column:1/-1">No tables match this filter.</div>';$('#floorList').innerHTML=tables.length?tables.map(listHTML).join(''):'<div class="notice">No tables match this filter.</div>';$('#physicalTitle').textContent=state.activeArea==='All'?'Physical Tables':`Physical Tables in ${shortArea(state.activeArea)}`;
+function renderFloor(){const c=counts();$('#mAll').textContent=c.all;$('#mFree').textContent=c.free;$('#mDining').textContent=c.dining;$('#mReserved').textContent=c.reserved;$('#mCleaning').textContent=c.cleaning;$('#mWaiting').textContent=state.wait.length;$$('[data-status-filter]').forEach(b=>{
+  const on=b.dataset.statusFilter===state.statusFilter;
+  b.classList.toggle('active',on);
+  b.setAttribute('aria-pressed',on?'true':'false');
+  b.setAttribute('aria-current',on?'true':'false');
+});$('#statusHint').textContent=state.statusFilter==='all'?'All tables':state.statusFilter==='waiting'?'Waiting guests':statusLabel(state.statusFilter);const areas=['All',...state.areas];if(!areas.includes(state.activeArea))state.activeArea='All';$('#areaChips').innerHTML=areas.map(a=>`<button class="chip ${state.activeArea===a?'active':''}" data-action="area-filter" data-area="${esc(a)}">${esc(a)}</button>`).join('');let all=displayUnits().filter(u=>state.activeArea==='All'||u.area===state.activeArea);if(state.statusFilter!=='all'&&state.statusFilter!=='waiting')all=all.filter(u=>u.status===state.statusFilter);const groups=all.filter(u=>u.kind==='group'),tables=all.filter(u=>u.kind==='table'),list=state.floorMode==='list';$('#combinedBox').classList.toggle('hidden',!groups.length);$('#combinedCount').textContent=groups.length;$('#combinedTiles').innerHTML=groups.map(tileHTML).join('');$('#combinedList').innerHTML=groups.map(listHTML).join('');$('#floorGrid').innerHTML=tables.length?tables.map(tileHTML).join(''):'<div class="notice" style="grid-column:1/-1">No tables match this filter.</div>';$('#floorList').innerHTML=tables.length?tables.map(listHTML).join(''):'<div class="notice">No tables match this filter.</div>';$('#physicalTitle').textContent=state.activeArea==='All'?'Physical Tables':`Physical Tables in ${shortArea(state.activeArea)}`;
 $('#physicalSub').textContent=state.statusFilter==='all'?'':statusLabel(state.statusFilter);
 $('#physicalCount').textContent=`${tables.length} table${tables.length===1?'':'s'} active`;$('#combinedTiles').classList.toggle('hidden',list);$('#combinedList').classList.toggle('hidden',!list);$('#floorGrid').classList.toggle('hidden',list);$('#floorList').classList.toggle('hidden',!list);$('#tileModeBtn').classList.toggle('active',!list);$('#listModeBtn').classList.toggle('active',list);$('#selectBtn').textContent=selectMode?'Done':'Select';$('#bulkBar').classList.toggle('hidden',!selectMode);$('#selectedCount').textContent=selected.size;
 document.body.classList.toggle('selectionMode',selectMode);
@@ -2352,6 +2418,10 @@ function switchView(v,persist=true){
   if(!['floor','wait','reports','manage'].includes(v))v='floor';
   if(v!=='floor'&&selectMode){selectMode=false;selected.clear();document.body.classList.remove('selectionMode')}
   currentPage=v;
+  if(v==='wait'&&state.statusFilter!=='waiting'){
+    state.statusFilter='waiting';
+    cacheLocal();
+  }
   ['floor','wait','reports','manage'].forEach(x=>$('#'+x+'View').classList.toggle('hidden',x!==v));
   $$('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.view===v));
   if(v==='manage')renderManage();
