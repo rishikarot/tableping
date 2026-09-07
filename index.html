@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-title" content="TablePing">
 
 
-<title>TablePing — Supabase Multi-User</title>
+<title>TablePing v1.2.1 — Supabase</title>
 <style>
 :root{
   --primary:#20312b;--secondary:#a9c7b7;--psoft:#eef3f0;--ssoft:#f1f6f3;
@@ -181,22 +181,70 @@ input:focus,select:focus,textarea:focus{border-color:var(--primary);box-shadow:0
 .groupListName{font-size:13px;font-weight:950;letter-spacing:-.025em}
 .groupListMeta{font-size:9px;color:var(--muted);margin-top:2px}
 
+
+.entryChoices{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.entryChoice{border:1px solid var(--line);background:#fff;border-radius:16px;padding:18px 15px;text-align:left;min-height:126px;display:flex;flex-direction:column;justify-content:space-between}
+.entryChoice:hover{border-color:var(--primary)}
+.entryChoice b{font-size:18px;letter-spacing:-.03em}
+.entryChoice span{font-size:11px;color:var(--muted);line-height:1.45}
+.loginHero{text-align:center;margin-bottom:14px}
+.loginHero .logo{margin:0 auto 10px}
+.usernameHint{font-size:10px;color:var(--muted);margin-top:4px;line-height:1.4}
+.usernameOk{color:#356447}.usernameBad{color:#9a4141}
+.versionBadge{position:fixed;right:12px;bottom:9px;z-index:120;font-size:9px;font-weight:750;color:var(--muted);opacity:.78;pointer-events:none}
+@media(max-width:520px){.entryChoices{grid-template-columns:1fr}.versionBadge{bottom:72px}}
+
+
+.syncChip{height:30px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:0 9px;display:inline-flex;align-items:center;gap:6px;font:inherit;font-size:10px;font-weight:850;color:var(--muted);cursor:pointer}
+.syncChip:hover{border-color:#c6cdca}
+.syncDot{width:7px;height:7px;border-radius:50%;background:#9ca6a1;display:inline-block}
+.syncChip.live .syncDot{background:#4f8a62;box-shadow:0 0 0 3px rgba(79,138,98,.10)}
+.syncChip.syncing .syncDot{background:#b68733;animation:syncPulse 1s ease-in-out infinite}
+.syncChip.offline .syncDot{background:#9b5555}
+.syncChip.offline{color:#8e4a4a;background:#fffafa}
+@keyframes syncPulse{0%,100%{opacity:.45}50%{opacity:1}}
+.offlineStrip{position:sticky;top:54px;z-index:19;background:#fff7e8;border-bottom:1px solid #ead7b1;padding:6px 12px;text-align:center;font-size:10px;font-weight:800;color:#795d2c}
+body.offlineMode #appScreen input,
+body.offlineMode #appScreen select,
+body.offlineMode #appScreen textarea{pointer-events:none;opacity:.72}
+
 </style>
 </head>
 <body>
 <div class="app">
 
-<!-- ACTIVATE -->
+<!-- HOME -->
 <section id="activateScreen" class="wrap">
-  <div class="center">
+  <div class="center" style="max-width:620px">
     <div class="brand"><div class="logo">T</div>TablePing</div>
-    <div style="height:26px"></div>
-    <h1>Set up once.<br>Seat guests fast.</h1>
-    <p class="muted">Entity Code + License Key. Supabase multi-user mode.</p>
+    <div style="height:28px"></div>
+    <h1>Tables, without<br>the chaos.</h1>
+    <p class="muted">Choose how you want to continue.</p>
+    <div class="entryChoices">
+      <button id="openSetupBtn" class="entryChoice">
+        <div><b>Setup</b><div class="tiny muted" style="margin-top:4px">For a new business</div></div>
+        <span>Enter Business Code + Setup Key, configure tables, create Admin and Staff users.</span>
+      </button>
+      <button id="openLoginBtn" class="entryChoice">
+        <div><b>Login</b><div class="tiny muted" style="margin-top:4px">For existing users</div></div>
+        <span>Enter your unique username and PIN. TablePing automatically opens the correct entity.</span>
+      </button>
+    </div>
+    <div class="notice" style="margin-top:12px">Each username is unique across TablePing. Every user and operational record remains linked to its Entity ID.</div>
+  </div>
+</section>
+
+<!-- SETUP ACCESS -->
+<section id="setupAccessScreen" class="wrap hidden">
+  <div class="center" style="max-width:520px">
+    <div class="row between"><div class="brand"><div class="logo">T</div>TablePing</div><button id="setupAccessBack" class="btn sm">Back</button></div>
+    <div style="height:22px"></div>
+    <h2>Set up an entity</h2>
+    <p class="muted small">Use the setup details provided for your business.</p>
     <div class="card stack">
-      <label>Entity Code<input id="restaurantCode" placeholder="e.g. CAFE01"></label>
-      <label>License Key<input id="licenseKey" placeholder="e.g. TP-DEMO-2026"></label>
-      <button id="activateBtn" class="btn primary full">Activate</button>
+      <label>Business Code<input id="restaurantCode" autocomplete="off" placeholder="e.g. GREENLEAF01"></label>
+      <label>Setup Key<input id="licenseKey" autocomplete="off" placeholder="Enter setup key"></label>
+      <button id="activateBtn" class="btn primary full">Continue Setup</button>
       <button id="demoBtn" class="hidden">Use demo</button>
       <div id="activateMsg" class="notice hidden"></div>
     </div>
@@ -214,7 +262,8 @@ input:focus,select:focus,textarea:focus{border-color:var(--primary);box-shadow:0
     <div class="card stack">
       <label>Entity Name<input id="shopName" placeholder="e.g. Greenleaf Café"></label>
       <div class="grid2"><label>Contact Person<input id="contactName" placeholder="e.g. Alex"></label><label>Mobile Number<input id="contactPhone" inputmode="numeric" maxlength="10" placeholder="10-digit mobile number"></label></div>
-      <div class="grid2"><label>Typical Dining Time (minutes)<input id="diningTime" type="number" min="10" max="300" value="60"></label><label>Admin PIN<input id="ownerPin" inputmode="numeric" maxlength="6" placeholder="4–6 digits"></label></div>
+      <div class="grid2"><label>Typical Dining Time (minutes)<input id="diningTime" type="number" min="10" max="300" value="60"></label><label>Admin Username<input id="adminUsername" autocomplete="username" maxlength="24" placeholder="johndoe"><div id="adminUsernameHint" class="usernameHint">Use letters/numbers. TablePing checks global availability.</div></label></div>
+      <label>Admin PIN<input id="ownerPin" inputmode="numeric" maxlength="6" autocomplete="new-password" placeholder="4–6 digits"></label>
       <button id="next1" class="btn primary">Continue</button><div id="setup1Msg" class="notice hidden"></div>
     </div>
   </div>
@@ -275,9 +324,9 @@ E8-4 seats</textarea></label>
   </div>
 
   <div id="setup4" class="hidden">
-    <h2>Admin</h2><p class="muted small">The Admin account is created now. Add Staff later from Manage after login.</p>
+    <h2>Users</h2><p class="muted small">Create the Admin and optional Staff users now. Maximum 5 users for this license.</p>
     <div class="card">
-      <div class="row between"><div><h3>Users</h3><div class="small muted">Admin is created during setup</div></div><button id="addUserSetupBtn" class="btn sm hidden">+ User</button></div>
+      <div class="row between"><div><h3>Users</h3><div id="setupUserLimit" class="small muted"></div></div><button id="addUserSetupBtn" class="btn sm primary">+ Staff</button></div>
       <div id="setupUsers" class="stack" style="margin-top:10px"></div>
     </div>
     <div class="row between" style="margin-top:10px"><button id="back4" class="btn">Back</button><button id="next4" class="btn primary">Theme</button></div>
@@ -301,14 +350,20 @@ E8-4 seats</textarea></label>
 </div>
 </section>
 
-<!-- STAFF LOGIN -->
+<!-- LOGIN -->
 <section id="loginScreen" class="wrap hidden">
-  <div class="center" style="max-width:520px">
-    <div class="brand"><div class="logo">T</div>TablePing</div><div style="height:22px"></div>
+  <div class="center" style="max-width:460px">
+    <div class="row between"><div class="brand"><div class="logo">T</div>TablePing</div><button id="loginBackBtn" class="btn sm">Back</button></div>
+    <div style="height:22px"></div>
+    <div class="loginHero">
+      <h2>Welcome back</h2>
+      <div class="small muted">Username identifies your entity automatically.</div>
+    </div>
     <div class="card stack">
-      <div><h2 id="loginShop"></h2><div class="small muted">Choose profile and enter PIN.</div></div>
-      <div id="profileList" class="stack"></div>
-      <div id="pinBox" class="hidden"><label>PIN<input id="loginPin" inputmode="numeric" maxlength="6"></label><button id="loginBtn" class="btn primary full" style="margin-top:10px">Open TablePing</button><div id="loginMsg" class="notice hidden" style="margin-top:8px"></div></div>
+      <label>Username<input id="loginUsername" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="johndoe"></label>
+      <label>PIN<input id="loginPin" inputmode="numeric" maxlength="6" autocomplete="current-password" placeholder="4–6 digit PIN"></label>
+      <button id="loginBtn" class="btn primary full">Login</button>
+      <div id="loginMsg" class="notice hidden"></div>
     </div>
   </div>
 </section>
@@ -316,9 +371,13 @@ E8-4 seats</textarea></label>
 <!-- APP -->
 <div id="appScreen" class="hidden">
 <header class="topbar"><div class="topin">
-  <div class="row grow"><div class="logo" style="width:28px;height:28px;border-radius:9px">T</div><div class="grow"><div id="topShop" class="shop"></div><div id="topUser" class="sub"></div></div></div>
-  <div class="row"><button id="saveBtn" class="btn sm">Connecting…</button><button id="logoutTopBtn" class="btn sm">Log out</button></div>
+  <div class="row grow"><div class="logo" style="width:28px;height:28px;border-radius:9px">T</div><div class="grow"><div id="topShop" class="shop"></div><div id="topUser" class="sub"></div><div class="tiny muted">v1.2.1</div></div></div>
+  <div class="row">
+    <button id="saveBtn" class="syncChip syncing" title="Refresh latest data"><span class="syncDot"></span><span id="syncText">Connecting</span></button>
+    <button id="logoutTopBtn" class="btn sm">Log out</button>
+  </div>
 </div></header>
+<div id="offlineStrip" class="offlineStrip hidden">Offline · showing last saved data</div>
 
 <main class="wrap">
 
@@ -415,10 +474,11 @@ const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const uid=p=>p+'_'+Math.random().toString(36).slice(2,8);
 const esc=v=>String(v??'').replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
 const clone=o=>JSON.parse(JSON.stringify(o));
-const base={activated:false,setup:false,locked:false,selectedUser:null,license:{restaurantCode:'',key:'',expires:'2027-12-31',maxUsers:5},shop:{name:'',contactName:'',contactPhone:'',dining:60},users:[{id:'admin',name:'Admin',role:'Admin',pin:'1234',protected:true}],areas:['AC Hall','Non-AC','Outdoor','Garden','First Floor','Family Hall'],tables:[],groups:[],wait:[],history:[],guests:0,activeArea:'All',floorMode:'tile',theme:{primary:'#20312b',secondary:'#a9c7b7'},allowSharing:false,seatAllocations:[],statusFilter:'all',lastSync:null};
-let state=load(),setupStep=1,pendingLoginUser=null,toastTimer=null,selectMode=false,selected=new Set(),reportRange=null;
+const base={activated:false,setup:false,locked:true,selectedUser:null,license:{restaurantCode:'',key:'',expires:'2027-12-31',maxUsers:5},shop:{name:'',contactName:'',contactPhone:'',dining:60},users:[{id:'admin_setup',username:'',name:'Admin',role:'Admin',pin:'',protected:true,setupOnly:true}],areas:['AC Hall','Non-AC','Outdoor','Garden','First Floor','Family Hall'],tables:[],groups:[],wait:[],history:[],guests:0,activeArea:'All',floorMode:'tile',theme:{primary:'#20312b',secondary:'#a9c7b7'},allowSharing:false,seatAllocations:[],statusFilter:'all',lastSync:null};
+let state=load(),setupStep=1,toastTimer=null,selectMode=false,selected=new Set(),reportRange=null;
 const SB_URL='https://bfmsoerewmiqianxmcck.supabase.co';
 const SB_KEY='sb_publishable_v8jc47i36pfQIkQ2gXC0MA_V0hWBld9';
+const APP_VERSION='1.2.1';
 let remoteToken=sessionStorage.getItem('tp_remote_token')||'';
 let remoteRevision=0;
 let remoteEvents=[];
@@ -428,6 +488,8 @@ let savingRemote=false;
 let saveAgain=false;
 let pollTimer=null;
 let entitySaveTimer=null;
+let networkOnline=navigator.onLine;
+let lastConnectivityState=navigator.onLine?'live':'offline';
 
 
 function load(){try{const x=JSON.parse(localStorage.getItem(KEY)||'{}');return normalize(x)}catch(e){return clone(base)}}
@@ -445,6 +507,10 @@ function remoteSnapshot(){return{
   statusFilter:state.statusFilter
 }}
 async function rpc(fn,body={}){
+  if(!navigator.onLine){
+    networkOnline=false;
+    throw new Error("You're offline. Please connect to the internet.");
+  }
   const r=await fetch(`${SB_URL}/rest/v1/rpc/${fn}`,{
     method:'POST',
     headers:{
@@ -461,14 +527,34 @@ async function rpc(fn,body={}){
   return data;
 }
 function setSyncLabel(label,bad=false){
-  const b=$('#saveBtn');
-  if(!b)return;
-  b.textContent=label;
-  b.style.color=bad?'#a23d3d':'';
+  const b=$('#saveBtn'),txt=$('#syncText');
+  if(!b||!txt)return;
+  const key=String(label||'').toLowerCase();
+  b.classList.remove('live','syncing','offline');
+  if(key.includes('offline')){b.classList.add('offline');txt.textContent='Offline';lastConnectivityState='offline'}
+  else if(key.includes('sync')){b.classList.add('syncing');txt.textContent='Syncing';lastConnectivityState='syncing'}
+  else{b.classList.add('live');txt.textContent='Live';lastConnectivityState='live'}
+  const strip=$('#offlineStrip');
+  if(strip)strip.classList.toggle('hidden',lastConnectivityState!=='offline');
+  document.body.classList.toggle('offlineMode',lastConnectivityState==='offline');
 }
+
+function isOffline(){return !networkOnline||lastConnectivityState==='offline'}
+function offlineNotice(){toast("You're offline. View only until you're back online.")}
+function isOfflineAllowedClick(el){
+  if(!el)return true;
+  if(el.id==='logoutTopBtn'||el.id==='logoutReportBtn'||el.id==='modalClose'||el.id==='saveBtn')return true;
+  if(el.classList.contains('navbtn')||el.classList.contains('reportPreset')||el.classList.contains('viewModeBtn'))return true;
+  const a=el.dataset?.action||'';
+  return ['open-unit','area-filter'].includes(a);
+}
+
 function save(){
   cacheLocal();
-  if(remoteToken&&state.setup&&!state.locked)queueRemoteSave();
+  if(remoteToken&&state.setup&&!state.locked){
+    if(isOffline())return;
+    queueRemoteSave();
+  }
 }
 function queueRemoteSave(){
   saveAgain=true;
@@ -566,13 +652,15 @@ async function refreshRemote(force=false){
     setSyncLabel('Live');
   }catch(e){
     console.error(e);
-    setSyncLabel('Offline',true);
+    if(!navigator.onLine){networkOnline=false;setSyncLabel('Offline',true)}
+    else setSyncLabel('Offline',true);
   }
 }
 function startAutoRefresh(){
   clearInterval(pollTimer);
   pollTimer=setInterval(()=>refreshRemote(false),2000);
-  setSyncLabel('Live');
+  networkOnline=navigator.onLine;
+  setSyncLabel(networkOnline?'Live':'Offline',!networkOnline);
 }
 function stopAutoRefresh(){clearInterval(pollTimer);pollTimer=null}
 function queueEntityUpdate(){
@@ -598,8 +686,8 @@ async function persistEntityRemote(){
   }catch(e){toast(e.message||'Entity save failed')}
 }
 
-function show(id){['activateScreen','setupScreen','loginScreen','appScreen'].forEach(x=>$('#'+x).classList.add('hidden'));$('#'+id).classList.remove('hidden')}
-function route(){applyTheme();if(!state.activated)return show('activateScreen');if(!state.setup)return show('setupScreen');if(state.locked||!state.selectedUser){renderLogin();return show('loginScreen')}show('appScreen');renderAll()}
+function show(id){['activateScreen','setupAccessScreen','setupScreen','loginScreen','appScreen'].forEach(x=>$('#'+x).classList.add('hidden'));$('#'+id).classList.remove('hidden')}
+function route(){applyTheme();if(remoteToken&&!state.locked&&state.selectedUser){show('appScreen');renderAll();return}if(state.activated&&!state.setup){show('setupScreen');renderSetup();return}show('activateScreen')}
 function mixWhite(hex,amount){const h=(hex||'#000000').replace('#','');if(!/^[0-9a-fA-F]{6}$/.test(h))return '#f1f4f2';const n=parseInt(h,16),r=n>>16,g=(n>>8)&255,b=n&255,m=v=>Math.round(v+(255-v)*amount);return '#'+[m(r),m(g),m(b)].map(v=>v.toString(16).padStart(2,'0')).join('')}
 function applyTheme(){const p=state.theme.primary||'#20312b',q=state.theme.secondary||'#a9c7b7';document.documentElement.style.setProperty('--primary',p);document.documentElement.style.setProperty('--secondary',q);document.documentElement.style.setProperty('--psoft',mixWhite(p,.9));document.documentElement.style.setProperty('--ssoft',mixWhite(q,.82));document.documentElement.style.setProperty('--bg',mixWhite(q,.955));const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=p}
 function shortArea(v){v=String(v||'').trim();const r=[[/air\s*conditioned/ig,'AC'],[/non[-\s]*air\s*conditioned/ig,'Non-AC'],[/ground\s*floor/ig,'Gnd Fl.'],[/first\s*floor/ig,'1st Fl.'],[/second\s*floor/ig,'2nd Fl.'],[/family/ig,'Fam.'],[/section/ig,'Sec.']];r.forEach(([a,b])=>v=v.replace(a,b));return v.length<=14?v:v.slice(0,13)+'…'}
@@ -609,6 +697,13 @@ function hideMsg(el){el.classList.add('hidden')}
 function currentUser(){return state.users.find(u=>u.id===state.selectedUser)}
 function isAdmin(){return currentUser()?.role==='Admin'}
 function mobileOk(v,optional=false){v=String(v||'').trim();if(optional&&!v)return true;return /^[6-9]\d{9}$/.test(v)}
+function normalizeUsername(v){return String(v||'').trim().toLowerCase().replace(/[^a-z0-9]+/g,'.').replace(/^\.+|\.+$/g,'').slice(0,24)}
+async function checkUsernameAvailability(raw){
+  const base=normalizeUsername(raw);
+  if(!base)return{ok:false,available:false,normalized:'',suggestion:''};
+  return await rpc('tp_suggest_username',{p_base:base});
+}
+
 function logEvent(action,label,type,id,name,details=''){
   const u=currentUser();
   state.history.push({id:uid('h'),timestamp:new Date().toISOString(),userId:u?.id||'system',userName:u?.name||'System',action,actionLabel:label,targetType:type,targetId:id,targetName:name,details});
@@ -624,33 +719,81 @@ function tableAvailableSeats(t){if(t.status==='free')return t.seats;if(state.all
 
 
 
+$('#openSetupBtn').addEventListener('click',()=>{hideMsg($('#activateMsg'));show('setupAccessScreen');setTimeout(()=>$('#restaurantCode').focus(),50)});
+$('#openLoginBtn').addEventListener('click',()=>{renderLogin();show('loginScreen');setTimeout(()=>$('#loginUsername').focus(),50)});
+$('#setupAccessBack').addEventListener('click',()=>show('activateScreen'));
+$('#loginBackBtn').addEventListener('click',()=>show('activateScreen'));
+
 $('#activateBtn').addEventListener('click',async()=>{
   const code=$('#restaurantCode').value.trim().toUpperCase(),key=$('#licenseKey').value.trim();
-  if(!code||key.length<6)return message($('#activateMsg'),'Enter Entity Code and License Key.','bad');
+  if(!code||key.length<6)return message($('#activateMsg'),'Enter Business Code and Setup Key.','bad');
   $('#activateBtn').disabled=true;$('#activateBtn').textContent='Checking…';
   try{
     const d=await rpc('tp_check_license',{p_code:code,p_license:key});
     if(!d?.ok)return message($('#activateMsg'),d?.error||'Invalid license.','bad');
+    if(d.setupCompleted){
+      message($('#activateMsg'),'This entity is already set up. Use Login with your username and PIN.','warn');
+      return;
+    }
+    state=normalize(clone(base));
     state.activated=true;
-    state.setup=!!d.setupCompleted;
+    state.setup=false;
     state.locked=true;
     state.selectedUser=null;
     state.license={restaurantCode:code,key,expires:d.licenseValidTo,maxUsers:Number(d.maxUsers)||5};
-    state.shop={name:d.entity?.name||'',contactName:d.entity?.contact||'',contactPhone:d.entity?.phone||'',dining:Number(d.entity?.diningMinutes)||60};
+    state.shop={name:'',contactName:'',contactPhone:'',dining:Number(d.entity?.diningMinutes)||60};
     state.allowSharing=!!d.entity?.allowSharing;
     state.theme={primary:d.entity?.primaryColor||'#20312b',secondary:d.entity?.secondaryColor||'#a9c7b7'};
-    state.users=(d.users||[]).map(u=>({...u,protected:u.role==='Admin'}));
-    if(!state.setup)state.users=[{id:'admin_setup',name:'Admin',role:'Admin',pin:'',protected:true}];
+    state.users=[{id:'admin_setup',username:'',name:'Admin',role:'Admin',pin:'',protected:true,setupOnly:true}];
+    setupStep=1;
     cacheLocal();
     route();
   }catch(e){message($('#activateMsg'),e.message||'Unable to connect to Supabase.','bad')}
-  finally{$('#activateBtn').disabled=false;$('#activateBtn').textContent='Activate'}
+  finally{$('#activateBtn').disabled=false;$('#activateBtn').textContent='Continue Setup'}
 });
 $('#demoBtn').addEventListener('click',()=>{});
 $('#resetBtn').addEventListener('click',()=>{sessionStorage.removeItem('tp_remote_token');localStorage.removeItem(KEY);location.reload()});
 
-function renderSetup(){[1,2,3,4,5].forEach(i=>{$('#setup'+i).classList.toggle('hidden',i!==setupStep);$('#st'+i).classList.toggle('on',i<=setupStep)});if(setupStep===1){$('#shopName').value=state.shop.name;$('#contactName').value=state.shop.contactName;$('#contactPhone').value=state.shop.contactPhone;$('#diningTime').value=String(state.shop.dining);$('#ownerPin').value=(state.users.find(u=>u.protected)||state.users[0]).pin}else if(setupStep===2)renderSetupAreas();else if(setupStep===3){if(state.tables.length){renderSeriesMap();renderPreview()}}else if(setupStep===4)renderSetupUsers();else if(setupStep===5)renderFinish()}
-$('#next1').addEventListener('click',()=>{const name=$('#shopName').value.trim(),phone=$('#contactPhone').value.trim(),pin=$('#ownerPin').value.trim(),d=Number($('#diningTime').value);if(!name)return message($('#setup1Msg'),'Enter Entity Name.','bad');if(!mobileOk(phone))return message($('#setup1Msg'),'Mobile number must be 10 digits and start with 6–9.','bad');if(!(d>=10&&d<=300))return message($('#setup1Msg'),'Dining time must be 10–300 minutes.','bad');if(!/^\d{4,6}$/.test(pin))return message($('#setup1Msg'),'Admin PIN must be 4–6 digits.','bad');state.shop.name=name;state.shop.contactName=$('#contactName').value.trim();state.shop.contactPhone=phone;state.shop.dining=d;(state.users.find(u=>u.protected)||state.users[0]).pin=pin;save();setupStep=2;renderSetup()});
+function renderSetup(){[1,2,3,4,5].forEach(i=>{$('#setup'+i).classList.toggle('hidden',i!==setupStep);$('#st'+i).classList.toggle('on',i<=setupStep)});if(setupStep===1){const admin=state.users.find(u=>u.role==='Admin')||state.users[0];$('#shopName').value=state.shop.name;$('#contactName').value=state.shop.contactName;$('#contactPhone').value=state.shop.contactPhone;$('#diningTime').value=String(state.shop.dining);$('#adminUsername').value=admin?.username||'';$('#ownerPin').value=admin?.pin||''}else if(setupStep===2)renderSetupAreas();else if(setupStep===3){if(state.tables.length){renderSeriesMap();renderPreview()}}else if(setupStep===4)renderSetupUsers();else if(setupStep===5)renderFinish()}
+$('#next1').addEventListener('click',async()=>{
+  const name=$('#shopName').value.trim(),phone=$('#contactPhone').value.trim(),pin=$('#ownerPin').value.trim(),d=Number($('#diningTime').value),rawUser=$('#adminUsername').value.trim();
+  if(!name)return message($('#setup1Msg'),'Enter Entity Name.','bad');
+  if(!mobileOk(phone))return message($('#setup1Msg'),'Mobile number must be 10 digits and start with 6–9.','bad');
+  if(!(d>=10&&d<=300))return message($('#setup1Msg'),'Dining time must be 10–300 minutes.','bad');
+  if(!/^\d{4,6}$/.test(pin))return message($('#setup1Msg'),'Admin PIN must be 4–6 digits.','bad');
+  const normalized=normalizeUsername(rawUser);
+  if(normalized.length<3)return message($('#setup1Msg'),'Admin username must contain at least 3 characters.','bad');
+  $('#next1').disabled=true;$('#next1').textContent='Checking username…';
+  try{
+    const u=await checkUsernameAvailability(normalized);
+    if(!u.available){
+      $('#adminUsername').value=u.suggestion||normalized;
+      $('#adminUsernameHint').innerHTML=`<span class="usernameBad">${esc(normalized)} is already used.</span> Suggested: <b>${esc(u.suggestion||'')}</b>`;
+      return message($('#setup1Msg'),'Username already exists. I placed an available suggestion in the field.','warn');
+    }
+    $('#adminUsername').value=u.normalized;
+    $('#adminUsernameHint').innerHTML=`<span class="usernameOk">✓ ${esc(u.normalized)} is available</span>`;
+    state.shop.name=name;state.shop.contactName=$('#contactName').value.trim();state.shop.contactPhone=phone;state.shop.dining=d;
+    const admin=state.users.find(x=>x.role==='Admin')||state.users[0];
+    admin.username=u.normalized;admin.name=u.normalized;admin.pin=pin;
+    cacheLocal();setupStep=2;renderSetup();
+  }catch(e){message($('#setup1Msg'),e.message||'Unable to check username.','bad')}
+  finally{$('#next1').disabled=false;$('#next1').textContent='Continue'}
+});
+
+$('#adminUsername').addEventListener('blur',async()=>{
+  const v=normalizeUsername($('#adminUsername').value);
+  if(!v)return;
+  try{
+    const d=await checkUsernameAvailability(v);
+    if(d.available){
+      $('#adminUsername').value=d.normalized;
+      $('#adminUsernameHint').innerHTML=`<span class="usernameOk">✓ ${esc(d.normalized)} is available</span>`;
+    }else{
+      $('#adminUsernameHint').innerHTML=`<span class="usernameBad">${esc(d.normalized)} is already used.</span> Try <b>${esc(d.suggestion)}</b>`;
+    }
+  }catch(e){}
+});
 $('#back2').addEventListener('click',()=>{setupStep=1;renderSetup()});$('#next2').addEventListener('click',()=>{if(state.areas.length){setupStep=3;renderSetup()}});
 $('#back3').addEventListener('click',()=>{setupStep=2;renderSetup()});$('#next3').addEventListener('click',()=>{if(!state.tables.length)return message($('#detectMsg'),'Add at least one table.','bad');setupStep=4;renderSetup()});
 $('#back4').addEventListener('click',()=>{setupStep=3;renderSetup()});$('#next4').addEventListener('click',()=>{setupStep=5;renderSetup()});$('#back5').addEventListener('click',()=>{setupStep=4;renderSetup()});
@@ -669,20 +812,46 @@ function renderPreview(){$('#previewCard').classList.remove('hidden');$('#previe
 $('#batchSetupBtn').addEventListener('click',()=>openBatchModal(lines=>{$('#tablePaste').value+=($('#tablePaste').value.trim()?'\n':'')+lines}));
 $('#singleSetupBtn').addEventListener('click',()=>openAddTable(t=>{state.tables.push(t);save();renderSeriesMap();renderPreview()}));
 
-function renderSetupUsers(){
-  $('#setupUserLimit').textContent='1 Admin now · add up to 4 Staff after setup';
-  $('#setupUsers').innerHTML='<div class="userItem"><div><b>Admin</b><div class="tiny muted">Primary administrator</div></div><span class="badge">Admin</span></div>';
+function openSetupStaffUser(){
+  if(state.users.length>=state.license.maxUsers)return toast('User limit reached');
+  openModal('Add Staff',`<div class="stack"><label>Username<input id="suUsername" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="johndoe"><div id="suHint" class="usernameHint">Username must be unique across TablePing.</div></label><label>PIN<input id="suPin" inputmode="numeric" maxlength="6" placeholder="4–6 digits"></label><button id="suSave" class="btn primary">Add Staff</button><div id="suMsg" class="notice hidden"></div></div>`);
+  $('#suUsername').addEventListener('blur',async()=>{
+    const v=normalizeUsername($('#suUsername').value);if(!v)return;
+    try{const d=await checkUsernameAvailability(v);if(d.available){$('#suUsername').value=d.normalized;$('#suHint').innerHTML=`<span class="usernameOk">✓ ${esc(d.normalized)} is available</span>`}else{$('#suHint').innerHTML=`<span class="usernameBad">Already used.</span> Suggested: <b>${esc(d.suggestion)}</b>`}}catch(e){}
+  });
+  $('#suSave').addEventListener('click',async()=>{
+    const username=normalizeUsername($('#suUsername').value),pin=$('#suPin').value.trim();
+    if(username.length<3||!/^\d{4,6}$/.test(pin))return message($('#suMsg'),'Enter a username and 4–6 digit PIN.','bad');
+    if(state.users.some(u=>u.username===username))return message($('#suMsg'),'This username is already in your setup list.','bad');
+    $('#suSave').disabled=true;
+    try{
+      const d=await checkUsernameAvailability(username);
+      if(!d.available){
+        $('#suUsername').value=d.suggestion||username;
+        return message($('#suMsg'),`Username exists. Suggested: ${d.suggestion}`,'warn');
+      }
+      state.users.push({id:uid('setup_user'),username:d.normalized,name:d.normalized,role:'Staff',pin,setupOnly:true});
+      cacheLocal();closeModal();renderSetupUsers();
+    }catch(e){message($('#suMsg'),e.message||'Unable to check username.','bad')}
+    finally{$('#suSave').disabled=false}
+  });
 }
-$('#addUserSetupBtn').addEventListener('click',()=>{});
+
+function renderSetupUsers(){
+  const admin=state.users.find(u=>u.role==='Admin');
+  $('#setupUserLimit').textContent=`${state.users.length}/${state.license.maxUsers} users`;
+  $('#addUserSetupBtn').disabled=state.users.length>=state.license.maxUsers;
+  $('#setupUsers').innerHTML=state.users.map(u=>`<div class="userItem"><div><b>${esc(u.username||u.name)}</b><div class="tiny muted">${esc(u.role)}${u.role==='Admin'?' · primary account':''}</div></div>${u.role==='Admin'?'<span class="badge">Admin</span>':`<button class="btn sm danger" data-action="setup-del-user" data-id="${u.id}">×</button>`}</div>`).join('');
+}
+$('#addUserSetupBtn').addEventListener('click',()=>openSetupStaffUser());
 function setTheme(p,q){state.theme={primary:p||state.theme.primary,secondary:q||state.theme.secondary};save();applyTheme();renderThemeSelection();if(remoteToken&&isAdmin())queueEntityUpdate()}
 $$('.themePreset').forEach(b=>b.addEventListener('click',()=>setTheme(b.dataset.primary,b.dataset.secondary)));
 $('#setupPrimary').addEventListener('input',e=>setTheme(e.target.value,state.theme.secondary));$('#setupSecondary').addEventListener('input',e=>setTheme(state.theme.primary,e.target.value));
 function renderThemeSelection(){const p=state.theme.primary.toLowerCase(),q=state.theme.secondary.toLowerCase();$$('.themePreset,.liveThemePreset').forEach(b=>b.classList.toggle('selected',b.dataset.primary.toLowerCase()===p&&b.dataset.secondary.toLowerCase()===q));$('#setupPrimary').value=p;$('#setupSecondary').value=q;$('#managePrimary').value=p;$('#manageSecondary').value=q}
 function renderFinish(){renderThemeSelection();$('#finishSummary').textContent=`${state.shop.name} · ${state.areas.length} areas · ${state.tables.length} tables · ${state.tables.reduce((a,t)=>a+t.seats,0)} seats`}
 $('#finishBtn').addEventListener('click',async()=>{
-  const admin=(state.users.find(u=>u.protected)||state.users[0]);
-  const pin=admin?.pin||$('#ownerPin').value.trim();
-  if(!/^\d{4,6}$/.test(pin))return toast('Admin PIN must be 4–6 digits');
+  const admin=state.users.find(u=>u.role==='Admin');
+  if(!admin?.username||!/^\d{4,6}$/.test(admin?.pin||''))return toast('Complete Admin username and PIN');
   $('#finishBtn').disabled=true;$('#finishBtn').textContent='Creating entity…';
   try{
     const d=await rpc('tp_complete_setup',{
@@ -696,43 +865,50 @@ $('#finishBtn').addEventListener('click',async()=>{
         allowSharing:!!state.allowSharing,
         primaryColor:state.theme.primary,
         secondaryColor:state.theme.secondary,
-        adminName:'Admin',
-        adminPin:pin,
+        adminUsername:admin.username,
+        adminName:admin.username,
+        adminPin:admin.pin,
+        staffUsers:state.users.filter(u=>u.role==='Staff').map(u=>({username:u.username,name:u.username,pin:u.pin})),
         areas:state.areas,
         tables:state.tables
       }
     });
-    if(!d?.ok)throw new Error(d?.error||'Setup failed');
-    const c=await rpc('tp_check_license',{p_code:state.license.restaurantCode,p_license:state.license.key});
+    if(!d?.ok){
+      if(d?.suggestion){
+        if(d.field==='adminUsername'){admin.username=d.suggestion;admin.name=d.suggestion}
+        else{
+          const su=state.users.find(u=>u.username===d.username);if(su){su.username=d.suggestion;su.name=d.suggestion}
+        }
+        cacheLocal();
+      }
+      throw new Error(d?.suggestion?`${d.error}. Suggested username: ${d.suggestion}`:(d?.error||'Setup failed'));
+    }
     state.setup=true;state.locked=true;state.selectedUser=null;
-    state.users=(c.users||[]).map(u=>({...u,protected:u.role==='Admin'}));
-    cacheLocal();route();
+    state.users=state.users.map(({pin,setupOnly,...u})=>u);
+    cacheLocal();
+    toast(`${d.usersCreated||state.users.length} users created`);
+    renderLogin();show('loginScreen');
   }catch(e){toast(e.message||'Setup failed')}
   finally{$('#finishBtn').disabled=false;$('#finishBtn').textContent='Open TablePing'}
 });
 
-function renderLogin(){pendingLoginUser=null;$('#loginShop').textContent=state.shop.name;$('#profileList').innerHTML=state.users.map(u=>`<button class="btn full" data-action="pick-user" data-id="${u.id}">${esc(u.name)} · ${esc(u.role)}</button>`).join('');$('#pinBox').classList.add('hidden');$('#loginPin').value='';hideMsg($('#loginMsg'))}
+function renderLogin(){$('#loginUsername').value='';$('#loginPin').value='';hideMsg($('#loginMsg'))}
 $('#loginBtn').addEventListener('click',async()=>{
-  const u=state.users.find(x=>x.id===pendingLoginUser);
-  if(!u)return;
-  const pin=$('#loginPin').value.trim();
-  if(!/^\d{4,6}$/.test(pin))return message($('#loginMsg'),'Enter your 4–6 digit PIN.','bad');
+  const username=normalizeUsername($('#loginUsername').value),pin=$('#loginPin').value.trim();
+  if(username.length<3||!/^\d{4,6}$/.test(pin))return message($('#loginMsg'),'Enter your username and 4–6 digit PIN.','bad');
   $('#loginBtn').disabled=true;$('#loginBtn').textContent='Opening…';
   try{
-    const d=await rpc('tp_login',{
-      p_code:state.license.restaurantCode,
-      p_license:state.license.key,
-      p_user_id:u.id,
-      p_pin:pin
-    });
+    const d=await rpc('tp_login_username',{p_username:username,p_pin:pin});
     if(!d?.ok)return message($('#loginMsg'),d?.error||'Login failed.','bad');
     remoteToken=d.token;
     sessionStorage.setItem('tp_remote_token',remoteToken);
     mergeRemotePayload(d);
+    state.license.key=''; // license key is never needed for standard login
+    cacheLocal();
     startAutoRefresh();
-    route();
+    show('appScreen');renderAll();
   }catch(e){message($('#loginMsg'),e.message||'Unable to login.','bad')}
-  finally{$('#loginBtn').disabled=false;$('#loginBtn').textContent='Open TablePing'}
+  finally{$('#loginBtn').disabled=false;$('#loginBtn').textContent='Login'}
 });
 
 function validGroups(){return state.groups.filter(g=>Array.isArray(g.tableIds)&&g.tableIds.length>=2&&g.tableIds.every(id=>state.tables.some(t=>t.id===id)))}
@@ -744,6 +920,9 @@ function compactMembers(u){const a=u.members||[];if(a.length<=3)return a.join(' 
 function tileHTML(u){const used=u.usedSeats||0,free=u.freeSeats??u.seats,pct=u.seats?Math.min(100,Math.round(used/u.seats*100)):0;if(u.kind==='group'){const cap=u.status==='free'?`${u.seats}`:`${used}/${u.seats}`;return`<button class="tile groupTile ${u.status} ${selected.has('group:'+u.id)?'selected':''}" data-action="open-unit" data-kind="group" data-id="${u.id}"><div class="groupTileTop"><span class="groupLabel">Combined</span><span class="tileStatus ${u.status}">${statusLabel(u.status)}</span></div><div class="groupNames">${esc(compactMembers(u))}</div><div class="groupCapacity"><b>${cap}</b><span>${u.status==='free'?'seats':'in use'}</span></div>${u.status!=='free'?`<div class="groupFree">${free} free</div>`:''}<div class="capacityBar" style="width:72px;align-self:center"><div class="capacityFill" style="width:${pct}%"></div></div><div class="groupFoot"><span>${esc(shortArea(u.area))}</span><span>${u.members?.length||0} tables</span></div></button>`}const center=u.status==='free'?`<span class="seatNum">${u.seats}</span><span class="seatLabel">seats</span>`:`<span class="seatNum">${used}/${u.seats}</span><span class="seatLabel">in use</span><span class="occupancy">${free} free</span>`;const extra=u.status==='reserved'?esc(reservationLabel(u.reservation)):u.status==='cleaning'?'Cleaning':u.shared&&state.allowSharing?'Shared':'';return`<button class="tile ${u.status} ${selected.has('table:'+u.id)?'selected':''}" data-action="open-unit" data-kind="table" data-id="${u.id}"><div class="trow"><span class="tname">${esc(u.name)}</span><span class="tileStatus ${u.status}">${statusLabel(u.status)}</span></div><div class="seatCenter">${center}<div class="capacityBar"><div class="capacityFill" style="width:${pct}%"></div></div></div><div class="tileBottom"><span class="tmeta">${esc(shortArea(u.area))}</span>${extra?`<span class="${u.shared?'sharedTag':'guestLine'}">${extra}</span>`:''}</div></button>`}
 function statusLabel(s){return s==='reserved'?'Reserved':s==='dining'?'Dining':s==='cleaning'?'Cleaning':'Free'}
 function listHTML(u){const used=u.usedSeats||0,free=u.freeSeats??u.seats;if(u.kind==='group'){const sub=u.status==='free'?`${u.seats} seats available`:`${used}/${u.seats} in use · ${free} free`;return`<button class="tableListRow ${u.status} ${selected.has('group:'+u.id)?'selected':''}" data-action="open-unit" data-kind="group" data-id="${u.id}"><div class="groupListName">${esc(compactMembers(u))}</div><div class="listMain"><div class="listArea">Combined · ${esc(shortArea(u.area))}</div><div class="listOccupancy">${sub}</div><div class="groupListMeta">${u.members?.length||0} physical tables</div></div><span class="statusTag ${u.status}">${statusLabel(u.status)}</span></button>`}const sub=u.status==='reserved'?esc(reservationLabel(u.reservation)):u.status==='cleaning'?'Waiting for cleanup':u.status==='dining'?`${used}/${u.seats} in use · ${free} free`:`Series ${esc(u.series)}`;return`<button class="tableListRow ${u.status} ${selected.has('table:'+u.id)?'selected':''}" data-action="open-unit" data-kind="table" data-id="${u.id}"><div class="listName">${esc(u.name)}</div><div class="listMain"><div class="listArea">${esc(shortArea(u.area))}</div><div class="listOccupancy">${sub}</div><div class="listCapacity">${u.seats} total seats</div></div><span class="statusTag ${u.status}">${statusLabel(u.status)}</span></button>`}
+$('#loginPin').addEventListener('keydown',e=>{if(e.key==='Enter')$('#loginBtn').click()});
+$('#loginUsername').addEventListener('keydown',e=>{if(e.key==='Enter')$('#loginPin').focus()});
+
 function renderFloor(){const c=counts();$('#mAll').textContent=c.all;$('#mFree').textContent=c.free;$('#mDining').textContent=c.dining;$('#mReserved').textContent=c.reserved;$('#mCleaning').textContent=c.cleaning;$('#mWaiting').textContent=state.wait.length;$$('[data-status-filter]').forEach(b=>b.classList.toggle('active',b.dataset.statusFilter===state.statusFilter));$('#statusHint').textContent=state.statusFilter==='all'?'Showing all tables':state.statusFilter==='waiting'?'Showing waiting guests':`Showing ${statusLabel(state.statusFilter).toLowerCase()} tables`;const areas=['All',...state.areas];if(!areas.includes(state.activeArea))state.activeArea='All';$('#areaChips').innerHTML=areas.map(a=>`<button class="chip ${state.activeArea===a?'active':''}" data-action="area-filter" data-area="${esc(a)}">${esc(a)}</button>`).join('');let all=displayUnits().filter(u=>state.activeArea==='All'||u.area===state.activeArea);if(state.statusFilter!=='all'&&state.statusFilter!=='waiting')all=all.filter(u=>u.status===state.statusFilter);const groups=all.filter(u=>u.kind==='group'),tables=all.filter(u=>u.kind==='table'),list=state.floorMode==='list';$('#combinedBox').classList.toggle('hidden',!groups.length);$('#combinedCount').textContent=groups.length;$('#combinedTiles').innerHTML=groups.map(tileHTML).join('');$('#combinedList').innerHTML=groups.map(listHTML).join('');$('#floorGrid').innerHTML=tables.length?tables.map(tileHTML).join(''):'<div class="notice" style="grid-column:1/-1">No tables match this filter.</div>';$('#floorList').innerHTML=tables.length?tables.map(listHTML).join(''):'<div class="notice">No tables match this filter.</div>';$('#physicalCount').textContent=`${tables.length} shown`;$('#combinedTiles').classList.toggle('hidden',list);$('#combinedList').classList.toggle('hidden',!list);$('#floorGrid').classList.toggle('hidden',list);$('#floorList').classList.toggle('hidden',!list);$('#tileModeBtn').classList.toggle('active',!list);$('#listModeBtn').classList.toggle('active',list);$('#selectBtn').textContent=selectMode?'Done':'Select';$('#bulkBar').classList.toggle('hidden',!selectMode);$('#selectedCount').textContent=selected.size}
 $('#tileModeBtn').addEventListener('click',()=>{state.floorMode='tile';save();renderFloor()});$('#listModeBtn').addEventListener('click',()=>{state.floorMode='list';save();renderFloor()});
 
@@ -804,7 +983,7 @@ function unmerge(id){const g=state.groups.find(x=>x.id===id);if(!g||g.status!=='
 function moveGuest(kind,id){const src=kind==='group'?state.groups.find(g=>g.id===id):state.tables.find(t=>t.id===id);if(!src||src.status!=='dining'||!src.guest)return;const guest=clone(src.guest),free=freeUnits().filter(u=>!(u.kind===kind&&u.id===id));if(!free.length)return toast('No free table available');openModal('Move '+guest.name,`<div class="notice">Choose new table. Current table will become free.</div><div class="choicegrid" style="margin-top:10px">${free.map(u=>`<button class="choice" data-action="move-to-unit" data-kind="${u.kind}" data-id="${u.id}" data-src-kind="${kind}" data-src-id="${id}"><b>${esc(u.name)}</b><div class="tiny">${u.seats} seats · ${esc(shortArea(u.area))}</div></button>`).join('')}</div>`)}
 function executeMove(srcKind,srcId,dstKind,dstId){const src=srcKind==='group'?state.groups.find(g=>g.id===srcId):state.tables.find(t=>t.id===srcId);if(!src?.guest)return;const guest=clone(src.guest),start=src.start;if(dstKind==='table'){const t=state.tables.find(x=>x.id===dstId);if(!t||t.status!=='free')return;t.status='dining';t.guest=guest;t.start=start}else{const g=state.groups.find(x=>x.id===dstId);if(!g||g.status!=='free')return;g.status='dining';g.guest=guest;g.start=start;g.tableIds.forEach(tid=>{const t=state.tables.find(x=>x.id===tid);if(t)t.status='dining'})}if(srcKind==='table'){const t=state.tables.find(x=>x.id===srcId);t.status='free';t.guest=null;t.start=null}else{freeGroup(src);return}logEvent('moveGuest','Guest moved',dstKind,dstId,dstKind==='group'?groupInfo(state.groups.find(x=>x.id===dstId)).name:state.tables.find(x=>x.id===dstId).name,guest.name);save();closeModal();renderAll();toast('Guest moved')}
 
-function renderManage(){const admin=isAdmin();$('#manageDenied').classList.toggle('hidden',admin);$('#manageContent').classList.toggle('hidden',!admin);if(!admin)return;$('#manageShopName').value=state.shop.name;$('#manageContactName').value=state.shop.contactName;$('#manageContactPhone').value=state.shop.contactPhone;$('#manageDining').value=String(state.shop.dining);$('#allowSharing').checked=!!state.allowSharing;$('#manageTableCount').textContent=`${state.tables.length} tables`;$('#manageTables').innerHTML=state.tables.map(t=>`<div class="manageRow"><div><b>${esc(t.name)}</b><div class="tiny muted">Series ${esc(t.series)} · ${statusLabel(t.status)}</div></div><input class="manageSeats" data-id="${t.id}" type="number" min="1" max="100" value="${t.seats}"><select class="manageArea" data-id="${t.id}">${state.areas.map(a=>`<option value="${esc(a)}" ${a===t.area?'selected':''}>${esc(a)}</option>`).join('')}</select><button class="btn sm danger" data-action="manage-del-table" data-id="${t.id}" ${t.status!=='free'||t.mergeGroup?'disabled':''}>×</button></div>`).join('');$('#manageAreas').innerHTML=state.areas.map((a,i)=>`<div class="areaItem"><div><b>${esc(a)}</b></div><button class="btn sm danger" data-action="manage-del-area" data-i="${i}" ${state.areas.length<=1?'disabled':''}>×</button></div>`).join('');$('#manageUserLimit').textContent=`${state.users.length}/${state.license.maxUsers} users`;$('#manageUsers').innerHTML=state.users.map(u=>`<div class="userItem"><div><b>${esc(u.name)}</b><div class="tiny muted">${esc(u.role)}</div></div>${u.role==='Admin'?'<span class="badge">Admin</span>':`<button class="btn sm danger" data-action="manage-del-user" data-id="${u.id}">×</button>`}</div>`).join('');renderThemeSelection();$$('.manageSeats').forEach(i=>i.addEventListener('change',()=>{const t=state.tables.find(x=>x.id===i.dataset.id);if(t&&t.status==='free'&&!t.mergeGroup){t.seats=Math.max(1,Math.min(100,Number(i.value)||1));save();renderAll()}}));$$('.manageArea').forEach(i=>i.addEventListener('change',()=>{const t=state.tables.find(x=>x.id===i.dataset.id);if(t&&t.status==='free'&&!t.mergeGroup){t.area=i.value;save();renderAll()}}))}
+function renderManage(){const admin=isAdmin();$('#manageDenied').classList.toggle('hidden',admin);$('#manageContent').classList.toggle('hidden',!admin);if(!admin)return;$('#manageShopName').value=state.shop.name;$('#manageContactName').value=state.shop.contactName;$('#manageContactPhone').value=state.shop.contactPhone;$('#manageDining').value=String(state.shop.dining);$('#allowSharing').checked=!!state.allowSharing;$('#manageTableCount').textContent=`${state.tables.length} tables`;$('#manageTables').innerHTML=state.tables.map(t=>`<div class="manageRow"><div><b>${esc(t.name)}</b><div class="tiny muted">Series ${esc(t.series)} · ${statusLabel(t.status)}</div></div><input class="manageSeats" data-id="${t.id}" type="number" min="1" max="100" value="${t.seats}"><select class="manageArea" data-id="${t.id}">${state.areas.map(a=>`<option value="${esc(a)}" ${a===t.area?'selected':''}>${esc(a)}</option>`).join('')}</select><button class="btn sm danger" data-action="manage-del-table" data-id="${t.id}" ${t.status!=='free'||t.mergeGroup?'disabled':''}>×</button></div>`).join('');$('#manageAreas').innerHTML=state.areas.map((a,i)=>`<div class="areaItem"><div><b>${esc(a)}</b></div><button class="btn sm danger" data-action="manage-del-area" data-i="${i}" ${state.areas.length<=1?'disabled':''}>×</button></div>`).join('');$('#manageUserLimit').textContent=`${state.users.length}/${state.license.maxUsers} users`;$('#manageUsers').innerHTML=state.users.map(u=>`<div class="userItem"><div><b>${esc(u.username||u.name)}</b><div class="tiny muted">${esc(u.role)}</div></div>${u.role==='Admin'?'<span class="badge">Admin</span>':`<button class="btn sm danger" data-action="manage-del-user" data-id="${u.id}">×</button>`}</div>`).join('');renderThemeSelection();$$('.manageSeats').forEach(i=>i.addEventListener('change',()=>{const t=state.tables.find(x=>x.id===i.dataset.id);if(t&&t.status==='free'&&!t.mergeGroup){t.seats=Math.max(1,Math.min(100,Number(i.value)||1));save();renderAll()}}));$$('.manageArea').forEach(i=>i.addEventListener('change',()=>{const t=state.tables.find(x=>x.id===i.dataset.id);if(t&&t.status==='free'&&!t.mergeGroup){t.area=i.value;save();renderAll()}}))}
 $('#saveRestaurantBtn').addEventListener('click',async()=>{
   if(!isAdmin())return;
   const name=$('#manageShopName').value.trim(),phone=$('#manageContactPhone').value.trim(),d=Number($('#manageDining').value);
@@ -883,23 +1062,64 @@ function reportRows(){if(!reportRange){const r=reportBounds('today');reportRange
 function prettyAction(a){return String(a||'Activity').replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase())}
 function renderReports(){const rows=reportRows();$('#reportTitle').textContent=reportRange?.label||'Today';$('#reportCount').textContent=`${rows.length} events`;$('#rGuests').textContent=rows.filter(h=>['seat','seatCombo','startReserved','seatShared'].includes(h.action)).length;$('#rDining').textContent=rows.filter(h=>['seat','seatCombo','startReserved','seatShared'].includes(h.action)).length;$('#rReservations').textContent=rows.filter(h=>h.action==='reserve'||h.action==='bulkReserve').length;$('#rCombined').textContent=rows.filter(h=>['combine','seatCombo'].includes(h.action)).length;$('#historyList').innerHTML=rows.length?rows.map(h=>`<div class="historyRow"><div class="histTime">${new Date(h.timestamp).toLocaleDateString(undefined,{month:'short',day:'numeric'})}<br>${new Date(h.timestamp).toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'})}</div><div><div class="histTitle">${esc(h.actionLabel||prettyAction(h.action))}</div><div class="histSub">${esc(h.targetName||h.target||'')}${h.details?' · '+esc(h.details):''}</div></div><span class="badge">${esc(h.userName||'User')}</span></div>`).join(''):'<div class="notice">No activity in this period.</div>'}
 async function loadRemoteEvents(){if(!remoteToken||!reportRange)return;remoteEvents=[];renderReports();try{const d=await rpc('tp_get_events',{p_token:remoteToken,p_from:reportRange.from.toISOString(),p_to:reportRange.to.toISOString()});if(d?.ok){remoteEvents=d.events||[];renderReports()}}catch(e){console.error(e)}}
-function renderAll(){$('#topShop').textContent=state.shop.name;const u=currentUser();$('#topUser').textContent=u?`${u.name} · ${u.role}${state.shop.contactPhone?' · '+state.shop.contactPhone:''}`:'';renderFloor();renderWait();renderManage();renderReports();renderThemeSelection()}
+function renderAll(){$('#topShop').textContent=state.shop.name;const u=currentUser();$('#topUser').textContent=u?`${u.username||u.name} · ${u.role}${state.shop.contactPhone?' · '+state.shop.contactPhone:''}`:'';renderFloor();renderWait();renderManage();renderReports();renderThemeSelection()}
 function switchView(v){['floor','wait','reports','manage'].forEach(x=>$('#'+x+'View').classList.toggle('hidden',x!==v));$$('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.view===v));if(v==='manage')renderManage();if(v==='reports')renderReports()}
 $$('[data-status-filter]').forEach(b=>b.addEventListener('click',()=>{const f=b.dataset.statusFilter;state.statusFilter=f;save();if(f==='waiting'){switchView('wait')}else{switchView('floor');renderFloor()}}));
 $$('.navbtn').forEach(b=>b.addEventListener('click',()=>switchView(b.dataset.view)));
 async function remoteLogout(callServer=true){
   stopAutoRefresh();
   const token=remoteToken;
-  remoteToken='';
-  remoteRevision=0;
+  remoteToken='';remoteRevision=0;
   sessionStorage.removeItem('tp_remote_token');
   state.locked=true;state.selectedUser=null;
   cacheLocal();
   if(callServer&&token){try{await rpc('tp_logout',{p_token:token})}catch(e){}}
-  route();
+  renderLogin();show('loginScreen');
 }
 function logout(){remoteLogout(true)}
-$('#logoutTopBtn').addEventListener('click',logout);$('#logoutReportBtn').addEventListener('click',logout);$('#resetSmokeBtn').addEventListener('click',()=>{openModal('Reset TablePing',`<div class="notice bad">This clears all local TablePing data in this browser.</div><label style="margin-top:10px">Type RESET<input id="resetWord"></label><button id="resetNow" class="btn danger full" style="margin-top:10px">Reset</button>`);$('#resetNow').addEventListener('click',()=>{if($('#resetWord').value==='RESET'){sessionStorage.removeItem('tp_remote_token');localStorage.removeItem(KEY);location.reload()}})});$('#saveBtn').addEventListener('click',async()=>{await refreshRemote(true);toast('Latest data loaded')});
+$('#logoutTopBtn').addEventListener('click',logout);$('#logoutReportBtn').addEventListener('click',logout);$('#resetSmokeBtn').addEventListener('click',()=>{openModal('Reset TablePing',`<div class="notice bad">This clears all local TablePing data in this browser.</div><label style="margin-top:10px">Type RESET<input id="resetWord"></label><button id="resetNow" class="btn danger full" style="margin-top:10px">Reset</button>`);$('#resetNow').addEventListener('click',()=>{if($('#resetWord').value==='RESET'){sessionStorage.removeItem('tp_remote_token');localStorage.removeItem(KEY);location.reload()}})});$('#saveBtn').addEventListener('click',async()=>{
+  if(!navigator.onLine){setSyncLabel('Offline',true);return toast("You're offline. Showing last saved data.")}
+  setSyncLabel('Syncing…');
+  await refreshRemote(true);
+  if(lastConnectivityState!=='offline')toast('Latest data loaded');
+});
+
+document.addEventListener('click',e=>{
+  if(!remoteToken||!isOffline())return;
+  const el=e.target.closest('button,[data-action]');
+  if(!el||isOfflineAllowedClick(el))return;
+  e.preventDefault();
+  e.stopImmediatePropagation();
+  offlineNotice();
+},true);
+
+document.addEventListener('submit',e=>{
+  if(!remoteToken||!isOffline())return;
+  e.preventDefault();
+  e.stopImmediatePropagation();
+  offlineNotice();
+},true);
+
+window.addEventListener('offline',()=>{
+  networkOnline=false;
+  setSyncLabel('Offline',true);
+  toast("You're offline. Showing last saved data.");
+});
+
+window.addEventListener('online',async()=>{
+  networkOnline=true;
+  if(!remoteToken)return;
+  setSyncLabel('Syncing…');
+  toast('Back online. Updating…');
+  try{
+    await refreshRemote(true);
+    setSyncLabel('Live');
+    toast('Back online. Latest data loaded.');
+  }catch(e){
+    setSyncLabel('Offline',true);
+  }
+});
+
 
 $$('.reportPreset').forEach(b=>b.addEventListener('click',()=>setReportPreset(b.dataset.range)));
 $('#customRangeBtn').addEventListener('click',()=>$('#customRange').classList.toggle('hidden'));
@@ -917,18 +1137,25 @@ function openAreaModal(cb){openModal('Add dining area',`<label>Area name<input i
 function openBatchModal(cb){openModal('Add table range',`<div class="grid2"><label>Series / prefix<input id="bPrefix" value="F"></label><label>Seats each<input id="bSeats" type="number" min="1" max="100" value="4"></label></div><div class="grid2" style="margin-top:8px"><label>From<input id="bFrom" type="number" min="1" value="1"></label><label>To<input id="bTo" type="number" min="1" max="100" value="4"></label></div><button id="saveBatch" class="btn primary full" style="margin-top:10px">Add range</button>`);$('#saveBatch').addEventListener('click',()=>{const p=$('#bPrefix').value.trim().toUpperCase(),f=Number($('#bFrom').value),to=Number($('#bTo').value),seats=Number($('#bSeats').value);if(!p||f<1||to<f||to-f>100||seats<1||seats>100)return;const lines=[];for(let i=f;i<=to;i++)lines.push(`${p}${i}-${seats} seats`);cb(lines.join('\n'));closeModal()})}
 function openAddTable(cb){openModal('Add table',`<div class="grid2"><label>Name<input id="aName" placeholder="P1"></label><label>Seats<input id="aSeats" type="number" min="1" max="100" value="4"></label></div><label style="margin-top:8px">Area<select id="aArea">${state.areas.map(a=>`<option>${esc(a)}</option>`).join('')}</select></label><button id="saveTable" class="btn primary full" style="margin-top:10px">Add table</button>`);$('#saveTable').addEventListener('click',()=>{const name=$('#aName').value.trim();if(!name||state.tables.some(t=>t.name.toLowerCase()===name.toLowerCase()))return;const series=(name.match(/^([A-Za-z]+)/)||[])[1]?.toUpperCase()||'MAIN';cb({id:uid('t'),name,seats:Math.max(1,Math.min(100,Number($('#aSeats').value)||1)),series,area:$('#aArea').value,status:'free',guest:null,start:null,reservation:null,mergeGroup:null});closeModal()})}
 function openAddUser(cb){
-  if(!remoteToken)return toast('Complete setup and login first');
-  if(state.users.length>=state.license.maxUsers)return toast('5-user limit reached');
-  openModal('Add Staff',`<div class="stack"><label>Name<input id="uName" placeholder="Reception 2"></label><div class="notice">Role: Staff · One Admin account is included.</div><label>PIN<input id="uPin" inputmode="numeric" maxlength="6" placeholder="4–6 digits"></label><button id="saveUser" class="btn primary">Add User</button><div id="userSaveMsg" class="notice hidden"></div></div>`);
+  if(!remoteToken)return toast('Login first');
+  if(state.users.length>=state.license.maxUsers)return toast('User limit reached');
+  openModal('Add Staff',`<div class="stack"><label>Username<input id="uUsername" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="johndoe"><div id="uHint" class="usernameHint">Unique across all TablePing entities.</div></label><label>PIN<input id="uPin" inputmode="numeric" maxlength="6" placeholder="4–6 digits"></label><button id="saveUser" class="btn primary">Add Staff</button><div id="userSaveMsg" class="notice hidden"></div></div>`);
+  $('#uUsername').addEventListener('blur',async()=>{
+    const v=normalizeUsername($('#uUsername').value);if(!v)return;
+    try{const d=await checkUsernameAvailability(v);if(d.available){$('#uUsername').value=d.normalized;$('#uHint').innerHTML=`<span class="usernameOk">✓ ${esc(d.normalized)} is available</span>`}else{$('#uHint').innerHTML=`<span class="usernameBad">Already used.</span> Suggested: <b>${esc(d.suggestion)}</b>`}}catch(e){}
+  });
   $('#saveUser').addEventListener('click',async()=>{
-    const name=$('#uName').value.trim(),pin=$('#uPin').value.trim();
-    if(!name||!/^\d{4,6}$/.test(pin))return message($('#userSaveMsg'),'Enter a name and 4–6 digit PIN.','bad');
+    const username=normalizeUsername($('#uUsername').value),pin=$('#uPin').value.trim();
+    if(username.length<3||!/^\d{4,6}$/.test(pin))return message($('#userSaveMsg'),'Enter a username and 4–6 digit PIN.','bad');
     $('#saveUser').disabled=true;
     try{
-      const d=await rpc('tp_add_user',{p_token:remoteToken,p_name:name,p_pin:pin});
-      if(!d?.ok)throw new Error(d?.error||'Unable to add user');
+      const d=await rpc('tp_add_user',{p_token:remoteToken,p_username:username,p_pin:pin,p_name:username});
+      if(!d?.ok){
+        if(d?.suggestion){$('#uUsername').value=d.suggestion;return message($('#userSaveMsg'),`Username exists. Suggested: ${d.suggestion}`,'warn')}
+        throw new Error(d?.error||'Unable to add user');
+      }
       await refreshRemote(true);
-      closeModal();cb();toast('User added');
+      closeModal();cb();toast(`User ${d.username} added`);
     }catch(e){message($('#userSaveMsg'),e.message||'Unable to add user.','bad')}
     finally{$('#saveUser').disabled=false}
   });
@@ -937,8 +1164,7 @@ function openAddUser(cb){
 document.addEventListener('click',e=>{
   const el=e.target.closest('[data-action]');if(!el)return;const a=el.dataset.action;
   if(a==='setup-del-area'){if(state.areas.length<=1)return;const old=state.areas[Number(el.dataset.i)];state.areas.splice(Number(el.dataset.i),1);state.tables.filter(t=>t.area===old).forEach(t=>t.area=state.areas[0]);save();renderSetupAreas()}
-  else if(a==='setup-del-user'){renderSetupUsers()}
-  else if(a==='pick-user'){pendingLoginUser=el.dataset.id;$('#pinBox').classList.remove('hidden');$('#loginPin').focus()}
+  else if(a==='setup-del-user'){const u=state.users.find(x=>x.id===el.dataset.id);if(u?.role!=='Admin'){state.users=state.users.filter(x=>x.id!==el.dataset.id);cacheLocal();renderSetupUsers()}}
   else if(a==='area-filter'){state.activeArea=el.dataset.area;save();renderFloor()}
   else if(a==='open-unit'){const k=el.dataset.kind+':'+el.dataset.id;if(selectMode){selected.has(k)?selected.delete(k):selected.add(k);renderFloor()}else{el.dataset.kind==='group'?openGroup(el.dataset.id):openTable(el.dataset.id)}}
   else if(a==='seat-wait')openAllocation(el.dataset.id)
@@ -981,36 +1207,27 @@ async function bootstrap(){
         if(d?.ok){
           mergeRemotePayload(d);
           startAutoRefresh();
-          route();
+          show('appScreen');renderAll();
           return;
         }
       }catch(e){console.error(e)}
       remoteToken='';sessionStorage.removeItem('tp_remote_token');
     }
-    if(state.activated&&state.license.restaurantCode&&state.license.key){
-      try{
-        const d=await rpc('tp_check_license',{p_code:state.license.restaurantCode,p_license:state.license.key});
-        if(d?.ok){
-          state.setup=!!d.setupCompleted;
-          state.locked=true;state.selectedUser=null;
-          state.users=(d.users||[]).map(u=>({...u,protected:u.role==='Admin'}));
-          state.shop={name:d.entity?.name||state.shop.name,contactName:d.entity?.contact||'',contactPhone:d.entity?.phone||'',dining:Number(d.entity?.diningMinutes)||60};
-          state.allowSharing=!!d.entity?.allowSharing;
-          state.theme={primary:d.entity?.primaryColor||state.theme.primary,secondary:d.entity?.secondaryColor||state.theme.secondary};
-          cacheLocal();
-        }
-      }catch(e){console.error(e)}
+    if(state.activated&&!state.setup){
+      route();
+      return;
     }
-    route();
+    state.locked=true;state.selectedUser=null;
+    show('activateScreen');
   }catch(err){
     console.error('TablePing startup error',err);
-    state=clone(base);
+    state=normalize(clone(base));
     remoteToken='';
     sessionStorage.removeItem('tp_remote_token');
     cacheLocal();
     setReportPreset('today');
     renderSetup();
-    route();
+    show('activateScreen');
   }
 }
 bootstrap();
