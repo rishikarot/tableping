@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-title" content="TablePing">
 
 
-<title>TablePing v1.4.0 — Supabase</title>
+<title>TablePing v1.4.2 — Supabase</title>
 <style>
 :root{
   --primary:#20312b;--secondary:#a9c7b7;--psoft:#eef3f0;--ssoft:#f1f6f3;
@@ -408,7 +408,7 @@ body.offlineMode #appScreen textarea{pointer-events:none;opacity:.72}
 }
 
 
-/* v1.4.0 — table cards are status surfaces, not white cards with tiny badges */
+/* v1.4.2 — table cards are status surfaces, not white cards with tiny badges */
 .tile::after{display:none!important}
 .tile{
   min-height:104px!important;
@@ -507,7 +507,7 @@ body.composerFocused .quickMenu{display:none!important}
 }
 
 
-/* v1.4.0 minimalist UI inspired by the supplied mobile mock */
+/* v1.4.2 minimalist UI inspired by the supplied mobile mock */
 :root{--bg:#f5f6f4;--card:#fff;--line:#e6e8e5;--soft:#f7f8f6}
 body{background:var(--bg)!important}
 .topbar{position:sticky;top:0;z-index:30;padding:0 14px;background:linear-gradient(180deg,var(--bg),rgba(245,246,244,.95) 72%,rgba(245,246,244,.65))}
@@ -618,6 +618,373 @@ body.composerFocused .guestComposer input{font-size:13px!important}
   .metricCount{width:42px!important;height:42px!important}
   .floorControls{align-items:flex-start}
   .viewToggle{align-self:flex-start}
+}
+
+
+/* v1.4.2 — soft editorial / pastel refinement inspired by the supplied design */
+:root{
+  --primary:#3d6f63!important;
+  --secondary:#e8c3cf!important;
+  --psoft:#edf5f2!important;
+  --ssoft:#f8f1f4!important;
+  --bg:#edf3f4!important;
+  --card:#fffdfb!important;
+  --line:#707a76!important;
+  --text:#2f3f3a!important;
+  --muted:#798480!important;
+}
+
+/* base */
+html,body{background:var(--bg)!important;color:var(--text)!important}
+body{
+  background:
+    radial-gradient(circle at 8% 8%, rgba(255,255,255,.62), transparent 30%),
+    radial-gradient(circle at 92% 4%, rgba(243,228,233,.58), transparent 28%),
+    linear-gradient(180deg,#edf3f4 0%, #eef4f4 100%)!important;
+}
+
+/* top shell */
+.topbar{
+  background:linear-gradient(180deg, rgba(237,243,244,.96), rgba(237,243,244,.82) 78%, rgba(237,243,244,.45))!important;
+}
+.topin.topCard{
+  background:rgba(255,252,250,.9)!important;
+  border:1.5px solid rgba(74,84,79,.58)!important;
+  box-shadow:0 10px 30px rgba(47,58,54,.05)!important;
+}
+.brandLogo{
+  background:linear-gradient(180deg,#295e53,#3c6d61)!important;
+  box-shadow:0 3px 8px rgba(48,87,78,.15)!important;
+}
+.shop{font-size:16px!important;font-weight:900!important;letter-spacing:-.02em!important}
+.sub{font-size:12px!important;color:#8d9692!important}
+.topVersion{color:#9aa4a0!important}
+.topVersion a{color:#8f9995!important}
+.syncChip{
+  background:#eaf8ef!important;
+  color:#228f5c!important;
+  border:1px solid #a8dec0!important;
+  box-shadow:0 1px 0 rgba(255,255,255,.7) inset!important;
+}
+.ghostBtn,.iconBtn{
+  background:rgba(255,253,251,.95)!important;
+  border:1.5px solid rgba(74,84,79,.26)!important;
+  color:#57635e!important;
+}
+
+/* status counters */
+.metrics{gap:10px!important}
+.metric{
+  padding-top:2px!important;
+}
+.metricCount{
+  width:48px!important;height:48px!important;
+  border:1.5px solid rgba(74,84,79,.24)!important;
+  box-shadow:0 1px 0 rgba(255,255,255,.85) inset!important;
+}
+.metricLabel{
+  font-size:10px!important;
+  font-weight:700!important;
+}
+.metric.active .metricCount{
+  transform:translateY(-1px);
+  box-shadow:0 0 0 2px rgba(61,111,99,.06), 0 1px 0 rgba(255,255,255,.9) inset!important;
+}
+.metric[data-status-filter="all"] .metricCount{background:#f7f8f7!important;color:#616967!important}
+.metric[data-status-filter="free"] .metricCount{background:#eaf7ef!important;color:#317654!important;border-color:#c7e6d2!important}
+.metric[data-status-filter="dining"] .metricCount{background:#fdf1e6!important;color:#b46d1f!important;border-color:#f0d2aa!important}
+.metric[data-status-filter="reserved"] .metricCount{background:#fff7dc!important;color:#9b7c23!important;border-color:#efdf9c!important}
+.metric[data-status-filter="cleaning"] .metricCount{background:#f6effa!important;color:#7b61a0!important;border-color:#e1d4ed!important}
+.metric[data-status-filter="waiting"] .metricCount{background:#fdeef0!important;color:#b45a66!important;border-color:#efccd2!important}
+
+/* chips and toggle */
+.chip{
+  background:#fffdfb!important;
+  border:1.5px solid rgba(74,84,79,.24)!important;
+  color:#44514c!important;
+  box-shadow:0 1px 0 rgba(255,255,255,.85) inset!important;
+}
+.chip.active{
+  background:#15191a!important;
+  border-color:#15191a!important;
+  color:#fff!important;
+}
+.viewToggle{
+  background:#fffdfb!important;
+  border:1.5px solid rgba(74,84,79,.22)!important;
+  box-shadow:0 1px 0 rgba(255,255,255,.85) inset!important;
+}
+.viewModeBtn.active{
+  background:#f2f4f2!important;
+}
+.btn.sm,.btn.primary,.btn{
+  box-shadow:0 1px 0 rgba(255,255,255,.8) inset!important;
+}
+.btn.primary{
+  background:#2f5f54!important;
+  border-color:#2f5f54!important;
+}
+.sectionHead h2,.sectionMetaRow h3{
+  color:#23322f!important;
+}
+
+/* table cards */
+.floorgrid{gap:13px!important}
+.tile{
+  background:#fffdfb!important;
+  border:1.5px solid rgba(74,84,79,.18)!important;
+  border-radius:24px!important;
+  padding:15px 15px 13px!important;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.92) inset,
+    0 12px 22px rgba(47,58,54,.045)!important;
+  position:relative!important;
+  overflow:hidden!important;
+}
+.tile:before{
+  content:"";
+  position:absolute;
+  inset:auto -14px -18px auto;
+  width:92px;height:92px;border-radius:26px 0 24px 0;
+  opacity:.18;
+  pointer-events:none;
+}
+.tile.free:before{background:linear-gradient(180deg,#bce6cb,#d8f2e0)}
+.tile.dining:before{background:linear-gradient(180deg,#ffd5a6,#ffe6c7)}
+.tile.reserved:before{background:linear-gradient(180deg,#ffe7a9,#fff2cf)}
+.tile.cleaning:before{background:linear-gradient(180deg,#dbc9ef,#efe5f8)}
+.tile:hover{
+  transform:translateY(-1px);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.95) inset,
+    0 16px 28px rgba(47,58,54,.065)!important;
+}
+.tile.selected{
+  outline:2px solid rgba(61,111,99,.65)!important;
+  outline-offset:-2px!important;
+}
+.tname{
+  font-size:22px!important;
+  color:#24322f!important;
+}
+.areaMeta{
+  margin-top:9px!important;
+  font-size:10px!important;
+  color:#9aa3a0!important;
+  letter-spacing:.13em!important;
+}
+.metricLine{
+  margin-top:19px!important;
+  padding:0!important;
+}
+.metricLine span{
+  font-size:11px!important;
+  color:#67716d!important;
+  font-weight:700!important;
+}
+.metricLine b{
+  font-size:22px!important;
+  letter-spacing:-.04em!important;
+  color:#21302d!important;
+}
+.metricLine b em{
+  font-size:11px!important;
+  color:#9ba5a1!important;
+}
+.tileFoot{
+  margin-top:11px!important;
+}
+.tmeta{
+  color:#a0a8a5!important;
+  font-size:10px!important;
+  font-weight:700!important;
+}
+.sharedTag{
+  background:#e6f3ee!important;
+  color:#1b8a61!important;
+  border:1px solid #cde8dd!important;
+  padding:4px 9px!important;
+  font-size:9px!important;
+  letter-spacing:.03em!important;
+}
+.tileTime{
+  min-height:30px!important;
+  padding:0 10px!important;
+  border-radius:999px!important;
+  font-size:11px!important;
+  font-weight:800!important;
+  border:1.5px solid transparent!important;
+  background:#fffdfa!important;
+  box-shadow:0 1px 0 rgba(255,255,255,.78) inset!important;
+}
+.tileDot{width:8px!important;height:8px!important}
+.tileTime.free{background:#eef8f2!important;color:#327453!important;border-color:#cfe6d6!important}
+.tileTime.dining{background:#fff5e5!important;color:#ae6b17!important;border-color:#efd39d!important}
+.tileTime.reserved{background:#fff9e8!important;color:#9b7d1d!important;border-color:#eedca8!important}
+.tileTime.cleaning{background:#f6effa!important;color:#7a5e9f!important;border-color:#e4d6ef!important}
+.lineBar{
+  height:7px!important;
+  background:#eceae5!important;
+  border-radius:999px!important;
+}
+.tile.free .lineBar .capacityFill{background:#45b784!important}
+.tile.dining .lineBar .capacityFill{background:#f2a316!important}
+.tile.reserved .lineBar .capacityFill{background:#dfb14e!important}
+.tile.cleaning .lineBar .capacityFill{background:#ab88ce!important}
+
+/* combined tables */
+.groupBox{
+  background:rgba(255,251,247,.75)!important;
+  border:1.5px solid rgba(74,84,79,.18)!important;
+  border-radius:24px!important;
+}
+
+/* lists */
+.tableListRow{
+  background:#fffdfb!important;
+  border:1.5px solid rgba(74,84,79,.16)!important;
+  border-radius:18px!important;
+  box-shadow:0 1px 0 rgba(255,255,255,.88) inset!important;
+}
+.statusTag{
+  border:1.5px solid rgba(74,84,79,.08)!important;
+  background:#fffdfa!important;
+}
+
+/* bottom command bar */
+.bottomDock{
+  padding:0 16px calc(14px + env(safe-area-inset-bottom))!important;
+}
+.guestComposer{
+  background:rgba(255,252,250,.98)!important;
+  border:1.5px solid rgba(74,84,79,.18)!important;
+  border-radius:24px!important;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.9) inset,
+    0 15px 28px rgba(47,58,54,.08)!important;
+}
+.composerIcon{
+  background:#f4f0ee!important;
+  border:1px solid rgba(74,84,79,.08)!important;
+  color:#67716d!important;
+}
+.composerHome{
+  background:#eef4f2!important;
+}
+.composerMore{
+  background:#f8eef2!important;
+}
+.composerSend{
+  background:#161a1b!important;
+  box-shadow:0 2px 6px rgba(22,26,27,.18)!important;
+}
+.guestComposer input{
+  font-size:12px!important;
+  color:#36433f!important;
+}
+.guestComposer input::placeholder{
+  color:#a0aaa7!important;
+}
+.quickMenu{
+  background:rgba(255,252,250,.985)!important;
+  border:1.5px solid rgba(74,84,79,.18)!important;
+  box-shadow:0 18px 34px rgba(47,58,54,.08)!important;
+}
+.quickMenuItem{
+  border:1px solid transparent!important;
+}
+.quickMenuItem:hover,.quickMenuItem:focus-visible{
+  background:#f5f1ee!important;
+  border-color:#eee5df!important;
+}
+.quickLogout:hover{
+  background:#fff1ef!important;
+}
+
+/* sections and reports */
+.card,.notice{
+  background:#fffdfb!important;
+  border:1.5px solid rgba(74,84,79,.14)!important;
+  box-shadow:0 1px 0 rgba(255,255,255,.85) inset!important;
+}
+.offlineStrip{
+  background:#fff6ea!important;
+  border:1.5px solid #efd4a7!important;
+  color:#9a6c1e!important;
+}
+
+/* responsive fine-tuning */
+@media(max-width:640px){
+  .wrap{padding:10px 14px 96px!important}
+  .metricCount{width:46px!important;height:46px!important}
+  .tname{font-size:21px!important}
+  .metricLine b{font-size:21px!important}
+  .tile{min-height:148px!important;padding:14px 14px 12px!important}
+  .guestComposer{
+    min-height:56px!important;
+    grid-template-columns:41px 41px minmax(0,1fr) 41px!important;
+  }
+}
+
+
+/* v1.4.2 — multi-select as a focused action mode */
+body.selectionMode #bottomDock{display:none!important}
+.bulkbar{
+  position:fixed!important;
+  left:50%!important;
+  bottom:calc(12px + env(safe-area-inset-bottom))!important;
+  z-index:90!important;
+  transform:translateX(-50%)!important;
+  width:min(620px,calc(100% - 24px))!important;
+  margin:0!important;
+  padding:7px 8px 6px!important;
+  border:1.5px solid rgba(74,84,79,.18)!important;
+  border-radius:20px!important;
+  background:rgba(255,252,250,.985)!important;
+  color:var(--text)!important;
+  box-shadow:0 16px 38px rgba(47,58,54,.14)!important;
+  backdrop-filter:blur(18px)!important;
+  -webkit-backdrop-filter:blur(18px)!important
+}
+.bulkSelection{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.bulkCount{min-width:58px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4px 6px}
+.bulkCount b{font-size:17px;line-height:1;font-weight:950;color:#24322f}
+.bulkCount span{font-size:8px;margin-top:3px;color:#8d9692;font-weight:750}
+.bulkActions{display:flex;align-items:center;justify-content:flex-end;gap:5px;flex:1}
+.bulkAction{
+  min-width:62px;height:40px;border:1px solid transparent;border-radius:13px;
+  display:flex;align-items:center;justify-content:center;gap:5px;
+  background:#f5f5f2;color:#47534e;padding:0 9px
+}
+.bulkAction b{font-size:10px;font-weight:850}
+.bulkActionDot{width:7px;height:7px;border-radius:50%;background:currentColor}
+.freeAction{background:#edf8f1;color:#347554;border-color:#d0e8d8}
+.cleanAction{background:#f5eff9;color:#775a9b;border-color:#e1d5ec}
+.reserveAction{background:#fff7e7;color:#946b1e;border-color:#eedca9}
+.bulkAction:disabled{opacity:.38;filter:grayscale(.25);cursor:default}
+.bulkClose{width:38px;height:38px;border:0;border-radius:12px;background:#f0f1ef;color:#747d79;font-size:20px;line-height:1}
+.bulkHint{min-height:13px;text-align:center;margin-top:2px;font-size:8px;color:#979f9b;font-weight:650}
+body.selectionMode .tile{cursor:pointer!important}
+body.selectionMode .tile.selected{
+  outline:2px solid #3d6f63!important;
+  outline-offset:-2px!important;
+  box-shadow:0 12px 24px rgba(47,58,54,.07)!important
+}
+body.selectionMode .tile.selected::after{
+  content:"✓";
+  position:absolute;right:10px;bottom:10px;
+  width:24px;height:24px;border-radius:50%;
+  display:grid;place-items:center;
+  background:#315f54;color:#fff;
+  font-size:12px;font-weight:950;
+  box-shadow:0 2px 8px rgba(49,95,84,.18)
+}
+@media(max-width:440px){
+  .bulkbar{width:calc(100% - 18px)!important;padding:6px!important;border-radius:18px!important}
+  .bulkCount{min-width:47px;padding-left:3px;padding-right:3px}
+  .bulkAction{min-width:56px;height:38px;padding:0 7px}
+  .bulkAction b{font-size:9px}
+  .bulkClose{width:36px;height:36px}
 }
 
 </style>
@@ -798,7 +1165,7 @@ E8-4 seats</textarea></label>
       </button>
       <button id="logoutTopBtn" class="btn sm ghostBtn">Logout</button>
     </div>
-    <div class="topVersion tiny muted">v1.4.0 · Powered by <a href="https://www.letmedoit.in" target="_blank" rel="noopener">LetMeDoIt</a></div>
+    <div class="topVersion tiny muted">v1.4.2 · Powered by <a href="https://www.letmedoit.in" target="_blank" rel="noopener">LetMeDoIt</a></div>
   </div>
 </header>
 <div id="offlineStrip" class="offlineStrip hidden">Offline · showing last saved data</div>
@@ -829,7 +1196,18 @@ E8-4 seats</textarea></label>
       <div class="row between sectionMetaRow" style="margin:10px 0 7px"><div><h3 id="physicalTitle">Physical Tables</h3><div id="physicalSub" class="tiny muted"></div></div><span id="physicalCount" class="tiny muted"></span></div>
       <div id="floorGrid" class="floorgrid"></div>
       <div id="floorList" class="tableListView hidden"></div>
-      <div id="bulkBar" class="bulkbar hidden"><div class="row between wraprow"><b><span id="selectedCount">0</span> selected</b><div class="row wraprow"><button id="bulkFree" class="btn sm">Free</button><button id="bulkClean" class="btn sm">Clean</button><button id="bulkReserve" class="btn sm">Reserve</button><button id="bulkCancel" class="btn sm">Cancel</button></div></div></div>
+      <div id="bulkBar" class="bulkbar hidden">
+  <div class="bulkSelection">
+    <div class="bulkCount"><b id="selectedCount">0</b><span>selected</span></div>
+    <div class="bulkActions">
+      <button id="bulkFree" class="bulkAction freeAction" type="button"><span class="bulkActionDot"></span><b>Free</b></button>
+      <button id="bulkClean" class="bulkAction cleanAction" type="button"><span class="bulkActionDot"></span><b>Clean</b></button>
+      <button id="bulkReserve" class="bulkAction reserveAction" type="button"><span class="bulkActionDot"></span><b>Reserve</b></button>
+      <button id="bulkCancel" class="bulkClose" type="button" aria-label="Cancel selection">×</button>
+    </div>
+  </div>
+  <div id="bulkHint" class="bulkHint">Tap tables to select</div>
+</div>
       <div class="mobileWait"><div class="sectionHead"><h3>Waiting</h3><span id="waitMobileCount" class="small muted"></span></div><div id="waitMobile" class="list"></div></div>
       
     </div>
@@ -905,7 +1283,7 @@ E8-4 seats</textarea></label>
       <button id="moreDockBtn" class="composerIcon composerMore" type="button" aria-label="More options" aria-expanded="false" title="More">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
       </button>
-      <input id="quickGuest" autocomplete="off" enterkeyhint="send" aria-label="Quick add guest" placeholder="Name, phone, seats (e.g., John 4)">
+      <input id="quickGuest" autocomplete="off" enterkeyhint="send" aria-label="Quick add guest" placeholder="Name, table, seats (e.g., John A2 4)">
       <button id="quickSendBtn" class="composerSend" type="submit" aria-label="Add guest" title="Add guest" disabled>
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5m-6 6 6-6 6 6"/></svg>
       </button>
@@ -916,7 +1294,7 @@ E8-4 seats</textarea></label>
 
 
 <div id="publicFooter" class="publicFooter">
-  v1.4.0<span>·</span>Powered by
+  v1.4.2<span>·</span>Powered by
   <a href="https://www.letmedoit.in" target="_blank" rel="noopener">LetMeDoIt</a>
 </div>
 
@@ -936,7 +1314,7 @@ const base={activated:false,setup:false,locked:true,selectedUser:null,license:{r
 let state=load(),setupStep=1,toastTimer=null,selectMode=false,selected=new Set(),reportRange=null;
 const SB_URL='https://bfmsoerewmiqianxmcck.supabase.co';
 const SB_KEY='sb_publishable_v8jc47i36pfQIkQ2gXC0MA_V0hWBld9';
-const APP_VERSION='1.4.0';
+const APP_VERSION='1.4.2';
 let remoteToken=sessionStorage.getItem('tp_remote_token')||'';
 let remoteRevision=0;
 let remoteEvents=[];
@@ -1239,6 +1617,7 @@ function show(id){
   ['activateScreen','setupAccessScreen','setupScreen','loginScreen','appScreen'].forEach(x=>$('#'+x).classList.add('hidden'));
   $('#'+id).classList.remove('hidden');
   const isApp=id==='appScreen';
+  if(!isApp&&typeof selectMode!=='undefined'&&selectMode){selectMode=false;selected.clear();document.body.classList.remove('selectionMode')}
   const pf=$('#publicFooter');if(pf)pf.classList.toggle('hidden',isApp);
   const dock=$('#bottomDock');if(dock)dock.classList.toggle('hidden',!isApp);
   if(!isApp)closeQuickMenu();
@@ -1269,7 +1648,7 @@ function activeAllocsForTable(tableId){return state.seatAllocations.filter(a=>a.
 function usedSeats(tableId){return activeAllocsForTable(tableId).reduce((sum,a)=>sum+(a.shares.find(x=>x.tableId===tableId)?.seats||0),0)}
 function freeSeats(tableId){const t=state.tables.find(x=>x.id===tableId);return t?Math.max(0,t.seats-usedSeats(tableId)):0}
 function allocationParties(tableId){return activeAllocsForTable(tableId).map(a=>({id:a.id,name:a.name,party:a.party,seats:a.shares.find(x=>x.tableId===tableId)?.seats||0,startedAt:a.startedAt}))}
-function removeAllocation(id,after='free'){const a=state.seatAllocations.find(x=>x.id===id);if(!a)return;const tids=a.shares.map(x=>x.tableId);a.active=false;tids.forEach(tid=>{const t=state.tables.find(x=>x.id===tid);if(!t)return;t.status=usedSeats(tid)>0?'dining':after});logEvent('endParty','Party ended','party',a.id,a.name,`${a.party} people`);save();renderAll()}
+function removeAllocation(id,after='free'){const a=state.seatAllocations.find(x=>x.id===id);if(!a)return;const tids=a.shares.map(x=>x.tableId);a.active=false;tids.forEach(tid=>{const t=state.tables.find(x=>x.id===tid);if(!t)return;t.status=usedSeats(tid)>0?'dining':after;t.statusChangedAt=Date.now()});logEvent('endParty','Party ended','party',a.id,a.name,`${a.party} people`);save();renderAll()}
 function makeAllocation(name,party,shares,sourceGuestId=''){const a={id:uid('sa'),partyId:sourceGuestId||uid('p'),name,party:Number(party)||1,shares:shares.filter(x=>x.seats>0),startedAt:Date.now(),active:true};state.seatAllocations.push(a);a.shares.forEach(x=>{const t=state.tables.find(v=>v.id===x.tableId);if(t){t.status='dining';t.guest=null;t.start=null;t.statusChangedAt=a.startedAt}});return a}
 function tableAvailableSeats(t){if(t.status==='free')return t.seats;if(state.allowSharing&&t.status==='dining')return freeSeats(t.id);return 0}
 
@@ -1554,11 +1933,39 @@ $('#loginPin').addEventListener('keydown',e=>{if(e.key==='Enter')$('#loginBtn').
 $('#loginUsername').addEventListener('keydown',e=>{if(e.key==='Enter')$('#loginPin').focus()});
 
 let floorClockTimer=setInterval(()=>{if(remoteToken&&currentPage==='floor'&&!document.hidden)renderFloor()},30000);
-function renderFloor(){const c=counts();$('#mAll').textContent=c.all;$('#mFree').textContent=c.free;$('#mDining').textContent=c.dining;$('#mReserved').textContent=c.reserved;$('#mCleaning').textContent=c.cleaning;$('#mWaiting').textContent=state.wait.length;$$('[data-status-filter]').forEach(b=>b.classList.toggle('active',b.dataset.statusFilter===state.statusFilter));$('#statusHint').textContent=state.statusFilter==='all'?'All tables':state.statusFilter==='waiting'?'Waiting guests':statusLabel(state.statusFilter);const areas=['All',...state.areas];if(!areas.includes(state.activeArea))state.activeArea='All';$('#areaChips').innerHTML=areas.map(a=>`<button class="chip ${state.activeArea===a?'active':''}" data-action="area-filter" data-area="${esc(a)}">${esc(a)}</button>`).join('');let all=displayUnits().filter(u=>state.activeArea==='All'||u.area===state.activeArea);if(state.statusFilter!=='all'&&state.statusFilter!=='waiting')all=all.filter(u=>u.status===state.statusFilter);const groups=all.filter(u=>u.kind==='group'),tables=all.filter(u=>u.kind==='table'),list=state.floorMode==='list';$('#combinedBox').classList.toggle('hidden',!groups.length);$('#combinedCount').textContent=groups.length;$('#combinedTiles').innerHTML=groups.map(tileHTML).join('');$('#combinedList').innerHTML=groups.map(listHTML).join('');$('#floorGrid').innerHTML=tables.length?tables.map(tileHTML).join(''):'<div class="notice" style="grid-column:1/-1">No tables match this filter.</div>';$('#floorList').innerHTML=tables.length?tables.map(listHTML).join(''):'<div class="notice">No tables match this filter.</div>';$('#physicalCount').textContent=`${tables.length} shown`;$('#combinedTiles').classList.toggle('hidden',list);$('#combinedList').classList.toggle('hidden',!list);$('#floorGrid').classList.toggle('hidden',list);$('#floorList').classList.toggle('hidden',!list);$('#tileModeBtn').classList.toggle('active',!list);$('#listModeBtn').classList.toggle('active',list);$('#selectBtn').textContent=selectMode?'Done':'Select';$('#bulkBar').classList.toggle('hidden',!selectMode);$('#selectedCount').textContent=selected.size}
+function renderFloor(){const c=counts();$('#mAll').textContent=c.all;$('#mFree').textContent=c.free;$('#mDining').textContent=c.dining;$('#mReserved').textContent=c.reserved;$('#mCleaning').textContent=c.cleaning;$('#mWaiting').textContent=state.wait.length;$$('[data-status-filter]').forEach(b=>b.classList.toggle('active',b.dataset.statusFilter===state.statusFilter));$('#statusHint').textContent=state.statusFilter==='all'?'All tables':state.statusFilter==='waiting'?'Waiting guests':statusLabel(state.statusFilter);const areas=['All',...state.areas];if(!areas.includes(state.activeArea))state.activeArea='All';$('#areaChips').innerHTML=areas.map(a=>`<button class="chip ${state.activeArea===a?'active':''}" data-action="area-filter" data-area="${esc(a)}">${esc(a)}</button>`).join('');let all=displayUnits().filter(u=>state.activeArea==='All'||u.area===state.activeArea);if(state.statusFilter!=='all'&&state.statusFilter!=='waiting')all=all.filter(u=>u.status===state.statusFilter);const groups=all.filter(u=>u.kind==='group'),tables=all.filter(u=>u.kind==='table'),list=state.floorMode==='list';$('#combinedBox').classList.toggle('hidden',!groups.length);$('#combinedCount').textContent=groups.length;$('#combinedTiles').innerHTML=groups.map(tileHTML).join('');$('#combinedList').innerHTML=groups.map(listHTML).join('');$('#floorGrid').innerHTML=tables.length?tables.map(tileHTML).join(''):'<div class="notice" style="grid-column:1/-1">No tables match this filter.</div>';$('#floorList').innerHTML=tables.length?tables.map(listHTML).join(''):'<div class="notice">No tables match this filter.</div>';$('#physicalTitle').textContent=state.activeArea==='All'?'Physical Tables':`Physical Tables in ${shortArea(state.activeArea)}`;
+$('#physicalSub').textContent=state.statusFilter==='all'?'':statusLabel(state.statusFilter);
+$('#physicalCount').textContent=`${tables.length} table${tables.length===1?'':'s'} active`;$('#combinedTiles').classList.toggle('hidden',list);$('#combinedList').classList.toggle('hidden',!list);$('#floorGrid').classList.toggle('hidden',list);$('#floorList').classList.toggle('hidden',!list);$('#tileModeBtn').classList.toggle('active',!list);$('#listModeBtn').classList.toggle('active',list);$('#selectBtn').textContent=selectMode?'Done':'Select';$('#bulkBar').classList.toggle('hidden',!selectMode);$('#selectedCount').textContent=selected.size;
+document.body.classList.toggle('selectionMode',selectMode);
+const selectedNow=selectedTargets();
+const occupiedSelection=selectedNow.some(targetOccupied);
+$('#bulkFree').disabled=selectedNow.length===0;
+$('#bulkClean').disabled=selectedNow.length===0;
+$('#bulkReserve').disabled=selectedNow.length===0||occupiedSelection;
+$('#bulkReserve').title=occupiedSelection?'Dining tables must be free or cleaning first':'Reserve selected tables';
+$('#bulkHint').textContent=selectedNow.length===0
+  ?'Tap tables to select'
+  :occupiedSelection
+    ?'Dining selected · Free or Clean available'
+    :'Choose an action';
+}
 $('#tileModeBtn').addEventListener('click',()=>{state.floorMode='tile';cacheLocal();queuePreferenceSave();renderFloor()});$('#listModeBtn').addEventListener('click',()=>{state.floorMode='list';cacheLocal();queuePreferenceSave();renderFloor()});
 
 function minutes(ts){return ts?Math.max(0,Math.floor((Date.now()-ts)/60000)):0}
 function parseGuest(text){const phone=text.match(/(?:\+?91[-\s]?)?[6-9]\d{9}/)?.[0]||'';const nums=[...text.matchAll(/\b(\d{1,2})\b/g)].map(m=>Number(m[1])).filter(n=>n>0&&n<=30);const party=nums.length?nums[nums.length-1]:2;let name=text;if(phone)name=name.replace(phone,' ');nums.forEach(n=>name=name.replace(new RegExp(`\\b${n}\\b`),' '));name=name.replace(/\b(people|persons|pax|guests?)\b/gi,' ').replace(/\s+/g,' ').trim()||'Guest';return{id:uid('g'),name,phone,party,added:Date.now()}}
+function quickGuestCommand(text){
+  const g=parseGuest(text);
+  const candidates=state.tables.filter(t=>!t.mergeGroup).sort((a,b)=>String(b.name).length-String(a.name).length);
+  const target=candidates.find(t=>{
+    const escaped=String(t.name).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+    return new RegExp(`(^|[\\s,;])${escaped}(?=$|[\\s,;])`,'i').test(text);
+  })||null;
+  if(target){
+    const escaped=String(target.name).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+    g.name=g.name.replace(new RegExp(`(^|\\s)${escaped}(?=\\s|$)`,'ig'),' ').replace(/\s+/g,' ').trim()||'Guest';
+  }
+  return{guest:g,target};
+}
 function addGuest(g){state.wait.push(g);logEvent('addGuest','Guest added to waitlist','guest',g.id,g.name,`${g.party} people`);save();renderAll();openAllocation(g.id)}
 const quickGuestInput=$('#quickGuest'),quickSendBtn=$('#quickSendBtn');
 
@@ -1591,11 +1998,25 @@ $('#quickGuestForm').addEventListener('submit',e=>{
   e.preventDefault();
   const v=quickGuestInput.value.trim();
   if(!v||isOffline()){if(isOffline())offlineNotice();return}
+  const cmd=quickGuestCommand(v);
+  if(cmd.target){
+    const t=cmd.target;
+    const available=tableAvailableSeats(t);
+    if(available<cmd.guest.party){
+      return toast(`${t.name} doesn't have ${cmd.guest.party} seats available`);
+    }
+    quickGuestInput.value='';
+    updateQuickSend();
+    quickGuestInput.blur();
+    syncComposerViewport();
+    setTimeout(()=>allocateSingleGuest(cmd.guest,t.id,'quick'),90);
+    return;
+  }
   quickGuestInput.value='';
   updateQuickSend();
   quickGuestInput.blur();
   syncComposerViewport();
-  setTimeout(()=>addGuest(parseGuest(v)),90);
+  setTimeout(()=>addGuest(cmd.guest),90);
 });
 updateQuickSend();
 $('#guestTopBtn').addEventListener('click',openGuestModal);$('#guestWaitBtn').addEventListener('click',openGuestModal);
@@ -1609,7 +2030,7 @@ function openAllocation(id){const g=state.wait.find(x=>x.id===id);if(!g)return;c
 function allocateSingleGuest(g,tableId,source='wait'){const t=state.tables.find(x=>x.id===tableId);if(!g||!t)return;const avail=source==='reservation'?t.seats:tableAvailableSeats(t);if(avail<g.party)return toast('Not enough available seats');let allocated=avail;const canShare=state.allowSharing&&avail>g.party;function draw(){const released=Math.max(0,avail-allocated);openModal('Allocate Seats · '+t.name,`<div class="seatInfo"><div class="seatInfoTitle">${g.party} guest${g.party===1?'':'s'} · ${avail} seats available</div><div class="seatInfoText">${canShare?`All ${avail} seats are in use by default. Reduce the allocation down to ${g.party} to release seats for another party.`:`This table is treated as fully occupied. ${avail>g.party?'Enable “Allow table sharing” in Manage if you want to release unused seats.':''}`}</div></div><div class="singleAlloc"><div><b>Seats in use</b><div class="tiny muted">Actual guest count: ${g.party}</div></div><div class="allocStepper"><button id="singleMinus" type="button" ${canShare?'':'disabled'}>−</button><span>${allocated}</span><button id="singlePlus" type="button">+</button></div></div><div class="allocationResult"><span>Seats available after seating</span><b>${released}</b></div><div class="floatingActions"><button id="singleBack" class="btn">Back</button><button id="singleConfirm" class="btn primary">Seat ${esc(g.name)}</button></div>`);$('#singleMinus').onclick=()=>{if(!canShare)return;allocated=Math.max(g.party,allocated-1);draw()};$('#singlePlus').onclick=()=>{allocated=Math.min(avail,allocated+1);draw()};$('#singleBack').onclick=()=>source==='wait'?openAllocation(g.id):openTable(t.id);$('#singleConfirm').onclick=()=>{if(source==='reservation')t.reservation=null;makeAllocation(g.name,g.party,[{tableId:t.id,seats:allocated}],g.id);if(source==='wait')state.wait=state.wait.filter(x=>x.id!==g.id);state.guests+=g.party;logEvent(source==='reservation'?'startReserved':source==='shared'?'seatShared':'seat',source==='reservation'?'Reserved guest started dining':source==='shared'?'Shared table seating':'Guest seated','table',t.id,t.name,`${g.name} · ${g.party} guests · ${allocated}/${t.seats} seats in use`);save();closeModal();renderAll()}}draw()}
 
 function seatOnUnit(gid,kind,id){const g=state.wait.find(x=>x.id===gid);if(!g)return;if(kind==='table')return allocateSingleGuest(g,id,'wait');return openGroupSeatAllocator(gid,id)}
-function seatCombo(gid,ids){const g=state.wait.find(x=>x.id===gid);if(!g)return;let chosen=ids.map(id=>state.tables.find(t=>t.id===id)).filter(Boolean).map(t=>t.id);if(chosen.length<2)return;let vals=Object.fromEntries(chosen.map(id=>[id,tableAvailableSeats(state.tables.find(t=>t.id===id))]));function draw(){const cap=chosen.reduce((a,id)=>a+tableAvailableSeats(state.tables.find(t=>t.id===id)),0);openModal('Allocate Combined Seats',`<div class="seatInfo"><div class="seatInfoTitle">${g.party} guest${g.party===1?'':'s'} · ${cap} seats selected</div><div class="seatInfoText">All selected seats are in use by default. ${state.allowSharing?'Use − to release unused seats.':'Enable table sharing in Manage to release unused seats.'} Remove a table with ×.</div></div>${allocatorHTML(chosen,g.party,vals)}<div class="floatingActions"><button class="btn" id="allocCancel">Back</button><button class="btn primary" id="allocSeat">Seat Party</button></div>`);wireAllocator(chosen,g.party,vals,id=>{if(chosen.length<=2)return toast('Keep at least 2 tables');chosen=chosen.filter(x=>x!==id);vals=Object.fromEntries(chosen.map(tid=>[tid,tableAvailableSeats(state.tables.find(t=>t.id===tid))]));draw()});$('#allocCancel').onclick=()=>openAllocation(gid);$('#allocSeat').onclick=()=>{const shares=chosen.map(id=>({tableId:id,seats:Number(vals[id]||0)})).filter(x=>x.seats>0),total=shares.reduce((a,x)=>a+x.seats,0);if(total<g.party)return toast(`Keep at least ${g.party} seats in use`);const gr={id:uid('mg'),tableIds:[...chosen],status:'dining',guest:null,start:null,reservation:null,seatPlan:shares};state.groups.push(gr);chosen.forEach(id=>{const t=state.tables.find(x=>x.id===id);if(t)t.mergeGroup=gr.id});makeAllocation(g.name,g.party,shares,g.id);state.wait=state.wait.filter(x=>x.id!==gid);state.guests+=g.party;logEvent('seatCombo','Tables combined & guest seated','group',gr.id,groupInfo(gr).name,`${g.name} · ${g.party} guests · ${total} seats in use`);save();closeModal();renderAll()}}draw()}
+function seatCombo(gid,ids){const g=state.wait.find(x=>x.id===gid);if(!g)return;let chosen=ids.map(id=>state.tables.find(t=>t.id===id)).filter(Boolean).map(t=>t.id);if(chosen.length<2)return;let vals=Object.fromEntries(chosen.map(id=>[id,tableAvailableSeats(state.tables.find(t=>t.id===id))]));function draw(){const cap=chosen.reduce((a,id)=>a+tableAvailableSeats(state.tables.find(t=>t.id===id)),0);openModal('Allocate Combined Seats',`<div class="seatInfo"><div class="seatInfoTitle">${g.party} guest${g.party===1?'':'s'} · ${cap} seats selected</div><div class="seatInfoText">All selected seats are in use by default. ${state.allowSharing?'Use − to release unused seats.':'Enable table sharing in Manage to release unused seats.'} Remove a table with ×.</div></div>${allocatorHTML(chosen,g.party,vals)}<div class="floatingActions"><button class="btn" id="allocCancel">Back</button><button class="btn primary" id="allocSeat">Seat Party</button></div>`);wireAllocator(chosen,g.party,vals,id=>{if(chosen.length<=2)return toast('Keep at least 2 tables');chosen=chosen.filter(x=>x!==id);vals=Object.fromEntries(chosen.map(tid=>[tid,tableAvailableSeats(state.tables.find(t=>t.id===tid))]));draw()});$('#allocCancel').onclick=()=>openAllocation(gid);$('#allocSeat').onclick=()=>{const shares=chosen.map(id=>({tableId:id,seats:Number(vals[id]||0)})).filter(x=>x.seats>0),total=shares.reduce((a,x)=>a+x.seats,0);if(total<g.party)return toast(`Keep at least ${g.party} seats in use`);const gr={id:uid('mg'),tableIds:[...chosen],status:'dining',statusChangedAt:Date.now(),guest:null,start:null,reservation:null,seatPlan:shares};state.groups.push(gr);chosen.forEach(id=>{const t=state.tables.find(x=>x.id===id);if(t)t.mergeGroup=gr.id});makeAllocation(g.name,g.party,shares,g.id);state.wait=state.wait.filter(x=>x.id!==gid);state.guests+=g.party;logEvent('seatCombo','Tables combined & guest seated','group',gr.id,groupInfo(gr).name,`${g.name} · ${g.party} guests · ${total} seats in use`);save();closeModal();renderAll()}}draw()}
 
 function openGroupSeatAllocator(gid,groupId){const g=state.wait.find(x=>x.id===gid),gr=state.groups.find(x=>x.id===groupId);if(!g||!gr)return;let ids=[...gr.tableIds],vals=Object.fromEntries(ids.map(id=>[id,state.tables.find(t=>t.id===id)?.seats||0]));function draw(){const cap=ids.reduce((a,id)=>a+(state.tables.find(t=>t.id===id)?.seats||0),0);openModal('Allocate Combined Seats',`<div class="seatInfo"><div class="seatInfoTitle">${g.party} guest${g.party===1?'':'s'} · ${cap} seats selected</div><div class="seatInfoText">Combined tables are fully occupied by default. ${state.allowSharing?'Use − to release unused seats.':'Enable table sharing in Manage to release unused seats.'} Remove a table with ×.</div></div>${allocatorHTML(ids,g.party,vals)}<div class="floatingActions"><button id="groupBack" class="btn">Back</button><button id="groupConfirm" class="btn primary">Seat Party</button></div>`);wireAllocator(ids,g.party,vals,id=>{if(ids.length<=2)return toast('Combination needs at least 2 tables');gr.tableIds=gr.tableIds.filter(x=>x!==id);const t=state.tables.find(x=>x.id===id);if(t)t.mergeGroup=null;ids=[...gr.tableIds];vals=Object.fromEntries(ids.map(tid=>[tid,state.tables.find(t=>t.id===tid)?.seats||0]));save();draw()});$('#groupBack').onclick=()=>openAllocation(gid);$('#groupConfirm').onclick=()=>{const shares=ids.map(id=>({tableId:id,seats:Number(vals[id]||0)})).filter(x=>x.seats>0),total=shares.reduce((a,x)=>a+x.seats,0);if(total<g.party)return toast(`Keep at least ${g.party} seats in use`);makeAllocation(g.name,g.party,shares,g.id);gr.status='dining';gr.statusChangedAt=Date.now();gr.seatPlan=shares;state.wait=state.wait.filter(x=>x.id!==gid);state.guests+=g.party;logEvent('seat','Guest seated','group',gr.id,groupInfo(gr).name,`${g.name} · ${g.party} guests · ${total} seats in use`);save();closeModal();renderAll()}}draw()}
 
@@ -1619,13 +2040,134 @@ function openGuestModal(){openModal('Add guest',`<div class="stack"><label>Name<
 function reserveUnit(kind,id,edit=false){const u=kind==='group'?state.groups.find(g=>g.id===id):state.tables.find(t=>t.id===id);if(!u)return;const info=kind==='group'?groupInfo(u):{name:u.name,seats:u.seats,area:u.area};const r=u.reservation||{};openModal((edit?'Edit reservation · ':'Reserve · ')+info.name,`<div class="notice">${info.seats} seats · ${esc(info.area)}</div><div class="stack" style="margin-top:10px"><label>Name<input id="rName" value="${esc(r.name||'')}" placeholder="Booking name"></label><div class="grid2"><label>People<input id="rParty" type="number" min="1" max="${info.seats}" value="${Math.min(info.seats,Number(r.party)||2)}"></label><label>Time<input id="rTime" type="time" value="${esc(r.time||'')}"></label></div><label>Phone<input id="rPhone" inputmode="numeric" maxlength="10" value="${esc(r.phone||'')}" placeholder="Optional"></label><label>Note<input id="rNote" value="${esc(r.note||'')}" placeholder="Optional"></label><button id="saveReserve" class="btn primary full">Save reservation</button></div>`);$('#saveReserve').addEventListener('click',()=>{const phone=$('#rPhone').value.trim();if(phone&&!mobileOk(phone,true))return toast('Enter valid 10-digit mobile');const reservation={name:$('#rName').value.trim()||'Reserved',party:Math.max(1,Math.min(100,Number($('#rParty').value)||1)),time:$('#rTime').value,phone,note:$('#rNote').value.trim()};u.status='reserved';u.statusChangedAt=Date.now();u.reservation=reservation;u.guest=null;u.start=null;if(kind==='group')u.tableIds.forEach(tid=>{const t=state.tables.find(x=>x.id===tid);if(t){t.status='reserved';t.statusChangedAt=u.statusChangedAt}});logEvent('reserve','Reserved',kind,id,info.name,`${reservation.name}${reservation.time?' · '+reservation.time:''}`);save();closeModal();renderAll();toast('Reserved')})}
 function openReservePicker(){const u=freeUnits();if(!u.length)return toast('No free tables');openModal('Reserve a table',`<div class="choicegrid">${u.map(x=>`<button class="choice" data-action="reserve-picked" data-kind="${x.kind}" data-id="${x.id}"><b>${esc(x.name)}</b><div class="tiny">${x.seats} seats · ${esc(shortArea(x.area))}</div></button>`).join('')}</div>`)}
 $('#reserveTopBtn').addEventListener('click',openReservePicker);
-$('#selectBtn').addEventListener('click',()=>{selectMode=!selectMode;if(!selectMode)selected.clear();renderFloor()});
-$('#bulkCancel').addEventListener('click',()=>{selectMode=false;selected.clear();renderFloor()});
-function selectedTargets(){return[...selected].map(k=>{const[type,id]=k.split(':');return{type,id}})}
-function bulkSet(status){const targets=selectedTargets();targets.forEach(x=>{if(x.type==='group'){const g=state.groups.find(v=>v.id===x.id);if(g)finishGroup(g,status)}else{const t=state.tables.find(v=>v.id===x.id);if(t){t.status=status;t.statusChangedAt=Date.now();t.guest=null;t.start=null;t.reservation=null}}});logEvent(status==='free'?'bulkFree':'bulkClean',status==='free'?'Bulk Free':'Bulk Clean','bulk','bulk','Multiple tables',`${targets.length} selected`);selectMode=false;selected.clear();save();closeModal();renderAll()}
+$('#selectBtn').addEventListener('click',()=>{
+  selectMode=!selectMode;
+  if(!selectMode)selected.clear();
+  renderFloor();
+});
+$('#bulkCancel').addEventListener('click',()=>exitSelection());
+
+function selectedTargets(){
+  return [...selected].map(k=>{
+    const [type,id]=k.split(':');
+    return {type,id};
+  }).filter(x=>x.type==='group'
+    ? state.groups.some(g=>g.id===x.id)
+    : state.tables.some(t=>t.id===x.id));
+}
+function targetTables(target){
+  if(target.type==='group'){
+    const g=state.groups.find(x=>x.id===target.id);
+    return (g?.tableIds||[]).map(id=>state.tables.find(t=>t.id===id)).filter(Boolean);
+  }
+  const t=state.tables.find(x=>x.id===target.id);
+  return t?[t]:[];
+}
+function targetOccupied(target){
+  return targetTables(target).some(t=>activeAllocsForTable(t.id).length>0);
+}
+function endTargetAllocations(target){
+  const ids=new Set(targetTables(target).flatMap(t=>activeAllocsForTable(t.id).map(a=>a.id)));
+  ids.forEach(id=>{
+    const a=state.seatAllocations.find(x=>x.id===id);
+    if(a)a.active=false;
+  });
+}
+function exitSelection(){
+  selectMode=false;
+  selected.clear();
+  renderFloor();
+}
+function applyBulkStatus(target,status,changedAt){
+  endTargetAllocations(target);
+  if(target.type==='group'){
+    const g=state.groups.find(x=>x.id===target.id);
+    if(!g)return;
+    (g.tableIds||[]).forEach(id=>{
+      const t=state.tables.find(x=>x.id===id);
+      if(!t)return;
+      t.status=status;
+      t.statusChangedAt=changedAt;
+      t.guest=null;
+      t.start=null;
+      t.reservation=null;
+      t.mergeGroup=null;
+    });
+    state.groups=state.groups.filter(x=>x.id!==g.id);
+    return;
+  }
+  const t=state.tables.find(x=>x.id===target.id);
+  if(!t)return;
+  t.status=status;
+  t.statusChangedAt=changedAt;
+  t.guest=null;
+  t.start=null;
+  t.reservation=null;
+}
+function bulkSet(status){
+  const targets=selectedTargets();
+  if(!targets.length)return toast('Select at least one table');
+  const changedAt=Date.now();
+  targets.forEach(x=>applyBulkStatus(x,status,changedAt));
+  logEvent(status==='free'?'bulkFree':'bulkClean',
+    status==='free'?'Bulk Free':'Bulk Clean',
+    'bulk','bulk','Multiple tables',`${targets.length} selected`);
+  selectMode=false;
+  selected.clear();
+  save();
+  closeModal();
+  renderAll();
+  toast(status==='free'
+    ? `${targets.length} table${targets.length===1?'':'s'} free`
+    : `${targets.length} table${targets.length===1?'':'s'} sent to cleaning`);
+}
 $('#bulkFree').addEventListener('click',()=>bulkSet('free'));
 $('#bulkClean').addEventListener('click',()=>bulkSet('cleaning'));
-$('#bulkReserve').addEventListener('click',()=>{const targets=selectedTargets();if(!targets.length)return;openModal('Reserve Selected',`<div class="notice">${targets.length} selected</div><div class="stack" style="margin-top:10px"><label>Name<input id="brName" placeholder="Reservation name"></label><label>Time<input id="brTime" type="time"></label><button id="brSave" class="btn primary">Reserve</button></div>`);$('#brSave').addEventListener('click',()=>{const r={name:$('#brName').value.trim()||'Reserved',party:1,time:$('#brTime').value,phone:'',note:''};targets.forEach(x=>{const o=x.type==='group'?state.groups.find(v=>v.id===x.id):state.tables.find(v=>v.id===x.id);if(o){o.status='reserved';o.statusChangedAt=Date.now();o.reservation=r;o.guest=null;o.start=null;if(x.type==='group')o.tableIds.forEach(id=>{const t=state.tables.find(t=>t.id===id);if(t){t.status='reserved';t.statusChangedAt=o.statusChangedAt}})}});logEvent('bulkReserve','Bulk Reserve','bulk','bulk','Multiple tables',`${targets.length} selected`);selectMode=false;selected.clear();save();closeModal();renderAll()})});
+
+$('#bulkReserve').addEventListener('click',()=>{
+  const targets=selectedTargets();
+  if(!targets.length)return toast('Select at least one table');
+  if(targets.some(targetOccupied)){
+    return toast("Dining tables can't be reserved. Free or clean them first.");
+  }
+  openModal('Reserve selected',`
+    <div class="seatInfo">
+      <div class="seatInfoTitle">${targets.length} table${targets.length===1?'':'s'} selected</div>
+      <div class="seatInfoText">The same reservation will be applied to all selected tables.</div>
+    </div>
+    <div class="stack" style="margin-top:10px">
+      <label>Name<input id="brName" placeholder="Reservation name"></label>
+      <label>Time<input id="brTime" type="time"></label>
+      <div class="floatingActions">
+        <button id="brCancel" class="btn" type="button">Back</button>
+        <button id="brSave" class="btn primary" type="button">Reserve</button>
+      </div>
+    </div>`);
+  $('#brCancel').onclick=closeModal;
+  $('#brSave').onclick=()=>{
+    const changedAt=Date.now();
+    const r={name:$('#brName').value.trim()||'Reserved',party:null,time:$('#brTime').value,phone:'',note:'',bulk:true};
+    targets.forEach(x=>{
+      if(x.type==='group'){
+        const g=state.groups.find(v=>v.id===x.id);
+        if(!g)return;
+        g.status='reserved';g.statusChangedAt=changedAt;g.reservation={...r};g.guest=null;g.start=null;
+        (g.tableIds||[]).forEach(id=>{
+          const t=state.tables.find(v=>v.id===id);
+          if(!t)return;
+          t.status='reserved';t.statusChangedAt=changedAt;t.reservation={...r};t.guest=null;t.start=null;
+        });
+      }else{
+        const t=state.tables.find(v=>v.id===x.id);
+        if(!t)return;
+        t.status='reserved';t.statusChangedAt=changedAt;t.reservation={...r};t.guest=null;t.start=null;
+      }
+    });
+    logEvent('bulkReserve','Bulk Reserve','bulk','bulk','Multiple tables',`${targets.length} selected`);
+    selectMode=false;selected.clear();save();closeModal();renderAll();
+    toast(`${targets.length} table${targets.length===1?'':'s'} reserved`);
+  };
+});
 
 
 function startReserved(kind,id){if(kind==='table'){const t=state.tables.find(x=>x.id===id);if(!t)return;const r=t.reservation||{name:'Guest',party:1};return allocateSingleGuest({id:uid('rg'),name:r.name,party:Number(r.party)||1},t.id,'reservation')}const gr=state.groups.find(x=>x.id===id);if(!gr)return;const r=gr.reservation||{name:'Guest',party:1};const shares=gr.tableIds.map(tid=>({tableId:tid,seats:state.tables.find(t=>t.id===tid)?.seats||0})).filter(x=>x.seats>0);gr.reservation=null;makeAllocation(r.name,Number(r.party)||1,shares,uid('rg'));gr.status='dining';gr.statusChangedAt=Date.now();state.guests+=Number(r.party)||1;logEvent('startReserved','Reserved guest started dining','group',gr.id,groupInfo(gr).name,`${r.name} · ${r.party} guests`);save();closeModal();renderAll()}
@@ -1687,10 +2229,30 @@ function openNewGuestForTable(tableId){
   };
 }
 
-function openTable(id){const t=state.tables.find(x=>x.id===id);if(!t)return;if(t.status==='free'&&usedSeats(t.id)===0)return openFreeTable(id);const allocs=allocationParties(t.id),used=usedSeats(t.id),free=freeSeats(t.id),status=used>0?'dining':t.status;let detail='';if(allocs.length)detail=`<div class="stack" style="margin-top:10px">${allocs.map(a=>`<div class="partyCard"><div class="row between"><div><b>${esc(a.name)}</b><div class="partySeats">${a.seats} seats · ${minutes(a.startedAt)} min</div></div><button class="btn sm" data-end-party="${a.id}">End</button></div></div>`).join('')}</div>`;else if(status==='reserved')detail=`<div class="reserveInfo" style="margin-top:10px"><b>${esc(t.reservation?.name||'Reserved')}</b><div class="small muted">${t.reservation?.party||''} people${t.reservation?.time?' · '+esc(t.reservation.time):''}</div></div>`;const body=`<div class="row between"><div class="statusLine"><span class="statusDot ${status}"></span><b>${statusLabel(status)}</b>${allocs.length&&free>0&&state.allowSharing?'<span class="sharedTag">Shared</span>':''}</div><span class="small muted">${used}/${t.seats} used · ${free} free</span></div>${detail}<div class="floatingActions"><button class="btn primary" data-action="free-table" data-id="${t.id}">Free Now</button><button class="btn" data-action="clean-table" data-id="${t.id}">Clean Now</button><button class="btn" data-action="reserve-table" data-id="${t.id}">Reserve</button>${free>0&&state.allowSharing?`<button class="btn" data-seat-shared="${t.id}">+ Party</button>`:''}${status==='free'?`<button class="btn" data-action="merge-from" data-id="${t.id}">Combine</button>`:''}</div>`;openModal(t.name,body);liveModalContext={kind:'table',id:t.id};$$('[data-end-party]').forEach(b=>b.onclick=()=>{const a=state.seatAllocations.find(x=>x.id===b.dataset.endParty);if(!a)return;const share=a.shares.find(x=>x.tableId===t.id)?.seats||0;if(usedSeats(t.id)-share>0){removeAllocation(a.id,'free');closeModal()}else{openModal('End '+a.name,`<div class="notice">Last active party on ${esc(t.name)}.</div><div class="floatingActions"><button class="btn primary" id="endFree">Free Now</button><button class="btn" id="endClean">Clean Now</button></div>`);$('#endFree').onclick=()=>{removeAllocation(a.id,'free');closeModal()};$('#endClean').onclick=()=>{removeAllocation(a.id,'cleaning');closeModal()}}});document.querySelector(`[data-seat-shared="${t.id}"]`)?.addEventListener('click',()=>openSharedParty(t.id))}
+function openTable(id){const t=state.tables.find(x=>x.id===id);if(!t)return;if(t.status==='free'&&usedSeats(t.id)===0)return openFreeTable(id);const allocs=allocationParties(t.id),used=usedSeats(t.id),free=freeSeats(t.id),status=used>0?'dining':t.status;let detail='';if(allocs.length)detail=`<div class="stack" style="margin-top:10px">${allocs.map(a=>`<div class="partyCard"><div class="row between"><div><b>${esc(a.name)}</b><div class="partySeats">${a.seats} seats · ${minutes(a.startedAt)} min</div></div><button class="btn sm" data-end-party="${a.id}">End</button></div></div>`).join('')}</div>`;else if(status==='reserved')detail=`<div class="reserveInfo" style="margin-top:10px"><b>${esc(t.reservation?.name||'Reserved')}</b><div class="small muted">${t.reservation?.party||''} people${t.reservation?.time?' · '+esc(t.reservation.time):''}</div></div>`;let actions='';
+if(status==='dining'){
+  actions=`<button class="btn primary" data-action="end-table" data-id="${t.id}">End dining</button>${free>0&&state.allowSharing?`<button class="btn" data-seat-shared="${t.id}">+ Party</button>`:''}`;
+}else if(status==='reserved'){
+  actions=`<button class="btn primary" data-action="start-reserved" data-kind="table" data-id="${t.id}">Start dining</button><button class="btn" data-action="edit-reserve" data-kind="table" data-id="${t.id}">Edit</button><button class="btn" data-action="free-table" data-id="${t.id}">Cancel</button>`;
+}else if(status==='cleaning'){
+  actions=`<button class="btn primary" data-action="free-table" data-id="${t.id}">Mark free</button>`;
+}else{
+  actions=`<button class="btn primary" data-action="seat-next-table" data-id="${t.id}">Seat guest</button><button class="btn" data-action="reserve-table" data-id="${t.id}">Reserve</button><button class="btn" data-action="merge-from" data-id="${t.id}">Combine</button>`;
+}
+const body=`<div class="row between"><div class="statusLine"><span class="statusDot ${status}"></span><b>${statusLabel(status)}</b>${allocs.length&&free>0&&state.allowSharing?'<span class="sharedTag">Shared</span>':''}</div><span class="small muted">${used}/${t.seats} used · ${free} free</span></div>${detail}<div class="floatingActions">${actions}</div>`;openModal(t.name,body);liveModalContext={kind:'table',id:t.id};$$('[data-end-party]').forEach(b=>b.onclick=()=>{const a=state.seatAllocations.find(x=>x.id===b.dataset.endParty);if(!a)return;const share=a.shares.find(x=>x.tableId===t.id)?.seats||0;if(usedSeats(t.id)-share>0){removeAllocation(a.id,'free');closeModal()}else{openModal('End '+a.name,`<div class="notice">Last active party on ${esc(t.name)}.</div><div class="floatingActions"><button class="btn primary" id="endFree">Free Now</button><button class="btn" id="endClean">Clean Now</button></div>`);$('#endFree').onclick=()=>{removeAllocation(a.id,'free');closeModal()};$('#endClean').onclick=()=>{removeAllocation(a.id,'cleaning');closeModal()}}});document.querySelector(`[data-seat-shared="${t.id}"]`)?.addEventListener('click',()=>openSharedParty(t.id))}
 
 function openSharedParty(tableId){const t=state.tables.find(x=>x.id===tableId),avail=freeSeats(tableId);if(!t||avail<=0)return;openModal('Add Party · '+t.name,`<div class="seatInfo"><div class="seatInfoTitle">${avail} seats available</div><div class="seatInfoText">Enter the guest count. On the next screen TablePing reserves all remaining seats by default; reduce them if you want to keep some available.</div></div><div class="stack" style="margin-top:10px"><label>Name<input id="spName" placeholder="Guest name"></label><label>People<input id="spParty" type="number" min="1" max="${avail}" value="${Math.min(2,avail)}"></label></div><div class="floatingActions"><button class="btn" id="spCancel">Cancel</button><button class="btn primary" id="spNext">Continue</button></div>`);$('#spCancel').onclick=closeModal;$('#spNext').onclick=()=>{const party=Number($('#spParty').value),name=$('#spName').value.trim()||'Guest';if(party<1||party>avail)return toast(`Maximum ${avail} guests`);allocateSingleGuest({id:uid('sg'),name,party},tableId,'shared')}}
-function openGroup(id){const g=state.groups.find(x=>x.id===id);if(!g)return;const i=groupInfo(g),allocIds=[...new Set(g.tableIds.flatMap(tid=>activeAllocsForTable(tid).map(a=>a.id)))],allocs=allocIds.map(aid=>state.seatAllocations.find(a=>a.id===aid)).filter(Boolean),used=g.tableIds.reduce((a,tid)=>a+usedSeats(tid),0),free=g.tableIds.reduce((a,tid)=>a+freeSeats(tid),0),status=used>0?'dining':g.status;let detail=allocs.length?`<div class="stack" style="margin-top:10px">${allocs.map(a=>`<div class="partyCard"><div class="row between"><div><b>${esc(a.name)}</b><div class="partySeats">${a.party} people · ${minutes(a.startedAt)} min</div></div><button class="btn sm" data-end-group-party="${a.id}">End</button></div></div>`).join('')}</div>`:'';if(status==='free')detail+=`<div class="stack" style="margin-top:10px">${g.tableIds.map(tid=>{const t=state.tables.find(x=>x.id===tid);return`<div class="areaItem"><div><b>${esc(t.name)}</b><div class="tiny muted">${t.seats} seats · ${esc(shortArea(t.area))}</div></div><button class="btn sm danger" data-remove-combo="${tid}">Remove</button></div>`}).join('')}</div>`;const body=`<div class="row between"><div class="statusLine"><span class="statusDot ${status}"></span><b>${statusLabel(status)}</b></div><span class="small muted">${i.seats} total · ${used} used · ${free} free</span></div>${detail}<div class="floatingActions"><button class="btn primary" data-action="free-group" data-id="${g.id}">Free Now</button><button class="btn" data-action="clean-group" data-id="${g.id}">Clean Now</button><button class="btn" data-action="reserve-group" data-id="${g.id}">Reserve</button>${status==='free'?`<button class="btn" data-action="unmerge" data-id="${g.id}">Uncombine</button>`:''}</div>`;openModal(i.name,body);liveModalContext={kind:'group',id:g.id};$$('[data-remove-combo]').forEach(b=>b.onclick=()=>{if(g.tableIds.length<=2)return toast('Combination needs at least 2 tables');const oldName=state.tables.find(x=>x.id===b.dataset.removeCombo)?.name||'';g.tableIds=g.tableIds.filter(x=>x!==b.dataset.removeCombo);const t=state.tables.find(x=>x.id===b.dataset.removeCombo);if(t)t.mergeGroup=null;logEvent('removeCombinedTable','Removed table from combination','group',g.id,i.name,oldName);save();openGroup(g.id);renderAll()});$$('[data-end-group-party]').forEach(b=>b.onclick=()=>{removeAllocation(b.dataset.endGroupParty,'free');closeModal()})}
+function openGroup(id){const g=state.groups.find(x=>x.id===id);if(!g)return;const i=groupInfo(g),allocIds=[...new Set(g.tableIds.flatMap(tid=>activeAllocsForTable(tid).map(a=>a.id)))],allocs=allocIds.map(aid=>state.seatAllocations.find(a=>a.id===aid)).filter(Boolean),used=g.tableIds.reduce((a,tid)=>a+usedSeats(tid),0),free=g.tableIds.reduce((a,tid)=>a+freeSeats(tid),0),status=used>0?'dining':g.status;let detail=allocs.length?`<div class="stack" style="margin-top:10px">${allocs.map(a=>`<div class="partyCard"><div class="row between"><div><b>${esc(a.name)}</b><div class="partySeats">${a.party} people · ${minutes(a.startedAt)} min</div></div><button class="btn sm" data-end-group-party="${a.id}">End</button></div></div>`).join('')}</div>`:'';if(status==='free')detail+=`<div class="stack" style="margin-top:10px">${g.tableIds.map(tid=>{const t=state.tables.find(x=>x.id===tid);return`<div class="areaItem"><div><b>${esc(t.name)}</b><div class="tiny muted">${t.seats} seats · ${esc(shortArea(t.area))}</div></div><button class="btn sm danger" data-remove-combo="${tid}">Remove</button></div>`}).join('')}</div>`;let actions='';
+if(status==='dining'){
+  actions=`<button class="btn primary" data-action="end-group" data-id="${g.id}">End dining</button>`;
+}else if(status==='reserved'){
+  actions=`<button class="btn primary" data-action="start-reserved" data-kind="group" data-id="${g.id}">Start dining</button><button class="btn" data-action="edit-reserve" data-kind="group" data-id="${g.id}">Edit</button><button class="btn" data-action="free-group" data-id="${g.id}">Cancel</button>`;
+}else if(status==='cleaning'){
+  actions=`<button class="btn primary" data-action="free-group" data-id="${g.id}">Mark free</button>`;
+}else{
+  actions=`<button class="btn primary" data-action="seat-next-group" data-id="${g.id}">Seat guest</button><button class="btn" data-action="reserve-group" data-id="${g.id}">Reserve</button><button class="btn" data-action="unmerge" data-id="${g.id}">Uncombine</button>`;
+}
+const body=`<div class="row between"><div class="statusLine"><span class="statusDot ${status}"></span><b>${statusLabel(status)}</b></div><span class="small muted">${i.seats} total · ${used} used · ${free} free</span></div>${detail}<div class="floatingActions">${actions}</div>`;openModal(i.name,body);liveModalContext={kind:'group',id:g.id};$$('[data-remove-combo]').forEach(b=>b.onclick=()=>{if(g.tableIds.length<=2)return toast('Combination needs at least 2 tables');const oldName=state.tables.find(x=>x.id===b.dataset.removeCombo)?.name||'';g.tableIds=g.tableIds.filter(x=>x!==b.dataset.removeCombo);const t=state.tables.find(x=>x.id===b.dataset.removeCombo);if(t)t.mergeGroup=null;logEvent('removeCombinedTable','Removed table from combination','group',g.id,i.name,oldName);save();openGroup(g.id);renderAll()});$$('[data-end-group-party]').forEach(b=>b.onclick=()=>{removeAllocation(b.dataset.endGroupParty,'free');closeModal()})}
 
 function allocatorHTML(tableIds,party,values){return`<div class="seatAllocator" id="seatAllocator">${tableIds.map(id=>{const t=state.tables.find(x=>x.id===id),avail=tableAvailableSeats(t),v=Math.min(avail,Number(values[id]||0));return`<div class="allocRow" data-alloc-row="${id}"><div class="allocMain"><div class="allocName">${esc(t.name)}</div><div class="allocMeta">${esc(shortArea(t.area))} · ${avail} available of ${t.seats}</div></div><div class="allocStepper"><button type="button" data-alloc-minus="${id}">−</button><span id="alloc_${id}">${v}</span><button type="button" data-alloc-plus="${id}">+</button></div><button class="removeChip" type="button" data-alloc-remove="${id}">×</button></div>`}).join('')}</div><div id="allocTotal" class="notice" style="margin-top:8px"></div>`}
 function wireAllocator(tableIds,party,values,onRemove){function total(){return tableIds.reduce((a,id)=>a+Number(values[id]||0),0)}function redraw(){const n=total(),box=$('#allocTotal');if(box){box.textContent=`${n} seats in use · ${party} guests`;box.className='notice '+(n>=party?'good':'bad')}return n}tableIds.forEach(id=>{const t=state.tables.find(x=>x.id===id),max=t?.seats||0;const set=v=>{const next=Math.max(0,Math.min(max,v)),current=Number(values[id]||0),projected=total()-current+next;if(next<current&&!state.allowSharing)return toast('Enable table sharing to release seats');if(projected<party)return toast(`Keep at least ${party} seats in use`);values[id]=next;const el=$('#alloc_'+id);if(el)el.textContent=values[id];redraw()};document.querySelector(`[data-alloc-minus="${id}"]`)?.addEventListener('click',()=>set(Number(values[id]||0)-1));document.querySelector(`[data-alloc-plus="${id}"]`)?.addEventListener('click',()=>set(Number(values[id]||0)+1));document.querySelector(`[data-alloc-remove="${id}"]`)?.addEventListener('click',()=>onRemove(id))});redraw()}
@@ -1700,7 +2262,7 @@ function openMergeBuilder(firstId=null){const candidates=state.tables.filter(t=>
 function unmerge(id){const g=state.groups.find(x=>x.id===id);if(!g||g.status!=='free')return;const name=groupInfo(g).name;g.tableIds.forEach(tid=>{const t=state.tables.find(x=>x.id===tid);if(t)t.mergeGroup=null});state.groups=state.groups.filter(x=>x.id!==id);logEvent('uncombine','Uncombined tables','group',id,name,'');save();closeModal();renderAll()}
 
 function moveGuest(kind,id){const src=kind==='group'?state.groups.find(g=>g.id===id):state.tables.find(t=>t.id===id);if(!src||src.status!=='dining'||!src.guest)return;const guest=clone(src.guest),free=freeUnits().filter(u=>!(u.kind===kind&&u.id===id));if(!free.length)return toast('No free table available');openModal('Move '+guest.name,`<div class="notice">Choose new table. Current table will become free.</div><div class="choicegrid" style="margin-top:10px">${free.map(u=>`<button class="choice" data-action="move-to-unit" data-kind="${u.kind}" data-id="${u.id}" data-src-kind="${kind}" data-src-id="${id}"><b>${esc(u.name)}</b><div class="tiny">${u.seats} seats · ${esc(shortArea(u.area))}</div></button>`).join('')}</div>`)}
-function executeMove(srcKind,srcId,dstKind,dstId){const src=srcKind==='group'?state.groups.find(g=>g.id===srcId):state.tables.find(t=>t.id===srcId);if(!src?.guest)return;const guest=clone(src.guest),start=src.start;if(dstKind==='table'){const t=state.tables.find(x=>x.id===dstId);if(!t||t.status!=='free')return;t.status='dining';t.statusChangedAt=start||Date.now();t.guest=guest;t.start=start}else{const g=state.groups.find(x=>x.id===dstId);if(!g||g.status!=='free')return;g.status='dining';g.statusChangedAt=start||Date.now();g.guest=guest;g.start=start;g.tableIds.forEach(tid=>{const t=state.tables.find(x=>x.id===tid);if(t)t.status='dining'})}if(srcKind==='table'){const t=state.tables.find(x=>x.id===srcId);t.status='free';t.statusChangedAt=Date.now();t.guest=null;t.start=null}else{freeGroup(src);return}logEvent('moveGuest','Guest moved',dstKind,dstId,dstKind==='group'?groupInfo(state.groups.find(x=>x.id===dstId)).name:state.tables.find(x=>x.id===dstId).name,guest.name);save();closeModal();renderAll();toast('Guest moved')}
+function executeMove(srcKind,srcId,dstKind,dstId){const src=srcKind==='group'?state.groups.find(g=>g.id===srcId):state.tables.find(t=>t.id===srcId);if(!src?.guest)return;const guest=clone(src.guest),start=src.start;if(dstKind==='table'){const t=state.tables.find(x=>x.id===dstId);if(!t||t.status!=='free')return;t.status='dining';t.statusChangedAt=start||Date.now();t.guest=guest;t.start=start}else{const g=state.groups.find(x=>x.id===dstId);if(!g||g.status!=='free')return;g.status='dining';g.statusChangedAt=start||Date.now();g.guest=guest;g.start=start;g.tableIds.forEach(tid=>{const t=state.tables.find(x=>x.id===tid);if(t){t.status='dining';t.statusChangedAt=start||Date.now()}})}if(srcKind==='table'){const t=state.tables.find(x=>x.id===srcId);t.status='free';t.statusChangedAt=Date.now();t.guest=null;t.start=null}else{freeGroup(src);return}logEvent('moveGuest','Guest moved',dstKind,dstId,dstKind==='group'?groupInfo(state.groups.find(x=>x.id===dstId)).name:state.tables.find(x=>x.id===dstId).name,guest.name);save();closeModal();renderAll();toast('Guest moved')}
 
 function renderManage(){const admin=isAdmin();$('#manageDenied').classList.toggle('hidden',admin);$('#manageContent').classList.toggle('hidden',!admin);if(!admin)return;$('#manageShopName').value=state.shop.name;$('#manageContactName').value=state.shop.contactName;$('#manageContactPhone').value=state.shop.contactPhone;$('#manageDining').value=String(state.shop.dining);$('#allowSharing').checked=!!state.allowSharing;$('#manageTableCount').textContent=`${state.tables.length} tables`;$('#manageTables').innerHTML=state.tables.map(t=>`<div class="manageRow"><div><b>${esc(t.name)}</b><div class="tiny muted">Series ${esc(t.series)} · ${statusLabel(t.status)}</div></div><input class="manageSeats" data-id="${t.id}" type="number" min="1" max="100" value="${t.seats}"><select class="manageArea" data-id="${t.id}">${state.areas.map(a=>`<option value="${esc(a)}" ${a===t.area?'selected':''}>${esc(a)}</option>`).join('')}</select><button class="btn sm danger" data-action="manage-del-table" data-id="${t.id}" ${t.status!=='free'||t.mergeGroup?'disabled':''}>×</button></div>`).join('');$('#manageAreas').innerHTML=state.areas.map((a,i)=>`<div class="areaItem"><div><b>${esc(a)}</b></div><button class="btn sm danger" data-action="manage-del-area" data-i="${i}" ${state.areas.length<=1?'disabled':''}>×</button></div>`).join('');$('#manageUserLimit').textContent=`${state.users.length}/${state.license.maxUsers} users`;$('#manageUsers').innerHTML=state.users.map(u=>`<div class="userItem"><div><b>${esc(u.username||u.name)}</b><div class="tiny muted">${esc(u.role)}</div></div>${u.role==='Admin'?'<span class="badge">Admin</span>':`<button class="btn sm danger" data-action="manage-del-user" data-id="${u.id}">×</button>`}</div>`).join('');renderThemeSelection();$$('.manageSeats').forEach(i=>i.addEventListener('change',()=>{const t=state.tables.find(x=>x.id===i.dataset.id);if(t&&t.status==='free'&&!t.mergeGroup){t.seats=Math.max(1,Math.min(100,Number(i.value)||1));save();renderAll()}}));$$('.manageArea').forEach(i=>i.addEventListener('change',()=>{const t=state.tables.find(x=>x.id===i.dataset.id);if(t&&t.status==='free'&&!t.mergeGroup){t.area=i.value;save();renderAll()}}))}
 $('#saveRestaurantBtn').addEventListener('click',async()=>{
@@ -1788,6 +2350,7 @@ async function loadRemoteEvents(){if(!remoteToken||!reportRange)return;remoteEve
 function renderAll(){$('#topShop').textContent=state.shop.name;const u=currentUser();$('#topUser').textContent=u?`${u.username||u.name} · ${u.role}${state.shop.contactPhone?' · '+state.shop.contactPhone:''}`:'';renderFloor();renderWait();renderManage();renderReports();renderThemeSelection()}
 function switchView(v,persist=true){
   if(!['floor','wait','reports','manage'].includes(v))v='floor';
+  if(v!=='floor'&&selectMode){selectMode=false;selected.clear();document.body.classList.remove('selectionMode')}
   currentPage=v;
   ['floor','wait','reports','manage'].forEach(x=>$('#'+x+'View').classList.toggle('hidden',x!==v));
   $$('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.view===v));
@@ -1852,6 +2415,7 @@ function openReservationPicker(){
 }
 function goHome(){
   closeQuickMenu();
+  if(selectMode){selectMode=false;selected.clear();document.body.classList.remove('selectionMode')}
   if(state.statusFilter==='waiting'){
     state.statusFilter='all';
     cacheLocal();
