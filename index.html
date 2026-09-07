@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-title" content="TablePing">
 
 
-<title>TablePing v1.3.3 — Supabase</title>
+<title>TablePing v1.3.4 — Supabase</title>
 <style>
 :root{
   --primary:#20312b;--secondary:#a9c7b7;--psoft:#eef3f0;--ssoft:#f1f6f3;
@@ -407,6 +407,105 @@ body.offlineMode #appScreen textarea{pointer-events:none;opacity:.72}
   .wrap{padding-bottom:78px!important}
 }
 
+
+/* v1.3.4 — table cards are status surfaces, not white cards with tiny badges */
+.tile::after{display:none!important}
+.tile{
+  min-height:104px!important;
+  border-width:1px!important;
+  border-radius:14px!important;
+  padding:10px 10px 9px!important;
+  box-shadow:none!important;
+}
+.tile.free{background:#f1f8f3!important;border-color:#d5e7da!important}
+.tile.dining{background:#eef4fb!important;border-color:#d5e2f0!important}
+.tile.reserved{background:#fff8e9!important;border-color:#eedfb9!important}
+.tile.cleaning{background:#f6f1fa!important;border-color:#e3d8ee!important}
+.tile:hover{box-shadow:0 5px 16px rgba(31,48,41,.055)!important;filter:saturate(1.02)}
+.tile.selected{box-shadow:0 0 0 2px var(--primary)!important}
+.tname{font-size:15px!important;line-height:1!important;font-weight:950!important;letter-spacing:-.025em!important}
+.tileStatus{
+  display:inline-flex!important;align-items:center;gap:3px;
+  font-size:8px!important;line-height:1!important;font-weight:900!important;
+  padding:4px 6px!important;
+  border:1px solid rgba(0,0,0,.035)!important;
+  background:rgba(255,255,255,.58)!important;
+  backdrop-filter:blur(6px);
+}
+.tileStatus em{font-style:normal;font-weight:800;opacity:.78;font-size:7.5px}
+.tileStatus.free{color:#39704a!important}
+.tileStatus.dining{color:#3f6692!important}
+.tileStatus.reserved{color:#81601e!important}
+.tileStatus.cleaning{color:#705587!important}
+.seatCenter{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:2px!important;min-height:48px!important;margin:3px 0 1px!important}
+.compactUse{display:flex;align-items:baseline;justify-content:center;gap:5px}
+.compactUse b{font-size:20px!important;line-height:1!important;font-weight:950!important;letter-spacing:-.045em!important}
+.compactUse span{font-size:8px!important;line-height:1!important;font-weight:900!important;text-transform:uppercase;letter-spacing:.085em!important;color:#77817c!important}
+.compactFree{font-size:9px!important;line-height:1!important;font-weight:800!important;color:#7d8782!important;margin-top:3px}
+.compactBar{height:3px!important;width:52px!important;margin-top:7px!important;background:rgba(255,255,255,.65)!important}
+.free .capacityFill{background:#55906a!important}
+.dining .capacityFill{background:#6487b8!important}
+.reserved .capacityFill{background:#b98a35!important}
+.cleaning .capacityFill{background:#806aa2!important}
+.tileBottom{margin-top:auto!important;padding-top:4px!important}
+.tmeta{font-size:9px!important;font-weight:650!important;color:#6f7a74!important}
+.sharedTag{font-size:7.5px!important;background:rgba(255,255,255,.7)!important}
+.groupCapacity{display:none!important}
+.groupFree{display:none!important}
+.groupTile .compactUse{margin-top:4px}
+.groupTile .compactFree{text-align:center}
+.groupNames{font-size:13px!important;line-height:1.15!important;margin-top:4px!important}
+.groupLabel{font-size:7.5px!important}
+.groupFoot{font-size:8.5px!important;color:#707a75!important}
+.tableListRow.free{background:#f1f8f3!important;border-color:#d5e7da!important}
+.tableListRow.dining{background:#eef4fb!important;border-color:#d5e2f0!important}
+.tableListRow.reserved{background:#fff8e9!important;border-color:#eedfb9!important}
+.tableListRow.cleaning{background:#f6f1fa!important;border-color:#e3d8ee!important}
+.tableListRow::before{display:none!important}
+.statusTag{font-size:8px!important;background:rgba(255,255,255,.62)!important}
+
+/* Keep tiles readable on phones: two columns, less visual noise */
+@media(max-width:640px){
+  .floorgrid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important}
+  .tile{min-height:100px!important;padding:9px!important}
+  .tname{font-size:14px!important}
+  .compactUse b{font-size:18px!important}
+  .tileStatus{font-size:7.5px!important;padding:3px 5px!important}
+  .tileStatus em{font-size:7px!important}
+  .tmeta{font-size:8.5px!important}
+}
+
+
+:root{--tp-keyboard:0px}
+.bottomDock{bottom:var(--tp-keyboard)!important}
+body.composerFocused .guestComposer{
+  grid-template-columns:minmax(0,1fr) 36px!important;
+  min-height:44px!important;
+  border-radius:22px!important;
+  padding:3px 5px 3px 10px!important
+}
+body.composerFocused .composerHome,
+body.composerFocused .composerMore{display:none!important}
+body.composerFocused .guestComposer input{
+  min-height:36px!important;
+  font-size:14px!important;
+  padding:5px 4px!important
+}
+body.composerFocused .bottomDock{
+  padding:4px 7px calc(5px + env(safe-area-inset-bottom))!important
+}
+body.composerFocused .quickMenu{display:none!important}
+@media(max-width:640px){
+  .guestComposer{
+    min-height:46px!important;
+    grid-template-columns:32px 32px minmax(0,1fr) 34px!important;
+    padding:4px 5px!important
+  }
+  .composerIcon{width:32px!important;height:32px!important}
+  .composerSend{width:34px!important;height:34px!important}
+  .guestComposer input{min-height:34px!important;font-size:12.5px!important}
+}
+
 </style>
 </head>
 <body>
@@ -570,7 +669,7 @@ E8-4 seats</textarea></label>
 <!-- APP -->
 <div id="appScreen" class="hidden">
 <header class="topbar"><div class="topin">
-  <div class="row grow"><button id="brandHomeBtn" class="brandHome" type="button" aria-label="Home" title="Home"><span class="logo" style="width:28px;height:28px;border-radius:9px">T</span></button><div class="grow"><div id="topShop" class="shop"></div><div id="topUser" class="sub"></div><div class="tiny muted">My view · v1.3.3</div></div></div>
+  <div class="row grow"><button id="brandHomeBtn" class="brandHome" type="button" aria-label="Home" title="Home"><span class="logo" style="width:28px;height:28px;border-radius:9px">T</span></button><div class="grow"><div id="topShop" class="shop"></div><div id="topUser" class="sub"></div><div class="tiny muted">My view · v1.3.4</div></div></div>
   <div class="row">
     <button id="saveBtn" class="syncChip syncing" title="Refresh latest data"><span class="syncDot"></span><span id="syncText">Connecting</span></button>
     <button id="logoutTopBtn" class="btn sm">Log out</button>
@@ -674,7 +773,7 @@ E8-4 seats</textarea></label>
       <button id="moreDockBtn" class="composerIcon composerMore" type="button" aria-label="More options" aria-expanded="false" title="More">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
       </button>
-      <input id="quickGuest" autocomplete="off" enterkeyhint="send" aria-label="Quick add guest" placeholder="Add guest… e.g. John 4">
+      <input id="quickGuest" autocomplete="off" enterkeyhint="send" aria-label="Quick add guest" placeholder="Add guest… John 4">
       <button id="quickSendBtn" class="composerSend" type="submit" aria-label="Add guest" title="Add guest" disabled>
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5m-6 6 6-6 6 6"/></svg>
       </button>
@@ -685,7 +784,7 @@ E8-4 seats</textarea></label>
 
 
 <div id="publicFooter" class="publicFooter">
-  v1.3.3<span>·</span>Powered by
+  v1.3.4<span>·</span>Powered by
   <a href="https://www.letmedoit.in" target="_blank" rel="noopener">LetMeDoIt</a>
 </div>
 
@@ -705,7 +804,7 @@ const base={activated:false,setup:false,locked:true,selectedUser:null,license:{r
 let state=load(),setupStep=1,toastTimer=null,selectMode=false,selected=new Set(),reportRange=null;
 const SB_URL='https://bfmsoerewmiqianxmcck.supabase.co';
 const SB_KEY='sb_publishable_v8jc47i36pfQIkQ2gXC0MA_V0hWBld9';
-const APP_VERSION='1.3.3';
+const APP_VERSION='1.3.4';
 let remoteToken=sessionStorage.getItem('tp_remote_token')||'';
 let remoteRevision=0;
 let remoteEvents=[];
@@ -934,6 +1033,9 @@ function mergeRemotePayload(d,applyPrefs=false){
   state.wait=Array.isArray(rs.wait)?rs.wait:[];
   state.seatAllocations=Array.isArray(rs.seatAllocations)?rs.seatAllocations:[];
   state.guests=Number(rs.guests)||0;
+  const fallbackNow=Date.now();
+  state.tables.forEach(t=>{if(!t.statusChangedAt&&t.status==='free')t.statusChangedAt=fallbackNow});
+  state.groups.forEach(g=>{if(!g.statusChangedAt&&g.status==='free')g.statusChangedAt=fallbackNow});
   if(state.activeArea!=='All'&&!state.areas.includes(state.activeArea)){
     state.activeArea='All';
     queuePreferenceSave();
@@ -1036,7 +1138,7 @@ function usedSeats(tableId){return activeAllocsForTable(tableId).reduce((sum,a)=
 function freeSeats(tableId){const t=state.tables.find(x=>x.id===tableId);return t?Math.max(0,t.seats-usedSeats(tableId)):0}
 function allocationParties(tableId){return activeAllocsForTable(tableId).map(a=>({id:a.id,name:a.name,party:a.party,seats:a.shares.find(x=>x.tableId===tableId)?.seats||0,startedAt:a.startedAt}))}
 function removeAllocation(id,after='free'){const a=state.seatAllocations.find(x=>x.id===id);if(!a)return;const tids=a.shares.map(x=>x.tableId);a.active=false;tids.forEach(tid=>{const t=state.tables.find(x=>x.id===tid);if(!t)return;t.status=usedSeats(tid)>0?'dining':after});logEvent('endParty','Party ended','party',a.id,a.name,`${a.party} people`);save();renderAll()}
-function makeAllocation(name,party,shares,sourceGuestId=''){const a={id:uid('sa'),partyId:sourceGuestId||uid('p'),name,party:Number(party)||1,shares:shares.filter(x=>x.seats>0),startedAt:Date.now(),active:true};state.seatAllocations.push(a);a.shares.forEach(x=>{const t=state.tables.find(v=>v.id===x.tableId);if(t){t.status='dining';t.guest=null;t.start=null}});return a}
+function makeAllocation(name,party,shares,sourceGuestId=''){const a={id:uid('sa'),partyId:sourceGuestId||uid('p'),name,party:Number(party)||1,shares:shares.filter(x=>x.seats>0),startedAt:Date.now(),active:true};state.seatAllocations.push(a);a.shares.forEach(x=>{const t=state.tables.find(v=>v.id===x.tableId);if(t){t.status='dining';t.guest=null;t.start=null;t.statusChangedAt=a.startedAt}});return a}
 function tableAvailableSeats(t){if(t.status==='free')return t.seats;if(state.allowSharing&&t.status==='dining')return freeSeats(t.id);return 0}
 
 
@@ -1125,7 +1227,7 @@ function addArea(name){name=(name||'').trim();if(!name||state.areas.some(a=>a.to
 $$('.areaPreset').forEach(b=>b.addEventListener('click',()=>addArea(b.dataset.name)));
 $('#addAreaSetupBtn').addEventListener('click',()=>openAreaModal(addArea));
 
-function parseTables(text){const seen=new Set(state.tables.map(t=>t.name.toLowerCase())),out=[];text.split(/\n+/).forEach(raw=>{const line=raw.trim();if(!line)return;const clean=line.replace(/seats?|persons?|pax/gi,'').trim();const m=clean.match(/^([A-Za-z0-9 _-]+?)\s*[-,:=]\s*(\d+)\s*$/)||clean.match(/^([A-Za-z]+\d+)\s+(\d+)$/);if(!m)return;const name=m[1].trim(),seats=Math.max(1,Math.min(100,Number(m[2]))),series=(name.match(/^([A-Za-z]+)/)||[])[1]?.toUpperCase()||'MAIN';if(seen.has(name.toLowerCase()))return;seen.add(name.toLowerCase());out.push({id:uid('t'),name,seats,series,area:state.areas[0]||'Main',status:'free',guest:null,start:null,reservation:null,mergeGroup:null})});return out}
+function parseTables(text){const seen=new Set(state.tables.map(t=>t.name.toLowerCase())),out=[];text.split(/\n+/).forEach(raw=>{const line=raw.trim();if(!line)return;const clean=line.replace(/seats?|persons?|pax/gi,'').trim();const m=clean.match(/^([A-Za-z0-9 _-]+?)\s*[-,:=]\s*(\d+)\s*$/)||clean.match(/^([A-Za-z]+\d+)\s+(\d+)$/);if(!m)return;const name=m[1].trim(),seats=Math.max(1,Math.min(100,Number(m[2]))),series=(name.match(/^([A-Za-z]+)/)||[])[1]?.toUpperCase()||'MAIN';if(seen.has(name.toLowerCase()))return;seen.add(name.toLowerCase());out.push({id:uid('t'),name,seats,series,area:state.areas[0]||'Main',status:'free',guest:null,start:null,reservation:null,mergeGroup:null,statusChangedAt:Date.now()})});return out}
 $('#detectBtn').addEventListener('click',()=>{state.tables=[];const t=parseTables($('#tablePaste').value);if(!t.length)return message($('#detectMsg'),'No tables found. Try A1-6 seats.','bad');state.tables=t;save();message($('#detectMsg'),`${t.length} tables detected.`,'good');renderSeriesMap();renderPreview()});
 function seriesGroups(){const g={};state.tables.forEach(t=>g[t.series]=(g[t.series]||0)+1);return g}
 function renderSeriesMap(){$('#seriesCard').classList.remove('hidden');const g=seriesGroups();$('#seriesMap').innerHTML=Object.keys(g).sort().map(s=>`<div class="seriesItem"><div><b>Series ${esc(s)}</b><div class="tiny muted">${g[s]} tables</div></div><select class="seriesArea" data-series="${esc(s)}">${state.areas.map(a=>`<option value="${esc(a)}" ${state.tables.find(t=>t.series===s)?.area===a?'selected':''}>${esc(a)}</option>`).join('')}</select></div>`).join('');$$('.seriesArea').forEach(sel=>sel.addEventListener('change',()=>{state.tables.filter(t=>t.series===sel.dataset.series).forEach(t=>t.area=sel.value);save();renderPreview()}))}
@@ -1235,16 +1337,83 @@ $('#loginBtn').addEventListener('click',async()=>{
 
 function validGroups(){return state.groups.filter(g=>Array.isArray(g.tableIds)&&g.tableIds.length>=2&&g.tableIds.every(id=>state.tables.some(t=>t.id===id)))}
 function groupInfo(g){const ts=g.tableIds.map(id=>state.tables.find(t=>t.id===id)).filter(Boolean);return{name:ts.map(t=>t.name).join(' + '),seats:ts.reduce((a,t)=>a+t.seats,0),area:ts.every(t=>t.area===ts[0]?.area)?ts[0]?.area:'Mixed',series:[...new Set(ts.map(t=>t.series))].join('/')}}
-function displayUnits(){const physical=state.tables.filter(t=>!t.mergeGroup).map(t=>{const used=usedSeats(t.id),free=Math.max(0,t.seats-used);return{kind:'table',id:t.id,name:t.name,seats:t.seats,usedSeats:used,freeSeats:free,area:t.area,status:used>0?'dining':t.status,guest:t.guest,start:t.start,reservation:t.reservation,series:t.series,shared:used>0&&free>0}});const groups=state.groups.map(g=>{const i=groupInfo(g),used=(g.tableIds||[]).reduce((a,id)=>a+usedSeats(id),0),free=(g.tableIds||[]).reduce((a,id)=>a+freeSeats(id),0),members=(g.tableIds||[]).map(id=>state.tables.find(t=>t.id===id)?.name).filter(Boolean);return{kind:'group',id:g.id,name:i.name,members,seats:i.seats,usedSeats:used,freeSeats:free,area:i.area,status:used>0?'dining':g.status,guest:g.guest,start:g.start,reservation:g.reservation,series:i.series,shared:used>0&&free>0}});return[...groups,...physical]}
+function displayUnits(){const physical=state.tables.filter(t=>!t.mergeGroup).map(t=>{const used=usedSeats(t.id),free=Math.max(0,t.seats-used);return{kind:'table',id:t.id,name:t.name,seats:t.seats,usedSeats:used,freeSeats:free,area:t.area,status:used>0?'dining':t.status,guest:t.guest,start:t.start,reservation:t.reservation,series:t.series,shared:used>0&&free>0,statusChangedAt:t.statusChangedAt}});const groups=state.groups.map(g=>{const i=groupInfo(g),used=(g.tableIds||[]).reduce((a,id)=>a+usedSeats(id),0),free=(g.tableIds||[]).reduce((a,id)=>a+freeSeats(id),0),members=(g.tableIds||[]).map(id=>state.tables.find(t=>t.id===id)?.name).filter(Boolean);return{kind:'group',id:g.id,name:i.name,members,seats:i.seats,usedSeats:used,freeSeats:free,area:i.area,status:used>0?'dining':g.status,guest:g.guest,start:g.start,reservation:g.reservation,series:i.series,shared:used>0&&free>0,statusChangedAt:g.statusChangedAt}});return[...groups,...physical]}
 function counts(){const all=displayUnits();return{all:all.length,free:all.filter(x=>x.status==='free').length,dining:all.filter(x=>x.status==='dining').length,reserved:all.filter(x=>x.status==='reserved').length,cleaning:all.filter(x=>x.status==='cleaning').length,busy:all.filter(x=>x.status!=='free').length}}
 function reservationLabel(r){if(!r)return'Reserved';return [r.name,r.time].filter(Boolean).join(' · ')||'Reserved'}
+
+function compactDuration(ts){
+  if(!ts)return'';
+  const m=Math.max(0,Math.floor((Date.now()-Number(ts))/60000));
+  if(m<1)return'Now';
+  if(m<60)return`${m}m`;
+  const h=Math.floor(m/60),rm=m%60;
+  return rm?`${h}h ${rm}m`:`${h}h`;
+}
+function formatTableTime(v){
+  if(!v)return'';
+  const p=String(v).split(':').map(Number);
+  if(p.length<2||Number.isNaN(p[0]))return String(v);
+  const h=p[0],m=p[1],ap=h>=12?'PM':'AM',hh=((h+11)%12)+1;
+  return `${hh}:${String(m).padStart(2,'0')} ${ap}`;
+}
+function unitStatusStart(u){
+  if(u.status==='dining'){
+    if(u.kind==='table'){
+      const starts=activeAllocsForTable(u.id).map(a=>Number(a.startedAt)).filter(Boolean);
+      return starts.length?Math.min(...starts):(u.start||u.statusChangedAt);
+    }
+    const g=state.groups.find(x=>x.id===u.id);
+    const starts=(g?.tableIds||[]).flatMap(id=>activeAllocsForTable(id).map(a=>Number(a.startedAt))).filter(Boolean);
+    return starts.length?Math.min(...starts):(u.start||u.statusChangedAt);
+  }
+  return u.statusChangedAt||u.start||0;
+}
+function statusTimeText(u){
+  if(u.status==='reserved'&&u.reservation?.time)return formatTableTime(u.reservation.time);
+  return compactDuration(unitStatusStart(u));
+}
+
 function compactMembers(u){const a=u.members||[];if(a.length<=3)return a.join(' + ')||u.name;return`${a[0]} + ${a[1]} +${a.length-2}`}
-function tileHTML(u){const used=u.usedSeats||0,free=u.freeSeats??u.seats,pct=u.seats?Math.min(100,Math.round(used/u.seats*100)):0;if(u.kind==='group'){const cap=u.status==='free'?`${u.seats}`:`${used}/${u.seats}`;return`<button class="tile groupTile ${u.status} ${selected.has('group:'+u.id)?'selected':''}" data-action="open-unit" data-kind="group" data-id="${u.id}"><div class="groupTileTop"><span class="groupLabel">Combined</span><span class="tileStatus ${u.status}">${statusLabel(u.status)}</span></div><div class="groupNames">${esc(compactMembers(u))}</div><div class="groupCapacity"><b>${cap}</b><span>${u.status==='free'?'seats':'in use'}</span></div>${u.status!=='free'?`<div class="groupFree">${free} free</div>`:''}<div class="capacityBar" style="width:72px;align-self:center"><div class="capacityFill" style="width:${pct}%"></div></div><div class="groupFoot"><span>${esc(shortArea(u.area))}</span><span>${u.members?.length||0} tables</span></div></button>`}const center=u.status==='free'?`<span class="seatNum">${u.seats}</span><span class="seatLabel">seats</span>`:`<span class="seatNum">${used}/${u.seats}</span><span class="seatLabel">in use</span><span class="occupancy">${free} free</span>`;const extra=u.status==='reserved'?esc(reservationLabel(u.reservation)):u.status==='cleaning'?'Cleaning':u.shared&&state.allowSharing?'Shared':'';return`<button class="tile ${u.status} ${selected.has('table:'+u.id)?'selected':''}" data-action="open-unit" data-kind="table" data-id="${u.id}"><div class="trow"><span class="tname">${esc(u.name)}</span><span class="tileStatus ${u.status}">${statusLabel(u.status)}</span></div><div class="seatCenter">${center}<div class="capacityBar"><div class="capacityFill" style="width:${pct}%"></div></div></div><div class="tileBottom"><span class="tmeta">${esc(shortArea(u.area))}</span>${extra?`<span class="${u.shared?'sharedTag':'guestLine'}">${extra}</span>`:''}</div></button>`}
+function tileHTML(u){
+  const used=u.usedSeats||0,free=u.freeSeats??u.seats,pct=u.seats?Math.min(100,Math.round(used/u.seats*100)):0;
+  const st=statusTimeText(u);
+  const status=`<span class="tileStatus ${u.status}">${statusLabel(u.status)}${st?`<em>· ${st}</em>`:''}</span>`;
+  if(u.kind==='group'){
+    const cap=u.status==='free'?`${u.seats}`:`${used} / ${u.seats}`;
+    return`<button class="tile groupTile ${u.status} ${selected.has('group:'+u.id)?'selected':''}" data-action="open-unit" data-kind="group" data-id="${u.id}">
+      <div class="groupTileTop"><span class="groupLabel">Combined</span>${status}</div>
+      <div class="groupNames">${esc(compactMembers(u))}</div>
+      <div class="compactUse"><b>${cap}</b><span>${u.status==='free'?'seats':'in use'}</span></div>
+      ${u.status!=='free'?`<div class="compactFree">${free} free</div>`:''}
+      <div class="capacityBar compactBar"><div class="capacityFill" style="width:${pct}%"></div></div>
+      <div class="groupFoot"><span>${esc(shortArea(u.area))}</span><span>${u.members?.length||0} tables</span></div>
+    </button>`;
+  }
+  const center=u.status==='free'
+    ?`<div class="compactUse"><b>${u.seats}</b><span>seats</span></div>`
+    :`<div class="compactUse"><b>${used} / ${u.seats}</b><span>in use</span></div><div class="compactFree">${free} free</div>`;
+  const extra=u.shared&&state.allowSharing?'Shared':'';
+  return`<button class="tile ${u.status} ${selected.has('table:'+u.id)?'selected':''}" data-action="open-unit" data-kind="table" data-id="${u.id}">
+    <div class="trow"><span class="tname">${esc(u.name)}</span>${status}</div>
+    <div class="seatCenter">${center}<div class="capacityBar compactBar"><div class="capacityFill" style="width:${pct}%"></div></div></div>
+    <div class="tileBottom"><span class="tmeta">${esc(shortArea(u.area))}</span>${extra?`<span class="sharedTag">${extra}</span>`:''}</div>
+  </button>`;
+}
 function statusLabel(s){return s==='reserved'?'Reserved':s==='dining'?'Dining':s==='cleaning'?'Cleaning':'Free'}
-function listHTML(u){const used=u.usedSeats||0,free=u.freeSeats??u.seats;if(u.kind==='group'){const sub=u.status==='free'?`${u.seats} seats available`:`${used}/${u.seats} in use · ${free} free`;return`<button class="tableListRow ${u.status} ${selected.has('group:'+u.id)?'selected':''}" data-action="open-unit" data-kind="group" data-id="${u.id}"><div class="groupListName">${esc(compactMembers(u))}</div><div class="listMain"><div class="listArea">Combined · ${esc(shortArea(u.area))}</div><div class="listOccupancy">${sub}</div><div class="groupListMeta">${u.members?.length||0} physical tables</div></div><span class="statusTag ${u.status}">${statusLabel(u.status)}</span></button>`}const sub=u.status==='reserved'?esc(reservationLabel(u.reservation)):u.status==='cleaning'?'Waiting for cleanup':u.status==='dining'?`${used}/${u.seats} in use · ${free} free`:`Series ${esc(u.series)}`;return`<button class="tableListRow ${u.status} ${selected.has('table:'+u.id)?'selected':''}" data-action="open-unit" data-kind="table" data-id="${u.id}"><div class="listName">${esc(u.name)}</div><div class="listMain"><div class="listArea">${esc(shortArea(u.area))}</div><div class="listOccupancy">${sub}</div><div class="listCapacity">${u.seats} total seats</div></div><span class="statusTag ${u.status}">${statusLabel(u.status)}</span></button>`}
+function listHTML(u){
+  const used=u.usedSeats||0,free=u.freeSeats??u.seats,st=statusTimeText(u);
+  const tag=`<span class="statusTag ${u.status}">${statusLabel(u.status)}${st?` · ${st}`:''}</span>`;
+  if(u.kind==='group'){
+    const sub=u.status==='free'?`${u.seats} seats available`:`${used}/${u.seats} in use · ${free} free`;
+    return`<button class="tableListRow ${u.status} ${selected.has('group:'+u.id)?'selected':''}" data-action="open-unit" data-kind="group" data-id="${u.id}"><div class="groupListName">${esc(compactMembers(u))}</div><div class="listMain"><div class="listArea">Combined · ${esc(shortArea(u.area))}</div><div class="listOccupancy">${sub}</div><div class="groupListMeta">${u.members?.length||0} physical tables</div></div>${tag}</button>`;
+  }
+  const sub=u.status==='reserved'?esc(reservationLabel(u.reservation)):u.status==='cleaning'?'Waiting for cleanup':u.status==='dining'?`${used}/${u.seats} in use · ${free} free`:`${u.seats} seats available`;
+  return`<button class="tableListRow ${u.status} ${selected.has('table:'+u.id)?'selected':''}" data-action="open-unit" data-kind="table" data-id="${u.id}"><div class="listName">${esc(u.name)}</div><div class="listMain"><div class="listArea">${esc(shortArea(u.area))}</div><div class="listOccupancy">${sub}</div><div class="listCapacity">${u.seats} total seats</div></div>${tag}</button>`;
+}
 $('#loginPin').addEventListener('keydown',e=>{if(e.key==='Enter')$('#loginBtn').click()});
 $('#loginUsername').addEventListener('keydown',e=>{if(e.key==='Enter')$('#loginPin').focus()});
 
+let floorClockTimer=setInterval(()=>{if(remoteToken&&currentPage==='floor'&&!document.hidden)renderFloor()},30000);
 function renderFloor(){const c=counts();$('#mAll').textContent=c.all;$('#mFree').textContent=c.free;$('#mDining').textContent=c.dining;$('#mReserved').textContent=c.reserved;$('#mCleaning').textContent=c.cleaning;$('#mWaiting').textContent=state.wait.length;$$('[data-status-filter]').forEach(b=>b.classList.toggle('active',b.dataset.statusFilter===state.statusFilter));$('#statusHint').textContent=state.statusFilter==='all'?'All tables':state.statusFilter==='waiting'?'Waiting guests':statusLabel(state.statusFilter);const areas=['All',...state.areas];if(!areas.includes(state.activeArea))state.activeArea='All';$('#areaChips').innerHTML=areas.map(a=>`<button class="chip ${state.activeArea===a?'active':''}" data-action="area-filter" data-area="${esc(a)}">${esc(a)}</button>`).join('');let all=displayUnits().filter(u=>state.activeArea==='All'||u.area===state.activeArea);if(state.statusFilter!=='all'&&state.statusFilter!=='waiting')all=all.filter(u=>u.status===state.statusFilter);const groups=all.filter(u=>u.kind==='group'),tables=all.filter(u=>u.kind==='table'),list=state.floorMode==='list';$('#combinedBox').classList.toggle('hidden',!groups.length);$('#combinedCount').textContent=groups.length;$('#combinedTiles').innerHTML=groups.map(tileHTML).join('');$('#combinedList').innerHTML=groups.map(listHTML).join('');$('#floorGrid').innerHTML=tables.length?tables.map(tileHTML).join(''):'<div class="notice" style="grid-column:1/-1">No tables match this filter.</div>';$('#floorList').innerHTML=tables.length?tables.map(listHTML).join(''):'<div class="notice">No tables match this filter.</div>';$('#physicalCount').textContent=`${tables.length} shown`;$('#combinedTiles').classList.toggle('hidden',list);$('#combinedList').classList.toggle('hidden',!list);$('#floorGrid').classList.toggle('hidden',list);$('#floorList').classList.toggle('hidden',!list);$('#tileModeBtn').classList.toggle('active',!list);$('#listModeBtn').classList.toggle('active',list);$('#selectBtn').textContent=selectMode?'Done':'Select';$('#bulkBar').classList.toggle('hidden',!selectMode);$('#selectedCount').textContent=selected.size}
 $('#tileModeBtn').addEventListener('click',()=>{state.floorMode='tile';cacheLocal();queuePreferenceSave();renderFloor()});$('#listModeBtn').addEventListener('click',()=>{state.floorMode='list';cacheLocal();queuePreferenceSave();renderFloor()});
 
@@ -1252,6 +1421,27 @@ function minutes(ts){return ts?Math.max(0,Math.floor((Date.now()-ts)/60000)):0}
 function parseGuest(text){const phone=text.match(/(?:\+?91[-\s]?)?[6-9]\d{9}/)?.[0]||'';const nums=[...text.matchAll(/\b(\d{1,2})\b/g)].map(m=>Number(m[1])).filter(n=>n>0&&n<=30);const party=nums.length?nums[nums.length-1]:2;let name=text;if(phone)name=name.replace(phone,' ');nums.forEach(n=>name=name.replace(new RegExp(`\\b${n}\\b`),' '));name=name.replace(/\b(people|persons|pax|guests?)\b/gi,' ').replace(/\s+/g,' ').trim()||'Guest';return{id:uid('g'),name,phone,party,added:Date.now()}}
 function addGuest(g){state.wait.push(g);logEvent('addGuest','Guest added to waitlist','guest',g.id,g.name,`${g.party} people`);save();renderAll();openAllocation(g.id)}
 const quickGuestInput=$('#quickGuest'),quickSendBtn=$('#quickSendBtn');
+
+function syncComposerViewport(){
+  const vv=window.visualViewport;
+  let offset=0;
+  if(vv){
+    offset=Math.max(0,Math.round(window.innerHeight-vv.height-vv.offsetTop));
+    // Ignore browser chrome changes; treat only a real keyboard-sized reduction as keyboard.
+    if(offset<90)offset=0;
+  }
+  document.documentElement.style.setProperty('--tp-keyboard',offset+'px');
+  const focused=document.activeElement===quickGuestInput;
+  document.body.classList.toggle('composerFocused',focused);
+}
+if(window.visualViewport){
+  visualViewport.addEventListener('resize',syncComposerViewport);
+  visualViewport.addEventListener('scroll',syncComposerViewport);
+}
+quickGuestInput.addEventListener('focus',()=>{closeQuickMenu();syncComposerViewport()});
+quickGuestInput.addEventListener('blur',()=>setTimeout(syncComposerViewport,40));
+window.addEventListener('orientationchange',()=>setTimeout(syncComposerViewport,250));
+
 function updateQuickSend(){
   if(!quickGuestInput||!quickSendBtn)return;
   quickSendBtn.disabled=!quickGuestInput.value.trim()||isOffline();
@@ -1263,7 +1453,9 @@ $('#quickGuestForm').addEventListener('submit',e=>{
   if(!v||isOffline()){if(isOffline())offlineNotice();return}
   quickGuestInput.value='';
   updateQuickSend();
-  addGuest(parseGuest(v));
+  quickGuestInput.blur();
+  syncComposerViewport();
+  setTimeout(()=>addGuest(parseGuest(v)),90);
 });
 updateQuickSend();
 $('#guestTopBtn').addEventListener('click',openGuestModal);$('#guestWaitBtn').addEventListener('click',openGuestModal);
@@ -1279,29 +1471,29 @@ function allocateSingleGuest(g,tableId,source='wait'){const t=state.tables.find(
 function seatOnUnit(gid,kind,id){const g=state.wait.find(x=>x.id===gid);if(!g)return;if(kind==='table')return allocateSingleGuest(g,id,'wait');return openGroupSeatAllocator(gid,id)}
 function seatCombo(gid,ids){const g=state.wait.find(x=>x.id===gid);if(!g)return;let chosen=ids.map(id=>state.tables.find(t=>t.id===id)).filter(Boolean).map(t=>t.id);if(chosen.length<2)return;let vals=Object.fromEntries(chosen.map(id=>[id,tableAvailableSeats(state.tables.find(t=>t.id===id))]));function draw(){const cap=chosen.reduce((a,id)=>a+tableAvailableSeats(state.tables.find(t=>t.id===id)),0);openModal('Allocate Combined Seats',`<div class="seatInfo"><div class="seatInfoTitle">${g.party} guest${g.party===1?'':'s'} · ${cap} seats selected</div><div class="seatInfoText">All selected seats are in use by default. ${state.allowSharing?'Use − to release unused seats.':'Enable table sharing in Manage to release unused seats.'} Remove a table with ×.</div></div>${allocatorHTML(chosen,g.party,vals)}<div class="floatingActions"><button class="btn" id="allocCancel">Back</button><button class="btn primary" id="allocSeat">Seat Party</button></div>`);wireAllocator(chosen,g.party,vals,id=>{if(chosen.length<=2)return toast('Keep at least 2 tables');chosen=chosen.filter(x=>x!==id);vals=Object.fromEntries(chosen.map(tid=>[tid,tableAvailableSeats(state.tables.find(t=>t.id===tid))]));draw()});$('#allocCancel').onclick=()=>openAllocation(gid);$('#allocSeat').onclick=()=>{const shares=chosen.map(id=>({tableId:id,seats:Number(vals[id]||0)})).filter(x=>x.seats>0),total=shares.reduce((a,x)=>a+x.seats,0);if(total<g.party)return toast(`Keep at least ${g.party} seats in use`);const gr={id:uid('mg'),tableIds:[...chosen],status:'dining',guest:null,start:null,reservation:null,seatPlan:shares};state.groups.push(gr);chosen.forEach(id=>{const t=state.tables.find(x=>x.id===id);if(t)t.mergeGroup=gr.id});makeAllocation(g.name,g.party,shares,g.id);state.wait=state.wait.filter(x=>x.id!==gid);state.guests+=g.party;logEvent('seatCombo','Tables combined & guest seated','group',gr.id,groupInfo(gr).name,`${g.name} · ${g.party} guests · ${total} seats in use`);save();closeModal();renderAll()}}draw()}
 
-function openGroupSeatAllocator(gid,groupId){const g=state.wait.find(x=>x.id===gid),gr=state.groups.find(x=>x.id===groupId);if(!g||!gr)return;let ids=[...gr.tableIds],vals=Object.fromEntries(ids.map(id=>[id,state.tables.find(t=>t.id===id)?.seats||0]));function draw(){const cap=ids.reduce((a,id)=>a+(state.tables.find(t=>t.id===id)?.seats||0),0);openModal('Allocate Combined Seats',`<div class="seatInfo"><div class="seatInfoTitle">${g.party} guest${g.party===1?'':'s'} · ${cap} seats selected</div><div class="seatInfoText">Combined tables are fully occupied by default. ${state.allowSharing?'Use − to release unused seats.':'Enable table sharing in Manage to release unused seats.'} Remove a table with ×.</div></div>${allocatorHTML(ids,g.party,vals)}<div class="floatingActions"><button id="groupBack" class="btn">Back</button><button id="groupConfirm" class="btn primary">Seat Party</button></div>`);wireAllocator(ids,g.party,vals,id=>{if(ids.length<=2)return toast('Combination needs at least 2 tables');gr.tableIds=gr.tableIds.filter(x=>x!==id);const t=state.tables.find(x=>x.id===id);if(t)t.mergeGroup=null;ids=[...gr.tableIds];vals=Object.fromEntries(ids.map(tid=>[tid,state.tables.find(t=>t.id===tid)?.seats||0]));save();draw()});$('#groupBack').onclick=()=>openAllocation(gid);$('#groupConfirm').onclick=()=>{const shares=ids.map(id=>({tableId:id,seats:Number(vals[id]||0)})).filter(x=>x.seats>0),total=shares.reduce((a,x)=>a+x.seats,0);if(total<g.party)return toast(`Keep at least ${g.party} seats in use`);makeAllocation(g.name,g.party,shares,g.id);gr.status='dining';gr.seatPlan=shares;state.wait=state.wait.filter(x=>x.id!==gid);state.guests+=g.party;logEvent('seat','Guest seated','group',gr.id,groupInfo(gr).name,`${g.name} · ${g.party} guests · ${total} seats in use`);save();closeModal();renderAll()}}draw()}
+function openGroupSeatAllocator(gid,groupId){const g=state.wait.find(x=>x.id===gid),gr=state.groups.find(x=>x.id===groupId);if(!g||!gr)return;let ids=[...gr.tableIds],vals=Object.fromEntries(ids.map(id=>[id,state.tables.find(t=>t.id===id)?.seats||0]));function draw(){const cap=ids.reduce((a,id)=>a+(state.tables.find(t=>t.id===id)?.seats||0),0);openModal('Allocate Combined Seats',`<div class="seatInfo"><div class="seatInfoTitle">${g.party} guest${g.party===1?'':'s'} · ${cap} seats selected</div><div class="seatInfoText">Combined tables are fully occupied by default. ${state.allowSharing?'Use − to release unused seats.':'Enable table sharing in Manage to release unused seats.'} Remove a table with ×.</div></div>${allocatorHTML(ids,g.party,vals)}<div class="floatingActions"><button id="groupBack" class="btn">Back</button><button id="groupConfirm" class="btn primary">Seat Party</button></div>`);wireAllocator(ids,g.party,vals,id=>{if(ids.length<=2)return toast('Combination needs at least 2 tables');gr.tableIds=gr.tableIds.filter(x=>x!==id);const t=state.tables.find(x=>x.id===id);if(t)t.mergeGroup=null;ids=[...gr.tableIds];vals=Object.fromEntries(ids.map(tid=>[tid,state.tables.find(t=>t.id===tid)?.seats||0]));save();draw()});$('#groupBack').onclick=()=>openAllocation(gid);$('#groupConfirm').onclick=()=>{const shares=ids.map(id=>({tableId:id,seats:Number(vals[id]||0)})).filter(x=>x.seats>0),total=shares.reduce((a,x)=>a+x.seats,0);if(total<g.party)return toast(`Keep at least ${g.party} seats in use`);makeAllocation(g.name,g.party,shares,g.id);gr.status='dining';gr.statusChangedAt=Date.now();gr.seatPlan=shares;state.wait=state.wait.filter(x=>x.id!==gid);state.guests+=g.party;logEvent('seat','Guest seated','group',gr.id,groupInfo(gr).name,`${g.name} · ${g.party} guests · ${total} seats in use`);save();closeModal();renderAll()}}draw()}
 
 function manualSeat(gid){const u=freeUnits(),sel=new Set();openModal('Choose tables',`<div class="choicegrid">${u.map(x=>`<button class="choice" data-action="toggle-choice" data-id="${x.id}" data-kind="${x.kind}"><b>${esc(x.name)}</b><div class="tiny">${x.seats} seats · ${esc(shortArea(x.area))}</div></button>`).join('')}</div><button id="manualSeatGo" class="btn primary full" style="margin-top:10px">Seat guest</button>`);$$('[data-action="toggle-choice"]').forEach(b=>b.addEventListener('click',()=>{if(b.dataset.kind==='group'){sel.clear();$$('[data-action="toggle-choice"]').forEach(x=>x.classList.remove('selected'));sel.add('group:'+b.dataset.id);b.classList.add('selected');return}const k='table:'+b.dataset.id;sel.has(k)?sel.delete(k):sel.add(k);b.classList.toggle('selected')}));$('#manualSeatGo').addEventListener('click',()=>{const arr=[...sel];if(!arr.length)return;const grp=arr.find(x=>x.startsWith('group:'));if(grp)return seatOnUnit(gid,'group',grp.split(':')[1]);const ids=arr.map(x=>x.split(':')[1]);if(ids.length===1)seatOnUnit(gid,'table',ids[0]);else seatCombo(gid,ids)})}
 
 function openGuestModal(){openModal('Add guest',`<div class="stack"><label>Name<input id="gName" placeholder="Guest name"></label><div class="grid2"><label>Phone<input id="gPhone" inputmode="numeric" maxlength="10" placeholder="Optional"></label><label>People<input id="gParty" type="number" min="1" value="2"></label></div><button id="saveGuest" class="btn primary">Add & find table</button></div>`);$('#saveGuest').addEventListener('click',()=>addGuest({id:uid('g'),name:$('#gName').value.trim()||'Guest',phone:$('#gPhone').value.trim(),party:Math.max(1,Number($('#gParty').value)||1),added:Date.now()}))}
-function reserveUnit(kind,id,edit=false){const u=kind==='group'?state.groups.find(g=>g.id===id):state.tables.find(t=>t.id===id);if(!u)return;const info=kind==='group'?groupInfo(u):{name:u.name,seats:u.seats,area:u.area};const r=u.reservation||{};openModal((edit?'Edit reservation · ':'Reserve · ')+info.name,`<div class="notice">${info.seats} seats · ${esc(info.area)}</div><div class="stack" style="margin-top:10px"><label>Name<input id="rName" value="${esc(r.name||'')}" placeholder="Booking name"></label><div class="grid2"><label>People<input id="rParty" type="number" min="1" max="${info.seats}" value="${Math.min(info.seats,Number(r.party)||2)}"></label><label>Time<input id="rTime" type="time" value="${esc(r.time||'')}"></label></div><label>Phone<input id="rPhone" inputmode="numeric" maxlength="10" value="${esc(r.phone||'')}" placeholder="Optional"></label><label>Note<input id="rNote" value="${esc(r.note||'')}" placeholder="Optional"></label><button id="saveReserve" class="btn primary full">Save reservation</button></div>`);$('#saveReserve').addEventListener('click',()=>{const phone=$('#rPhone').value.trim();if(phone&&!mobileOk(phone,true))return toast('Enter valid 10-digit mobile');const reservation={name:$('#rName').value.trim()||'Reserved',party:Math.max(1,Math.min(100,Number($('#rParty').value)||1)),time:$('#rTime').value,phone,note:$('#rNote').value.trim()};u.status='reserved';u.reservation=reservation;u.guest=null;u.start=null;if(kind==='group')u.tableIds.forEach(tid=>{const t=state.tables.find(x=>x.id===tid);if(t)t.status='reserved'});logEvent('reserve','Reserved',kind,id,info.name,`${reservation.name}${reservation.time?' · '+reservation.time:''}`);save();closeModal();renderAll();toast('Reserved')})}
+function reserveUnit(kind,id,edit=false){const u=kind==='group'?state.groups.find(g=>g.id===id):state.tables.find(t=>t.id===id);if(!u)return;const info=kind==='group'?groupInfo(u):{name:u.name,seats:u.seats,area:u.area};const r=u.reservation||{};openModal((edit?'Edit reservation · ':'Reserve · ')+info.name,`<div class="notice">${info.seats} seats · ${esc(info.area)}</div><div class="stack" style="margin-top:10px"><label>Name<input id="rName" value="${esc(r.name||'')}" placeholder="Booking name"></label><div class="grid2"><label>People<input id="rParty" type="number" min="1" max="${info.seats}" value="${Math.min(info.seats,Number(r.party)||2)}"></label><label>Time<input id="rTime" type="time" value="${esc(r.time||'')}"></label></div><label>Phone<input id="rPhone" inputmode="numeric" maxlength="10" value="${esc(r.phone||'')}" placeholder="Optional"></label><label>Note<input id="rNote" value="${esc(r.note||'')}" placeholder="Optional"></label><button id="saveReserve" class="btn primary full">Save reservation</button></div>`);$('#saveReserve').addEventListener('click',()=>{const phone=$('#rPhone').value.trim();if(phone&&!mobileOk(phone,true))return toast('Enter valid 10-digit mobile');const reservation={name:$('#rName').value.trim()||'Reserved',party:Math.max(1,Math.min(100,Number($('#rParty').value)||1)),time:$('#rTime').value,phone,note:$('#rNote').value.trim()};u.status='reserved';u.statusChangedAt=Date.now();u.reservation=reservation;u.guest=null;u.start=null;if(kind==='group')u.tableIds.forEach(tid=>{const t=state.tables.find(x=>x.id===tid);if(t){t.status='reserved';t.statusChangedAt=u.statusChangedAt}});logEvent('reserve','Reserved',kind,id,info.name,`${reservation.name}${reservation.time?' · '+reservation.time:''}`);save();closeModal();renderAll();toast('Reserved')})}
 function openReservePicker(){const u=freeUnits();if(!u.length)return toast('No free tables');openModal('Reserve a table',`<div class="choicegrid">${u.map(x=>`<button class="choice" data-action="reserve-picked" data-kind="${x.kind}" data-id="${x.id}"><b>${esc(x.name)}</b><div class="tiny">${x.seats} seats · ${esc(shortArea(x.area))}</div></button>`).join('')}</div>`)}
 $('#reserveTopBtn').addEventListener('click',openReservePicker);
 $('#selectBtn').addEventListener('click',()=>{selectMode=!selectMode;if(!selectMode)selected.clear();renderFloor()});
 $('#bulkCancel').addEventListener('click',()=>{selectMode=false;selected.clear();renderFloor()});
 function selectedTargets(){return[...selected].map(k=>{const[type,id]=k.split(':');return{type,id}})}
-function bulkSet(status){const targets=selectedTargets();targets.forEach(x=>{if(x.type==='group'){const g=state.groups.find(v=>v.id===x.id);if(g)finishGroup(g,status)}else{const t=state.tables.find(v=>v.id===x.id);if(t){t.status=status;t.guest=null;t.start=null;t.reservation=null}}});logEvent(status==='free'?'bulkFree':'bulkClean',status==='free'?'Bulk Free':'Bulk Clean','bulk','bulk','Multiple tables',`${targets.length} selected`);selectMode=false;selected.clear();save();closeModal();renderAll()}
+function bulkSet(status){const targets=selectedTargets();targets.forEach(x=>{if(x.type==='group'){const g=state.groups.find(v=>v.id===x.id);if(g)finishGroup(g,status)}else{const t=state.tables.find(v=>v.id===x.id);if(t){t.status=status;t.statusChangedAt=Date.now();t.guest=null;t.start=null;t.reservation=null}}});logEvent(status==='free'?'bulkFree':'bulkClean',status==='free'?'Bulk Free':'Bulk Clean','bulk','bulk','Multiple tables',`${targets.length} selected`);selectMode=false;selected.clear();save();closeModal();renderAll()}
 $('#bulkFree').addEventListener('click',()=>bulkSet('free'));
 $('#bulkClean').addEventListener('click',()=>bulkSet('cleaning'));
-$('#bulkReserve').addEventListener('click',()=>{const targets=selectedTargets();if(!targets.length)return;openModal('Reserve Selected',`<div class="notice">${targets.length} selected</div><div class="stack" style="margin-top:10px"><label>Name<input id="brName" placeholder="Reservation name"></label><label>Time<input id="brTime" type="time"></label><button id="brSave" class="btn primary">Reserve</button></div>`);$('#brSave').addEventListener('click',()=>{const r={name:$('#brName').value.trim()||'Reserved',party:1,time:$('#brTime').value,phone:'',note:''};targets.forEach(x=>{const o=x.type==='group'?state.groups.find(v=>v.id===x.id):state.tables.find(v=>v.id===x.id);if(o){o.status='reserved';o.reservation=r;o.guest=null;o.start=null;if(x.type==='group')o.tableIds.forEach(id=>state.tables.find(t=>t.id===id).status='reserved')}});logEvent('bulkReserve','Bulk Reserve','bulk','bulk','Multiple tables',`${targets.length} selected`);selectMode=false;selected.clear();save();closeModal();renderAll()})});
+$('#bulkReserve').addEventListener('click',()=>{const targets=selectedTargets();if(!targets.length)return;openModal('Reserve Selected',`<div class="notice">${targets.length} selected</div><div class="stack" style="margin-top:10px"><label>Name<input id="brName" placeholder="Reservation name"></label><label>Time<input id="brTime" type="time"></label><button id="brSave" class="btn primary">Reserve</button></div>`);$('#brSave').addEventListener('click',()=>{const r={name:$('#brName').value.trim()||'Reserved',party:1,time:$('#brTime').value,phone:'',note:''};targets.forEach(x=>{const o=x.type==='group'?state.groups.find(v=>v.id===x.id):state.tables.find(v=>v.id===x.id);if(o){o.status='reserved';o.statusChangedAt=Date.now();o.reservation=r;o.guest=null;o.start=null;if(x.type==='group')o.tableIds.forEach(id=>{const t=state.tables.find(t=>t.id===id);if(t){t.status='reserved';t.statusChangedAt=o.statusChangedAt}})}});logEvent('bulkReserve','Bulk Reserve','bulk','bulk','Multiple tables',`${targets.length} selected`);selectMode=false;selected.clear();save();closeModal();renderAll()})});
 
 
-function startReserved(kind,id){if(kind==='table'){const t=state.tables.find(x=>x.id===id);if(!t)return;const r=t.reservation||{name:'Guest',party:1};return allocateSingleGuest({id:uid('rg'),name:r.name,party:Number(r.party)||1},t.id,'reservation')}const gr=state.groups.find(x=>x.id===id);if(!gr)return;const r=gr.reservation||{name:'Guest',party:1};const shares=gr.tableIds.map(tid=>({tableId:tid,seats:state.tables.find(t=>t.id===tid)?.seats||0})).filter(x=>x.seats>0);gr.reservation=null;makeAllocation(r.name,Number(r.party)||1,shares,uid('rg'));gr.status='dining';state.guests+=Number(r.party)||1;logEvent('startReserved','Reserved guest started dining','group',gr.id,groupInfo(gr).name,`${r.name} · ${r.party} guests`);save();closeModal();renderAll()}
-function freeTable(t){activeAllocsForTable(t.id).forEach(a=>a.active=false);t.status='free';t.guest=null;t.start=null;t.reservation=null;logEvent('free','Free Now','table',t.id,t.name,'');save();closeModal();renderAll();toast(t.name+' is free')}
-function cleaningTable(t){activeAllocsForTable(t.id).forEach(a=>a.active=false);t.status='cleaning';t.guest=null;t.start=null;t.reservation=null;logEvent('clean','Clean Now','table',t.id,t.name,'');save();closeModal();renderAll()}
+function startReserved(kind,id){if(kind==='table'){const t=state.tables.find(x=>x.id===id);if(!t)return;const r=t.reservation||{name:'Guest',party:1};return allocateSingleGuest({id:uid('rg'),name:r.name,party:Number(r.party)||1},t.id,'reservation')}const gr=state.groups.find(x=>x.id===id);if(!gr)return;const r=gr.reservation||{name:'Guest',party:1};const shares=gr.tableIds.map(tid=>({tableId:tid,seats:state.tables.find(t=>t.id===tid)?.seats||0})).filter(x=>x.seats>0);gr.reservation=null;makeAllocation(r.name,Number(r.party)||1,shares,uid('rg'));gr.status='dining';gr.statusChangedAt=Date.now();state.guests+=Number(r.party)||1;logEvent('startReserved','Reserved guest started dining','group',gr.id,groupInfo(gr).name,`${r.name} · ${r.party} guests`);save();closeModal();renderAll()}
+function freeTable(t){activeAllocsForTable(t.id).forEach(a=>a.active=false);t.status='free';t.statusChangedAt=Date.now();t.guest=null;t.start=null;t.reservation=null;logEvent('free','Free Now','table',t.id,t.name,'');save();closeModal();renderAll();toast(t.name+' is free')}
+function cleaningTable(t){activeAllocsForTable(t.id).forEach(a=>a.active=false);t.status='cleaning';t.statusChangedAt=Date.now();t.guest=null;t.start=null;t.reservation=null;logEvent('clean','Clean Now','table',t.id,t.name,'');save();closeModal();renderAll()}
 function endTable(t){openModal('End dining · '+t.name,`<div class="notice">What should happen now?</div><div class="actionGrid" style="margin-top:10px"><button class="btn primary" data-action="free-table" data-id="${t.id}">Free now</button><button class="btn" data-action="clean-table" data-id="${t.id}">Send to cleaning</button></div>`)}
-function freeGroup(g){const name=groupInfo(g).name;g.tableIds.forEach(id=>{const t=state.tables.find(x=>x.id===id);if(t){t.status='free';t.guest=null;t.start=null;t.reservation=null;t.mergeGroup=null}});state.groups=state.groups.filter(x=>x.id!==g.id);logEvent('freeGroup','Free Combined Tables','group',g.id,name,'');save();closeModal();renderAll();toast(name+' is free')}
-function finishGroup(g,mode){const name=groupInfo(g).name;const aids=[...new Set(g.tableIds.flatMap(id=>activeAllocsForTable(id).map(a=>a.id)))];aids.forEach(aid=>{const a=state.seatAllocations.find(x=>x.id===aid);if(a)a.active=false});g.tableIds.forEach(id=>{const t=state.tables.find(x=>x.id===id);if(t){t.status=mode;t.guest=null;t.start=null;t.reservation=null;t.mergeGroup=null}});state.groups=state.groups.filter(x=>x.id!==g.id);logEvent(mode==='cleaning'?'cleanGroup':'freeGroup',mode==='cleaning'?'Clean Combined Tables':'Free Combined Tables','group',g.id,name,'');save();closeModal();renderAll()}
+function freeGroup(g){const name=groupInfo(g).name;g.tableIds.forEach(id=>{const t=state.tables.find(x=>x.id===id);if(t){t.status='free';t.statusChangedAt=Date.now();t.guest=null;t.start=null;t.reservation=null;t.mergeGroup=null}});state.groups=state.groups.filter(x=>x.id!==g.id);logEvent('freeGroup','Free Combined Tables','group',g.id,name,'');save();closeModal();renderAll();toast(name+' is free')}
+function finishGroup(g,mode){const name=groupInfo(g).name;const aids=[...new Set(g.tableIds.flatMap(id=>activeAllocsForTable(id).map(a=>a.id)))];aids.forEach(aid=>{const a=state.seatAllocations.find(x=>x.id===aid);if(a)a.active=false});g.tableIds.forEach(id=>{const t=state.tables.find(x=>x.id===id);if(t){t.status=mode;t.statusChangedAt=Date.now();t.guest=null;t.start=null;t.reservation=null;t.mergeGroup=null}});state.groups=state.groups.filter(x=>x.id!==g.id);logEvent(mode==='cleaning'?'cleanGroup':'freeGroup',mode==='cleaning'?'Clean Combined Tables':'Free Combined Tables','group',g.id,name,'');save();closeModal();renderAll()}
 function endGroup(g){openModal('End dining · '+groupInfo(g).name,`<div class="notice">Temporary merge will end automatically.</div><div class="actionGrid" style="margin-top:10px"><button class="btn primary" data-action="finish-group" data-id="${g.id}" data-mode="free">Free all now</button><button class="btn" data-action="finish-group" data-id="${g.id}" data-mode="cleaning">Send all to cleaning</button></div>`)}
 
 
@@ -1368,7 +1560,7 @@ function openMergeBuilder(firstId=null){const candidates=state.tables.filter(t=>
 function unmerge(id){const g=state.groups.find(x=>x.id===id);if(!g||g.status!=='free')return;const name=groupInfo(g).name;g.tableIds.forEach(tid=>{const t=state.tables.find(x=>x.id===tid);if(t)t.mergeGroup=null});state.groups=state.groups.filter(x=>x.id!==id);logEvent('uncombine','Uncombined tables','group',id,name,'');save();closeModal();renderAll()}
 
 function moveGuest(kind,id){const src=kind==='group'?state.groups.find(g=>g.id===id):state.tables.find(t=>t.id===id);if(!src||src.status!=='dining'||!src.guest)return;const guest=clone(src.guest),free=freeUnits().filter(u=>!(u.kind===kind&&u.id===id));if(!free.length)return toast('No free table available');openModal('Move '+guest.name,`<div class="notice">Choose new table. Current table will become free.</div><div class="choicegrid" style="margin-top:10px">${free.map(u=>`<button class="choice" data-action="move-to-unit" data-kind="${u.kind}" data-id="${u.id}" data-src-kind="${kind}" data-src-id="${id}"><b>${esc(u.name)}</b><div class="tiny">${u.seats} seats · ${esc(shortArea(u.area))}</div></button>`).join('')}</div>`)}
-function executeMove(srcKind,srcId,dstKind,dstId){const src=srcKind==='group'?state.groups.find(g=>g.id===srcId):state.tables.find(t=>t.id===srcId);if(!src?.guest)return;const guest=clone(src.guest),start=src.start;if(dstKind==='table'){const t=state.tables.find(x=>x.id===dstId);if(!t||t.status!=='free')return;t.status='dining';t.guest=guest;t.start=start}else{const g=state.groups.find(x=>x.id===dstId);if(!g||g.status!=='free')return;g.status='dining';g.guest=guest;g.start=start;g.tableIds.forEach(tid=>{const t=state.tables.find(x=>x.id===tid);if(t)t.status='dining'})}if(srcKind==='table'){const t=state.tables.find(x=>x.id===srcId);t.status='free';t.guest=null;t.start=null}else{freeGroup(src);return}logEvent('moveGuest','Guest moved',dstKind,dstId,dstKind==='group'?groupInfo(state.groups.find(x=>x.id===dstId)).name:state.tables.find(x=>x.id===dstId).name,guest.name);save();closeModal();renderAll();toast('Guest moved')}
+function executeMove(srcKind,srcId,dstKind,dstId){const src=srcKind==='group'?state.groups.find(g=>g.id===srcId):state.tables.find(t=>t.id===srcId);if(!src?.guest)return;const guest=clone(src.guest),start=src.start;if(dstKind==='table'){const t=state.tables.find(x=>x.id===dstId);if(!t||t.status!=='free')return;t.status='dining';t.statusChangedAt=start||Date.now();t.guest=guest;t.start=start}else{const g=state.groups.find(x=>x.id===dstId);if(!g||g.status!=='free')return;g.status='dining';g.statusChangedAt=start||Date.now();g.guest=guest;g.start=start;g.tableIds.forEach(tid=>{const t=state.tables.find(x=>x.id===tid);if(t)t.status='dining'})}if(srcKind==='table'){const t=state.tables.find(x=>x.id===srcId);t.status='free';t.statusChangedAt=Date.now();t.guest=null;t.start=null}else{freeGroup(src);return}logEvent('moveGuest','Guest moved',dstKind,dstId,dstKind==='group'?groupInfo(state.groups.find(x=>x.id===dstId)).name:state.tables.find(x=>x.id===dstId).name,guest.name);save();closeModal();renderAll();toast('Guest moved')}
 
 function renderManage(){const admin=isAdmin();$('#manageDenied').classList.toggle('hidden',admin);$('#manageContent').classList.toggle('hidden',!admin);if(!admin)return;$('#manageShopName').value=state.shop.name;$('#manageContactName').value=state.shop.contactName;$('#manageContactPhone').value=state.shop.contactPhone;$('#manageDining').value=String(state.shop.dining);$('#allowSharing').checked=!!state.allowSharing;$('#manageTableCount').textContent=`${state.tables.length} tables`;$('#manageTables').innerHTML=state.tables.map(t=>`<div class="manageRow"><div><b>${esc(t.name)}</b><div class="tiny muted">Series ${esc(t.series)} · ${statusLabel(t.status)}</div></div><input class="manageSeats" data-id="${t.id}" type="number" min="1" max="100" value="${t.seats}"><select class="manageArea" data-id="${t.id}">${state.areas.map(a=>`<option value="${esc(a)}" ${a===t.area?'selected':''}>${esc(a)}</option>`).join('')}</select><button class="btn sm danger" data-action="manage-del-table" data-id="${t.id}" ${t.status!=='free'||t.mergeGroup?'disabled':''}>×</button></div>`).join('');$('#manageAreas').innerHTML=state.areas.map((a,i)=>`<div class="areaItem"><div><b>${esc(a)}</b></div><button class="btn sm danger" data-action="manage-del-area" data-i="${i}" ${state.areas.length<=1?'disabled':''}>×</button></div>`).join('');$('#manageUserLimit').textContent=`${state.users.length}/${state.license.maxUsers} users`;$('#manageUsers').innerHTML=state.users.map(u=>`<div class="userItem"><div><b>${esc(u.username||u.name)}</b><div class="tiny muted">${esc(u.role)}</div></div>${u.role==='Admin'?'<span class="badge">Admin</span>':`<button class="btn sm danger" data-action="manage-del-user" data-id="${u.id}">×</button>`}</div>`).join('');renderThemeSelection();$$('.manageSeats').forEach(i=>i.addEventListener('change',()=>{const t=state.tables.find(x=>x.id===i.dataset.id);if(t&&t.status==='free'&&!t.mergeGroup){t.seats=Math.max(1,Math.min(100,Number(i.value)||1));save();renderAll()}}));$$('.manageArea').forEach(i=>i.addEventListener('change',()=>{const t=state.tables.find(x=>x.id===i.dataset.id);if(t&&t.status==='free'&&!t.mergeGroup){t.area=i.value;save();renderAll()}}))}
 $('#saveRestaurantBtn').addEventListener('click',async()=>{
@@ -1530,7 +1722,6 @@ function goHome(){
 $('#homeDockBtn').addEventListener('click',goHome);
 $('#brandHomeBtn').addEventListener('click',goHome);
 $('#moreDockBtn').addEventListener('click',toggleQuickMenu);
-$('#quickGuest').addEventListener('focus',closeQuickMenu);
 document.addEventListener('pointerdown',e=>{
   const m=$('#quickMenu'),b=$('#moreDockBtn');
   if(!m||m.classList.contains('hidden'))return;
@@ -1608,7 +1799,7 @@ function closeModal(){liveModalContext=null;$('#modalBack').classList.add('hidde
 $('#modalClose').addEventListener('click',closeModal);$('#modalBack').addEventListener('click',e=>{if(e.target===$('#modalBack'))closeModal()});
 function openAreaModal(cb){openModal('Add dining area',`<label>Area name<input id="newArea" placeholder="Rooftop / Family Hall"></label><button id="saveArea" class="btn primary full" style="margin-top:10px">Add area</button>`);$('#saveArea').addEventListener('click',()=>{const v=$('#newArea').value.trim();if(v){cb(v);closeModal()}})}
 function openBatchModal(cb){openModal('Add table range',`<div class="grid2"><label>Series / prefix<input id="bPrefix" value="F"></label><label>Seats each<input id="bSeats" type="number" min="1" max="100" value="4"></label></div><div class="grid2" style="margin-top:8px"><label>From<input id="bFrom" type="number" min="1" value="1"></label><label>To<input id="bTo" type="number" min="1" max="100" value="4"></label></div><button id="saveBatch" class="btn primary full" style="margin-top:10px">Add range</button>`);$('#saveBatch').addEventListener('click',()=>{const p=$('#bPrefix').value.trim().toUpperCase(),f=Number($('#bFrom').value),to=Number($('#bTo').value),seats=Number($('#bSeats').value);if(!p||f<1||to<f||to-f>100||seats<1||seats>100)return;const lines=[];for(let i=f;i<=to;i++)lines.push(`${p}${i}-${seats} seats`);cb(lines.join('\n'));closeModal()})}
-function openAddTable(cb){openModal('Add table',`<div class="grid2"><label>Name<input id="aName" placeholder="P1"></label><label>Seats<input id="aSeats" type="number" min="1" max="100" value="4"></label></div><label style="margin-top:8px">Area<select id="aArea">${state.areas.map(a=>`<option>${esc(a)}</option>`).join('')}</select></label><button id="saveTable" class="btn primary full" style="margin-top:10px">Add table</button>`);$('#saveTable').addEventListener('click',()=>{const name=$('#aName').value.trim();if(!name||state.tables.some(t=>t.name.toLowerCase()===name.toLowerCase()))return;const series=(name.match(/^([A-Za-z]+)/)||[])[1]?.toUpperCase()||'MAIN';cb({id:uid('t'),name,seats:Math.max(1,Math.min(100,Number($('#aSeats').value)||1)),series,area:$('#aArea').value,status:'free',guest:null,start:null,reservation:null,mergeGroup:null});closeModal()})}
+function openAddTable(cb){openModal('Add table',`<div class="grid2"><label>Name<input id="aName" placeholder="P1"></label><label>Seats<input id="aSeats" type="number" min="1" max="100" value="4"></label></div><label style="margin-top:8px">Area<select id="aArea">${state.areas.map(a=>`<option>${esc(a)}</option>`).join('')}</select></label><button id="saveTable" class="btn primary full" style="margin-top:10px">Add table</button>`);$('#saveTable').addEventListener('click',()=>{const name=$('#aName').value.trim();if(!name||state.tables.some(t=>t.name.toLowerCase()===name.toLowerCase()))return;const series=(name.match(/^([A-Za-z]+)/)||[])[1]?.toUpperCase()||'MAIN';cb({id:uid('t'),name,seats:Math.max(1,Math.min(100,Number($('#aSeats').value)||1)),series,area:$('#aArea').value,status:'free',guest:null,start:null,reservation:null,mergeGroup:null,statusChangedAt:Date.now()});closeModal()})}
 function openAddUser(cb){
   if(!remoteToken)return toast('Login first');
   if(state.users.length>=state.license.maxUsers)return toast('User limit reached');
