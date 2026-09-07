@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-title" content="TablePing">
 
 
-<title>TablePing — Local Smoke Test</title>
+<title>TablePing — Supabase Multi-User</title>
 <style>
 :root{
   --primary:#20312b;--secondary:#a9c7b7;--psoft:#eef3f0;--ssoft:#f1f6f3;
@@ -192,7 +192,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--primary);box-shadow:0
     <div class="brand"><div class="logo">T</div>TablePing</div>
     <div style="height:26px"></div>
     <h1>Set up once.<br>Seat guests fast.</h1>
-    <p class="muted">Entity Code + License Key. Local smoke-test mode.</p>
+    <p class="muted">Entity Code + License Key. Supabase multi-user mode.</p>
     <div class="card stack">
       <label>Entity Code<input id="restaurantCode" placeholder="e.g. CAFE01"></label>
       <label>License Key<input id="licenseKey" placeholder="e.g. TP-DEMO-2026"></label>
@@ -275,9 +275,9 @@ E8-4 seats</textarea></label>
   </div>
 
   <div id="setup4" class="hidden">
-    <h2>Users</h2><p class="muted small">One Admin is included. Add Staff only if needed.</p>
+    <h2>Admin</h2><p class="muted small">The Admin account is created now. Add Staff later from Manage after login.</p>
     <div class="card">
-      <div class="row between"><div><h3>Users</h3><div class="small muted">License limit: <span id="setupUserLimit"></span></div></div><button id="addUserSetupBtn" class="btn sm">+ User</button></div>
+      <div class="row between"><div><h3>Users</h3><div class="small muted">Admin is created during setup</div></div><button id="addUserSetupBtn" class="btn sm hidden">+ User</button></div>
       <div id="setupUsers" class="stack" style="margin-top:10px"></div>
     </div>
     <div class="row between" style="margin-top:10px"><button id="back4" class="btn">Back</button><button id="next4" class="btn primary">Theme</button></div>
@@ -317,7 +317,7 @@ E8-4 seats</textarea></label>
 <div id="appScreen" class="hidden">
 <header class="topbar"><div class="topin">
   <div class="row grow"><div class="logo" style="width:28px;height:28px;border-radius:9px">T</div><div class="grow"><div id="topShop" class="shop"></div><div id="topUser" class="sub"></div></div></div>
-  <div class="row"><button id="saveBtn" class="btn sm">↻</button><button id="logoutTopBtn" class="btn sm">Log out</button></div>
+  <div class="row"><button id="saveBtn" class="btn sm">Connecting…</button><button id="logoutTopBtn" class="btn sm">Log out</button></div>
 </div></header>
 
 <main class="wrap">
@@ -417,10 +417,187 @@ const esc=v=>String(v??'').replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&
 const clone=o=>JSON.parse(JSON.stringify(o));
 const base={activated:false,setup:false,locked:false,selectedUser:null,license:{restaurantCode:'',key:'',expires:'2027-12-31',maxUsers:5},shop:{name:'',contactName:'',contactPhone:'',dining:60},users:[{id:'admin',name:'Admin',role:'Admin',pin:'1234',protected:true}],areas:['AC Hall','Non-AC','Outdoor','Garden','First Floor','Family Hall'],tables:[],groups:[],wait:[],history:[],guests:0,activeArea:'All',floorMode:'tile',theme:{primary:'#20312b',secondary:'#a9c7b7'},allowSharing:false,seatAllocations:[],statusFilter:'all',lastSync:null};
 let state=load(),setupStep=1,pendingLoginUser=null,toastTimer=null,selectMode=false,selected=new Set(),reportRange=null;
+const SB_URL='https://bfmsoerewmiqianxmcck.supabase.co';
+const SB_KEY='sb_publishable_v8jc47i36pfQIkQ2gXC0MA_V0hWBld9';
+let remoteToken=sessionStorage.getItem('tp_remote_token')||'';
+let remoteRevision=0;
+let remoteEvents=[];
+let pendingEvent=null;
+let saveTimer=null;
+let savingRemote=false;
+let saveAgain=false;
+let pollTimer=null;
+let entitySaveTimer=null;
+
 
 function load(){try{const x=JSON.parse(localStorage.getItem(KEY)||'{}');return normalize(x)}catch(e){return clone(base)}}
 function normalize(x){x=x&&typeof x==='object'?x:{};const y={...clone(base),...x,license:{...base.license,...(x.license||{})},shop:{...base.shop,...(x.shop||{})},theme:{...base.theme,...(typeof x.theme==='string'?{primary:x.theme}:x.theme||{})},users:Array.isArray(x.users)?x.users:clone(base.users),areas:Array.isArray(x.areas)&&x.areas.length?x.areas:clone(base.areas),tables:Array.isArray(x.tables)?x.tables:[],groups:Array.isArray(x.groups)?x.groups:[],wait:Array.isArray(x.wait)?x.wait:[],history:Array.isArray(x.history)?x.history:[],seatAllocations:Array.isArray(x.seatAllocations)?x.seatAllocations:[],allowSharing:!!x.allowSharing,statusFilter:x.statusFilter||'all'};y.tables=y.tables.map(t=>({...t,status:t.status==='held'?'reserved':(t.status||'free'),reservation:t.reservation||null,mergeGroup:t.mergeGroup||null}));y.groups=y.groups.map(g=>({...g,reservation:g.reservation||null}));return y}
-function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
+function cacheLocal(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
+function remoteSnapshot(){return{
+  areas:state.areas,
+  tables:state.tables,
+  groups:state.groups,
+  wait:state.wait,
+  seatAllocations:state.seatAllocations,
+  guests:state.guests,
+  activeArea:state.activeArea,
+  floorMode:state.floorMode,
+  statusFilter:state.statusFilter
+}}
+async function rpc(fn,body={}){
+  const r=await fetch(`${SB_URL}/rest/v1/rpc/${fn}`,{
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json',
+      'apikey':SB_KEY,
+      'Authorization':`Bearer ${SB_KEY}`
+    },
+    body:JSON.stringify(body)
+  });
+  const text=await r.text();
+  let data;
+  try{data=text?JSON.parse(text):null}catch(e){throw new Error(`Supabase returned invalid JSON (${r.status})`)}
+  if(!r.ok)throw new Error(data?.message||data?.error||`Supabase request failed (${r.status})`);
+  return data;
+}
+function setSyncLabel(label,bad=false){
+  const b=$('#saveBtn');
+  if(!b)return;
+  b.textContent=label;
+  b.style.color=bad?'#a23d3d':'';
+}
+function save(){
+  cacheLocal();
+  if(remoteToken&&state.setup&&!state.locked)queueRemoteSave();
+}
+function queueRemoteSave(){
+  saveAgain=true;
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(flushRemoteSave,180);
+}
+async function flushRemoteSave(){
+  if(!remoteToken||state.locked||!state.setup)return;
+  if(savingRemote){saveAgain=true;return}
+  savingRemote=true;
+  saveAgain=false;
+  setSyncLabel('Syncing…');
+  const event=pendingEvent?{...pendingEvent}:null;
+  try{
+    const d=await rpc('tp_save_state',{
+      p_token:remoteToken,
+      p_expected_revision:remoteRevision,
+      p_state:remoteSnapshot(),
+      p_event:event
+    });
+    if(d?.ok){
+      remoteRevision=Number(d.revision)||remoteRevision;
+      if(event===pendingEvent||JSON.stringify(event)===JSON.stringify(pendingEvent))pendingEvent=null;
+      state.lastSync=Date.now();
+      cacheLocal();
+      setSyncLabel('Live');
+    }else if(d?.conflict){
+      pendingEvent=null;
+      toast('Changed on another device — latest data loaded');
+      await refreshRemote(true);
+    }else{
+      throw new Error(d?.error||'Unable to save');
+    }
+  }catch(e){
+    console.error(e);
+    setSyncLabel('Offline',true);
+    toast(e.message||'Sync failed');
+  }finally{
+    savingRemote=false;
+    if(saveAgain)queueRemoteSave();
+  }
+}
+function mergeRemotePayload(d){
+  const rs=d?.state||{};
+  state.activated=true;
+  state.setup=true;
+  state.locked=false;
+  state.selectedUser=d.user?.id||state.selectedUser;
+  state.users=(d.users||[]).map(u=>({...u,protected:u.role==='Admin'}));
+  state.license={
+    ...state.license,
+    restaurantCode:d.entity?.code||state.license.restaurantCode,
+    expires:d.entity?.licenseValidTo||state.license.expires,
+    maxUsers:Number(d.entity?.maxUsers)||5
+  };
+  state.shop={
+    name:d.entity?.name||state.shop.name,
+    contactName:d.entity?.contact||'',
+    contactPhone:d.entity?.phone||'',
+    dining:Number(d.entity?.diningMinutes)||60
+  };
+  state.allowSharing=!!d.entity?.allowSharing;
+  state.theme={
+    primary:d.entity?.primaryColor||state.theme.primary,
+    secondary:d.entity?.secondaryColor||state.theme.secondary
+  };
+  state.areas=Array.isArray(rs.areas)?rs.areas:state.areas;
+  state.tables=Array.isArray(rs.tables)?rs.tables:[];
+  state.groups=Array.isArray(rs.groups)?rs.groups:[];
+  state.wait=Array.isArray(rs.wait)?rs.wait:[];
+  state.seatAllocations=Array.isArray(rs.seatAllocations)?rs.seatAllocations:[];
+  state.guests=Number(rs.guests)||0;
+  state.activeArea=rs.activeArea||'All';
+  state.floorMode=rs.floorMode||'tile';
+  state.statusFilter=rs.statusFilter||'all';
+  remoteRevision=Number(d.revision)||remoteRevision||1;
+  cacheLocal();
+  applyTheme();
+}
+async function refreshRemote(force=false){
+  if(!remoteToken||savingRemote||saveAgain)return;
+  try{
+    const d=await rpc('tp_get_state',{p_token:remoteToken});
+    if(!d?.ok){
+      if((d?.error||'').toLowerCase().includes('session')){
+        await remoteLogout(false);
+        return;
+      }
+      throw new Error(d?.error||'Refresh failed');
+    }
+    if(force||Number(d.revision)!==remoteRevision){
+      mergeRemotePayload(d);
+      renderAll();
+    }
+    setSyncLabel('Live');
+  }catch(e){
+    console.error(e);
+    setSyncLabel('Offline',true);
+  }
+}
+function startAutoRefresh(){
+  clearInterval(pollTimer);
+  pollTimer=setInterval(()=>refreshRemote(false),2000);
+  setSyncLabel('Live');
+}
+function stopAutoRefresh(){clearInterval(pollTimer);pollTimer=null}
+function queueEntityUpdate(){
+  if(!remoteToken||!isAdmin())return;
+  clearTimeout(entitySaveTimer);
+  entitySaveTimer=setTimeout(persistEntityRemote,350);
+}
+async function persistEntityRemote(){
+  if(!remoteToken||!isAdmin())return;
+  try{
+    const d=await rpc('tp_update_entity',{
+      p_token:remoteToken,
+      p_name:state.shop.name,
+      p_contact:state.shop.contactName,
+      p_phone:state.shop.contactPhone,
+      p_dining:Number(state.shop.dining)||60,
+      p_allow_sharing:!!state.allowSharing,
+      p_primary:state.theme.primary,
+      p_secondary:state.theme.secondary
+    });
+    if(!d?.ok)throw new Error(d?.error||'Unable to save entity');
+    setSyncLabel('Live');
+  }catch(e){toast(e.message||'Entity save failed')}
+}
+
 function show(id){['activateScreen','setupScreen','loginScreen','appScreen'].forEach(x=>$('#'+x).classList.add('hidden'));$('#'+id).classList.remove('hidden')}
 function route(){applyTheme();if(!state.activated)return show('activateScreen');if(!state.setup)return show('setupScreen');if(state.locked||!state.selectedUser){renderLogin();return show('loginScreen')}show('appScreen');renderAll()}
 function mixWhite(hex,amount){const h=(hex||'#000000').replace('#','');if(!/^[0-9a-fA-F]{6}$/.test(h))return '#f1f4f2';const n=parseInt(h,16),r=n>>16,g=(n>>8)&255,b=n&255,m=v=>Math.round(v+(255-v)*amount);return '#'+[m(r),m(g),m(b)].map(v=>v.toString(16).padStart(2,'0')).join('')}
@@ -432,7 +609,11 @@ function hideMsg(el){el.classList.add('hidden')}
 function currentUser(){return state.users.find(u=>u.id===state.selectedUser)}
 function isAdmin(){return currentUser()?.role==='Admin'}
 function mobileOk(v,optional=false){v=String(v||'').trim();if(optional&&!v)return true;return /^[6-9]\d{9}$/.test(v)}
-function logEvent(action,label,type,id,name,details=''){const u=currentUser();state.history.push({id:uid('h'),timestamp:new Date().toISOString(),userId:u?.id||'system',userName:u?.name||'System',action,actionLabel:label,targetType:type,targetId:id,targetName:name,details})}
+function logEvent(action,label,type,id,name,details=''){
+  const u=currentUser();
+  state.history.push({id:uid('h'),timestamp:new Date().toISOString(),userId:u?.id||'system',userName:u?.name||'System',action,actionLabel:label,targetType:type,targetId:id,targetName:name,details});
+  pendingEvent={action,target:name||type||'',details:details||label||''};
+}
 function activeAllocsForTable(tableId){return state.seatAllocations.filter(a=>a.active!==false&&a.shares?.some(x=>x.tableId===tableId))}
 function usedSeats(tableId){return activeAllocsForTable(tableId).reduce((sum,a)=>sum+(a.shares.find(x=>x.tableId===tableId)?.seats||0),0)}
 function freeSeats(tableId){const t=state.tables.find(x=>x.id===tableId);return t?Math.max(0,t.seats-usedSeats(tableId)):0}
@@ -443,9 +624,30 @@ function tableAvailableSeats(t){if(t.status==='free')return t.seats;if(state.all
 
 
 
-$('#activateBtn').addEventListener('click',()=>{const code=$('#restaurantCode').value.trim().toUpperCase(),key=$('#licenseKey').value.trim();if(!code||key.length<6)return message($('#activateMsg'),'Enter Entity Code and License Key.','bad');state.activated=true;state.license={restaurantCode:code,key,expires:'2027-09-05',maxUsers:5};save();route()});
-$('#demoBtn').addEventListener('click',()=>{state.activated=true;state.license={restaurantCode:'KIRIYAN',key:'TP-DEMO-2026',expires:'2027-09-05',maxUsers:5};save();route()});
-$('#resetBtn').addEventListener('click',()=>{localStorage.removeItem(KEY);location.reload()});
+$('#activateBtn').addEventListener('click',async()=>{
+  const code=$('#restaurantCode').value.trim().toUpperCase(),key=$('#licenseKey').value.trim();
+  if(!code||key.length<6)return message($('#activateMsg'),'Enter Entity Code and License Key.','bad');
+  $('#activateBtn').disabled=true;$('#activateBtn').textContent='Checking…';
+  try{
+    const d=await rpc('tp_check_license',{p_code:code,p_license:key});
+    if(!d?.ok)return message($('#activateMsg'),d?.error||'Invalid license.','bad');
+    state.activated=true;
+    state.setup=!!d.setupCompleted;
+    state.locked=true;
+    state.selectedUser=null;
+    state.license={restaurantCode:code,key,expires:d.licenseValidTo,maxUsers:Number(d.maxUsers)||5};
+    state.shop={name:d.entity?.name||'',contactName:d.entity?.contact||'',contactPhone:d.entity?.phone||'',dining:Number(d.entity?.diningMinutes)||60};
+    state.allowSharing=!!d.entity?.allowSharing;
+    state.theme={primary:d.entity?.primaryColor||'#20312b',secondary:d.entity?.secondaryColor||'#a9c7b7'};
+    state.users=(d.users||[]).map(u=>({...u,protected:u.role==='Admin'}));
+    if(!state.setup)state.users=[{id:'admin_setup',name:'Admin',role:'Admin',pin:'',protected:true}];
+    cacheLocal();
+    route();
+  }catch(e){message($('#activateMsg'),e.message||'Unable to connect to Supabase.','bad')}
+  finally{$('#activateBtn').disabled=false;$('#activateBtn').textContent='Activate'}
+});
+$('#demoBtn').addEventListener('click',()=>{});
+$('#resetBtn').addEventListener('click',()=>{sessionStorage.removeItem('tp_remote_token');localStorage.removeItem(KEY);location.reload()});
 
 function renderSetup(){[1,2,3,4,5].forEach(i=>{$('#setup'+i).classList.toggle('hidden',i!==setupStep);$('#st'+i).classList.toggle('on',i<=setupStep)});if(setupStep===1){$('#shopName').value=state.shop.name;$('#contactName').value=state.shop.contactName;$('#contactPhone').value=state.shop.contactPhone;$('#diningTime').value=String(state.shop.dining);$('#ownerPin').value=(state.users.find(u=>u.protected)||state.users[0]).pin}else if(setupStep===2)renderSetupAreas();else if(setupStep===3){if(state.tables.length){renderSeriesMap();renderPreview()}}else if(setupStep===4)renderSetupUsers();else if(setupStep===5)renderFinish()}
 $('#next1').addEventListener('click',()=>{const name=$('#shopName').value.trim(),phone=$('#contactPhone').value.trim(),pin=$('#ownerPin').value.trim(),d=Number($('#diningTime').value);if(!name)return message($('#setup1Msg'),'Enter Entity Name.','bad');if(!mobileOk(phone))return message($('#setup1Msg'),'Mobile number must be 10 digits and start with 6–9.','bad');if(!(d>=10&&d<=300))return message($('#setup1Msg'),'Dining time must be 10–300 minutes.','bad');if(!/^\d{4,6}$/.test(pin))return message($('#setup1Msg'),'Admin PIN must be 4–6 digits.','bad');state.shop.name=name;state.shop.contactName=$('#contactName').value.trim();state.shop.contactPhone=phone;state.shop.dining=d;(state.users.find(u=>u.protected)||state.users[0]).pin=pin;save();setupStep=2;renderSetup()});
@@ -467,17 +669,71 @@ function renderPreview(){$('#previewCard').classList.remove('hidden');$('#previe
 $('#batchSetupBtn').addEventListener('click',()=>openBatchModal(lines=>{$('#tablePaste').value+=($('#tablePaste').value.trim()?'\n':'')+lines}));
 $('#singleSetupBtn').addEventListener('click',()=>openAddTable(t=>{state.tables.push(t);save();renderSeriesMap();renderPreview()}));
 
-function renderSetupUsers(){$('#setupUserLimit').textContent=`${state.users.length}/${state.license.maxUsers}`;$('#setupUsers').innerHTML=state.users.map(u=>`<div class="userItem"><div><b>${esc(u.name)}</b><div class="tiny muted">${esc(u.role)}</div></div>${u.protected?'<span class="badge">Owner</span>':`<button class="btn sm danger" data-action="setup-del-user" data-id="${u.id}">×</button>`}</div>`).join('')}
-$('#addUserSetupBtn').addEventListener('click',()=>openAddUser(()=>renderSetupUsers()));
-function setTheme(p,q){state.theme={primary:p||state.theme.primary,secondary:q||state.theme.secondary};save();applyTheme();renderThemeSelection()}
+function renderSetupUsers(){
+  $('#setupUserLimit').textContent='1 Admin now · add up to 4 Staff after setup';
+  $('#setupUsers').innerHTML='<div class="userItem"><div><b>Admin</b><div class="tiny muted">Primary administrator</div></div><span class="badge">Admin</span></div>';
+}
+$('#addUserSetupBtn').addEventListener('click',()=>{});
+function setTheme(p,q){state.theme={primary:p||state.theme.primary,secondary:q||state.theme.secondary};save();applyTheme();renderThemeSelection();if(remoteToken&&isAdmin())queueEntityUpdate()}
 $$('.themePreset').forEach(b=>b.addEventListener('click',()=>setTheme(b.dataset.primary,b.dataset.secondary)));
 $('#setupPrimary').addEventListener('input',e=>setTheme(e.target.value,state.theme.secondary));$('#setupSecondary').addEventListener('input',e=>setTheme(state.theme.primary,e.target.value));
 function renderThemeSelection(){const p=state.theme.primary.toLowerCase(),q=state.theme.secondary.toLowerCase();$$('.themePreset,.liveThemePreset').forEach(b=>b.classList.toggle('selected',b.dataset.primary.toLowerCase()===p&&b.dataset.secondary.toLowerCase()===q));$('#setupPrimary').value=p;$('#setupSecondary').value=q;$('#managePrimary').value=p;$('#manageSecondary').value=q}
 function renderFinish(){renderThemeSelection();$('#finishSummary').textContent=`${state.shop.name} · ${state.areas.length} areas · ${state.tables.length} tables · ${state.tables.reduce((a,t)=>a+t.seats,0)} seats`}
-$('#finishBtn').addEventListener('click',()=>{state.setup=true;state.locked=true;state.selectedUser=null;logEvent('setup','Setup completed','entity',state.license.restaurantCode,state.shop.name,`${state.tables.length} tables`);save();route()});
+$('#finishBtn').addEventListener('click',async()=>{
+  const admin=(state.users.find(u=>u.protected)||state.users[0]);
+  const pin=admin?.pin||$('#ownerPin').value.trim();
+  if(!/^\d{4,6}$/.test(pin))return toast('Admin PIN must be 4–6 digits');
+  $('#finishBtn').disabled=true;$('#finishBtn').textContent='Creating entity…';
+  try{
+    const d=await rpc('tp_complete_setup',{
+      p_code:state.license.restaurantCode,
+      p_license:state.license.key,
+      p_setup:{
+        entityName:state.shop.name,
+        contactPerson:state.shop.contactName,
+        mobileNumber:state.shop.contactPhone,
+        diningMinutes:Number(state.shop.dining),
+        allowSharing:!!state.allowSharing,
+        primaryColor:state.theme.primary,
+        secondaryColor:state.theme.secondary,
+        adminName:'Admin',
+        adminPin:pin,
+        areas:state.areas,
+        tables:state.tables
+      }
+    });
+    if(!d?.ok)throw new Error(d?.error||'Setup failed');
+    const c=await rpc('tp_check_license',{p_code:state.license.restaurantCode,p_license:state.license.key});
+    state.setup=true;state.locked=true;state.selectedUser=null;
+    state.users=(c.users||[]).map(u=>({...u,protected:u.role==='Admin'}));
+    cacheLocal();route();
+  }catch(e){toast(e.message||'Setup failed')}
+  finally{$('#finishBtn').disabled=false;$('#finishBtn').textContent='Open TablePing'}
+});
 
 function renderLogin(){pendingLoginUser=null;$('#loginShop').textContent=state.shop.name;$('#profileList').innerHTML=state.users.map(u=>`<button class="btn full" data-action="pick-user" data-id="${u.id}">${esc(u.name)} · ${esc(u.role)}</button>`).join('');$('#pinBox').classList.add('hidden');$('#loginPin').value='';hideMsg($('#loginMsg'))}
-$('#loginBtn').addEventListener('click',()=>{const u=state.users.find(x=>x.id===pendingLoginUser);if(!u)return;if($('#loginPin').value.trim()!==u.pin)return message($('#loginMsg'),'Incorrect PIN.','bad');state.selectedUser=u.id;state.locked=false;save();route()});
+$('#loginBtn').addEventListener('click',async()=>{
+  const u=state.users.find(x=>x.id===pendingLoginUser);
+  if(!u)return;
+  const pin=$('#loginPin').value.trim();
+  if(!/^\d{4,6}$/.test(pin))return message($('#loginMsg'),'Enter your 4–6 digit PIN.','bad');
+  $('#loginBtn').disabled=true;$('#loginBtn').textContent='Opening…';
+  try{
+    const d=await rpc('tp_login',{
+      p_code:state.license.restaurantCode,
+      p_license:state.license.key,
+      p_user_id:u.id,
+      p_pin:pin
+    });
+    if(!d?.ok)return message($('#loginMsg'),d?.error||'Login failed.','bad');
+    remoteToken=d.token;
+    sessionStorage.setItem('tp_remote_token',remoteToken);
+    mergeRemotePayload(d);
+    startAutoRefresh();
+    route();
+  }catch(e){message($('#loginMsg'),e.message||'Unable to login.','bad')}
+  finally{$('#loginBtn').disabled=false;$('#loginBtn').textContent='Open TablePing'}
+});
 
 function validGroups(){return state.groups.filter(g=>Array.isArray(g.tableIds)&&g.tableIds.length>=2&&g.tableIds.every(id=>state.tables.some(t=>t.id===id)))}
 function groupInfo(g){const ts=g.tableIds.map(id=>state.tables.find(t=>t.id===id)).filter(Boolean);return{name:ts.map(t=>t.name).join(' + '),seats:ts.reduce((a,t)=>a+t.seats,0),area:ts.every(t=>t.area===ts[0]?.area)?ts[0]?.area:'Mixed',series:[...new Set(ts.map(t=>t.series))].join('/')}}
@@ -548,8 +804,23 @@ function unmerge(id){const g=state.groups.find(x=>x.id===id);if(!g||g.status!=='
 function moveGuest(kind,id){const src=kind==='group'?state.groups.find(g=>g.id===id):state.tables.find(t=>t.id===id);if(!src||src.status!=='dining'||!src.guest)return;const guest=clone(src.guest),free=freeUnits().filter(u=>!(u.kind===kind&&u.id===id));if(!free.length)return toast('No free table available');openModal('Move '+guest.name,`<div class="notice">Choose new table. Current table will become free.</div><div class="choicegrid" style="margin-top:10px">${free.map(u=>`<button class="choice" data-action="move-to-unit" data-kind="${u.kind}" data-id="${u.id}" data-src-kind="${kind}" data-src-id="${id}"><b>${esc(u.name)}</b><div class="tiny">${u.seats} seats · ${esc(shortArea(u.area))}</div></button>`).join('')}</div>`)}
 function executeMove(srcKind,srcId,dstKind,dstId){const src=srcKind==='group'?state.groups.find(g=>g.id===srcId):state.tables.find(t=>t.id===srcId);if(!src?.guest)return;const guest=clone(src.guest),start=src.start;if(dstKind==='table'){const t=state.tables.find(x=>x.id===dstId);if(!t||t.status!=='free')return;t.status='dining';t.guest=guest;t.start=start}else{const g=state.groups.find(x=>x.id===dstId);if(!g||g.status!=='free')return;g.status='dining';g.guest=guest;g.start=start;g.tableIds.forEach(tid=>{const t=state.tables.find(x=>x.id===tid);if(t)t.status='dining'})}if(srcKind==='table'){const t=state.tables.find(x=>x.id===srcId);t.status='free';t.guest=null;t.start=null}else{freeGroup(src);return}logEvent('moveGuest','Guest moved',dstKind,dstId,dstKind==='group'?groupInfo(state.groups.find(x=>x.id===dstId)).name:state.tables.find(x=>x.id===dstId).name,guest.name);save();closeModal();renderAll();toast('Guest moved')}
 
-function renderManage(){const admin=isAdmin();$('#manageDenied').classList.toggle('hidden',admin);$('#manageContent').classList.toggle('hidden',!admin);if(!admin)return;$('#manageShopName').value=state.shop.name;$('#manageContactName').value=state.shop.contactName;$('#manageContactPhone').value=state.shop.contactPhone;$('#manageDining').value=String(state.shop.dining);$('#allowSharing').checked=!!state.allowSharing;$('#manageTableCount').textContent=`${state.tables.length} tables`;$('#manageTables').innerHTML=state.tables.map(t=>`<div class="manageRow"><div><b>${esc(t.name)}</b><div class="tiny muted">Series ${esc(t.series)} · ${statusLabel(t.status)}</div></div><input class="manageSeats" data-id="${t.id}" type="number" min="1" max="100" value="${t.seats}"><select class="manageArea" data-id="${t.id}">${state.areas.map(a=>`<option value="${esc(a)}" ${a===t.area?'selected':''}>${esc(a)}</option>`).join('')}</select><button class="btn sm danger" data-action="manage-del-table" data-id="${t.id}" ${t.status!=='free'||t.mergeGroup?'disabled':''}>×</button></div>`).join('');$('#manageAreas').innerHTML=state.areas.map((a,i)=>`<div class="areaItem"><div><b>${esc(a)}</b></div><button class="btn sm danger" data-action="manage-del-area" data-i="${i}" ${state.areas.length<=1?'disabled':''}>×</button></div>`).join('');$('#manageUserLimit').textContent=`${state.users.length}/${state.license.maxUsers} users`;$('#manageUsers').innerHTML=state.users.map(u=>`<div class="userItem"><div><b>${esc(u.name)}</b><div class="tiny muted">${esc(u.role)}</div></div>${u.protected?'<span class="badge">Owner</span>':`<button class="btn sm danger" data-action="manage-del-user" data-id="${u.id}">×</button>`}</div>`).join('');renderThemeSelection();$$('.manageSeats').forEach(i=>i.addEventListener('change',()=>{const t=state.tables.find(x=>x.id===i.dataset.id);if(t&&t.status==='free'&&!t.mergeGroup){t.seats=Math.max(1,Math.min(100,Number(i.value)||1));save();renderAll()}}));$$('.manageArea').forEach(i=>i.addEventListener('change',()=>{const t=state.tables.find(x=>x.id===i.dataset.id);if(t&&t.status==='free'&&!t.mergeGroup){t.area=i.value;save();renderAll()}}))}
-$('#saveRestaurantBtn').addEventListener('click',()=>{if(!isAdmin())return;const name=$('#manageShopName').value.trim(),phone=$('#manageContactPhone').value.trim(),d=Number($('#manageDining').value);if(!name||!mobileOk(phone)||!(d>=10&&d<=300))return toast('Check Entity, mobile and dining time');state.shop.name=name;state.shop.contactName=$('#manageContactName').value.trim();state.shop.contactPhone=phone;state.shop.dining=d;state.allowSharing=$('#allowSharing').checked;logEvent('updateEntity','Entity updated','entity',state.license.restaurantCode,name,'');save();renderAll();toast('Saved')});
+function renderManage(){const admin=isAdmin();$('#manageDenied').classList.toggle('hidden',admin);$('#manageContent').classList.toggle('hidden',!admin);if(!admin)return;$('#manageShopName').value=state.shop.name;$('#manageContactName').value=state.shop.contactName;$('#manageContactPhone').value=state.shop.contactPhone;$('#manageDining').value=String(state.shop.dining);$('#allowSharing').checked=!!state.allowSharing;$('#manageTableCount').textContent=`${state.tables.length} tables`;$('#manageTables').innerHTML=state.tables.map(t=>`<div class="manageRow"><div><b>${esc(t.name)}</b><div class="tiny muted">Series ${esc(t.series)} · ${statusLabel(t.status)}</div></div><input class="manageSeats" data-id="${t.id}" type="number" min="1" max="100" value="${t.seats}"><select class="manageArea" data-id="${t.id}">${state.areas.map(a=>`<option value="${esc(a)}" ${a===t.area?'selected':''}>${esc(a)}</option>`).join('')}</select><button class="btn sm danger" data-action="manage-del-table" data-id="${t.id}" ${t.status!=='free'||t.mergeGroup?'disabled':''}>×</button></div>`).join('');$('#manageAreas').innerHTML=state.areas.map((a,i)=>`<div class="areaItem"><div><b>${esc(a)}</b></div><button class="btn sm danger" data-action="manage-del-area" data-i="${i}" ${state.areas.length<=1?'disabled':''}>×</button></div>`).join('');$('#manageUserLimit').textContent=`${state.users.length}/${state.license.maxUsers} users`;$('#manageUsers').innerHTML=state.users.map(u=>`<div class="userItem"><div><b>${esc(u.name)}</b><div class="tiny muted">${esc(u.role)}</div></div>${u.role==='Admin'?'<span class="badge">Admin</span>':`<button class="btn sm danger" data-action="manage-del-user" data-id="${u.id}">×</button>`}</div>`).join('');renderThemeSelection();$$('.manageSeats').forEach(i=>i.addEventListener('change',()=>{const t=state.tables.find(x=>x.id===i.dataset.id);if(t&&t.status==='free'&&!t.mergeGroup){t.seats=Math.max(1,Math.min(100,Number(i.value)||1));save();renderAll()}}));$$('.manageArea').forEach(i=>i.addEventListener('change',()=>{const t=state.tables.find(x=>x.id===i.dataset.id);if(t&&t.status==='free'&&!t.mergeGroup){t.area=i.value;save();renderAll()}}))}
+$('#saveRestaurantBtn').addEventListener('click',async()=>{
+  if(!isAdmin())return;
+  const name=$('#manageShopName').value.trim(),phone=$('#manageContactPhone').value.trim(),d=Number($('#manageDining').value);
+  if(!name||!mobileOk(phone)||!(d>=10&&d<=300))return toast('Check Entity, mobile and dining time');
+  state.shop.name=name;
+  state.shop.contactName=$('#manageContactName').value.trim();
+  state.shop.contactPhone=phone;
+  state.shop.dining=d;
+  state.allowSharing=$('#allowSharing').checked;
+  logEvent('updateEntity','Entity updated','entity',state.license.restaurantCode,name,'');
+  cacheLocal();
+  await persistEntityRemote();
+  queueRemoteSave();
+  renderAll();
+  toast('Saved');
+});
 $('#addManageTableBtn').addEventListener('click',()=>{if(isAdmin())openAddTable(t=>{state.tables.push(t);save();renderAll()})});
 $('#manageBatchBtn').addEventListener('click',()=>{if(isAdmin())openBatchModal(lines=>{state.tables.push(...parseTables(lines));save();renderAll()})});
 $('#managePasteBtn').addEventListener('click',()=>{if(!isAdmin())return;openModal('Paste tables',`<label>Table list<textarea id="managePasteArea" placeholder="F1-4 seats&#10;F2-4 seats"></textarea></label><button id="managePasteSave" class="btn primary full" style="margin-top:10px">Add tables</button>`);$('#managePasteSave').addEventListener('click',()=>{const t=parseTables($('#managePasteArea').value);state.tables.push(...t);save();closeModal();renderAll();toast(`${t.length} tables added`)})});
@@ -564,6 +835,7 @@ function setReportPreset(key){
   $$('.reportPreset').forEach(b=>b.classList.toggle('active',b.dataset.range===key));
   $('#customRange').classList.add('hidden');
   renderReports();
+  if(remoteToken)loadRemoteEvents();
 }
 function repairLegacyDining(){
   let changed=false;
@@ -607,18 +879,31 @@ function repairLegacyDining(){
   });
   if(changed)save();
 }
-function reportRows(){if(!reportRange){const r=reportBounds('today');reportRange=r}return state.history.filter(h=>{const d=new Date(h.timestamp);return d>=reportRange.from&&d<=reportRange.to})}
-function renderReports(){const rows=reportRows();$('#reportTitle').textContent=reportRange.label;$('#reportCount').textContent=`${rows.length} events`;$('#rGuests').textContent=rows.filter(h=>['seat','seatCombo','startReserved'].includes(h.action)).length;$('#rDining').textContent=rows.filter(h=>['seat','seatCombo','startReserved'].includes(h.action)).length;$('#rReservations').textContent=rows.filter(h=>h.action==='reserve'||h.action==='bulkReserve').length;$('#rCombined').textContent=rows.filter(h=>['combine','seatCombo'].includes(h.action)).length;$('#historyList').innerHTML=rows.length?rows.slice().reverse().map(h=>`<div class="historyRow"><div class="histTime">${new Date(h.timestamp).toLocaleDateString(undefined,{month:'short',day:'numeric'})}<br>${new Date(h.timestamp).toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'})}</div><div><div class="histTitle">${esc(h.actionLabel)}</div><div class="histSub">${esc(h.targetName)}${h.details?' · '+esc(h.details):''}</div></div><span class="badge">${esc(h.userName)}</span></div>`).join(''):'<div class="notice">No activity in this period.</div>'}
+function reportRows(){if(!reportRange){const r=reportBounds('today');reportRange=r}return remoteToken?remoteEvents:state.history.filter(h=>{const d=new Date(h.timestamp);return d>=reportRange.from&&d<=reportRange.to})}
+function prettyAction(a){return String(a||'Activity').replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase())}
+function renderReports(){const rows=reportRows();$('#reportTitle').textContent=reportRange?.label||'Today';$('#reportCount').textContent=`${rows.length} events`;$('#rGuests').textContent=rows.filter(h=>['seat','seatCombo','startReserved','seatShared'].includes(h.action)).length;$('#rDining').textContent=rows.filter(h=>['seat','seatCombo','startReserved','seatShared'].includes(h.action)).length;$('#rReservations').textContent=rows.filter(h=>h.action==='reserve'||h.action==='bulkReserve').length;$('#rCombined').textContent=rows.filter(h=>['combine','seatCombo'].includes(h.action)).length;$('#historyList').innerHTML=rows.length?rows.map(h=>`<div class="historyRow"><div class="histTime">${new Date(h.timestamp).toLocaleDateString(undefined,{month:'short',day:'numeric'})}<br>${new Date(h.timestamp).toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'})}</div><div><div class="histTitle">${esc(h.actionLabel||prettyAction(h.action))}</div><div class="histSub">${esc(h.targetName||h.target||'')}${h.details?' · '+esc(h.details):''}</div></div><span class="badge">${esc(h.userName||'User')}</span></div>`).join(''):'<div class="notice">No activity in this period.</div>'}
+async function loadRemoteEvents(){if(!remoteToken||!reportRange)return;remoteEvents=[];renderReports();try{const d=await rpc('tp_get_events',{p_token:remoteToken,p_from:reportRange.from.toISOString(),p_to:reportRange.to.toISOString()});if(d?.ok){remoteEvents=d.events||[];renderReports()}}catch(e){console.error(e)}}
 function renderAll(){$('#topShop').textContent=state.shop.name;const u=currentUser();$('#topUser').textContent=u?`${u.name} · ${u.role}${state.shop.contactPhone?' · '+state.shop.contactPhone:''}`:'';renderFloor();renderWait();renderManage();renderReports();renderThemeSelection()}
 function switchView(v){['floor','wait','reports','manage'].forEach(x=>$('#'+x+'View').classList.toggle('hidden',x!==v));$$('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.view===v));if(v==='manage')renderManage();if(v==='reports')renderReports()}
 $$('[data-status-filter]').forEach(b=>b.addEventListener('click',()=>{const f=b.dataset.statusFilter;state.statusFilter=f;save();if(f==='waiting'){switchView('wait')}else{switchView('floor');renderFloor()}}));
 $$('.navbtn').forEach(b=>b.addEventListener('click',()=>switchView(b.dataset.view)));
-function logout(){state.locked=true;state.selectedUser=null;save();route()}
-$('#logoutTopBtn').addEventListener('click',logout);$('#logoutReportBtn').addEventListener('click',logout);$('#resetSmokeBtn').addEventListener('click',()=>{openModal('Reset TablePing',`<div class="notice bad">This clears all local TablePing data in this browser.</div><label style="margin-top:10px">Type RESET<input id="resetWord"></label><button id="resetNow" class="btn danger full" style="margin-top:10px">Reset</button>`);$('#resetNow').addEventListener('click',()=>{if($('#resetWord').value==='RESET'){localStorage.removeItem(KEY);location.reload()}})});$('#saveBtn').addEventListener('click',()=>{state.lastSync=Date.now();save();toast('Saved')});
+async function remoteLogout(callServer=true){
+  stopAutoRefresh();
+  const token=remoteToken;
+  remoteToken='';
+  remoteRevision=0;
+  sessionStorage.removeItem('tp_remote_token');
+  state.locked=true;state.selectedUser=null;
+  cacheLocal();
+  if(callServer&&token){try{await rpc('tp_logout',{p_token:token})}catch(e){}}
+  route();
+}
+function logout(){remoteLogout(true)}
+$('#logoutTopBtn').addEventListener('click',logout);$('#logoutReportBtn').addEventListener('click',logout);$('#resetSmokeBtn').addEventListener('click',()=>{openModal('Reset TablePing',`<div class="notice bad">This clears all local TablePing data in this browser.</div><label style="margin-top:10px">Type RESET<input id="resetWord"></label><button id="resetNow" class="btn danger full" style="margin-top:10px">Reset</button>`);$('#resetNow').addEventListener('click',()=>{if($('#resetWord').value==='RESET'){sessionStorage.removeItem('tp_remote_token');localStorage.removeItem(KEY);location.reload()}})});$('#saveBtn').addEventListener('click',async()=>{await refreshRemote(true);toast('Latest data loaded')});
 
 $$('.reportPreset').forEach(b=>b.addEventListener('click',()=>setReportPreset(b.dataset.range)));
 $('#customRangeBtn').addEventListener('click',()=>$('#customRange').classList.toggle('hidden'));
-$('#applyReport').addEventListener('click',()=>{if(!$('#customRange').classList.contains('hidden')&&$('#reportFrom').value&&$('#reportTo').value){reportRange={from:new Date($('#reportFrom').value+'T00:00:00'),to:new Date($('#reportTo').value+'T23:59:59'),label:`${$('#reportFrom').value} → ${$('#reportTo').value}`}}renderReports()});
+$('#applyReport').addEventListener('click',()=>{if(!$('#customRange').classList.contains('hidden')&&$('#reportFrom').value&&$('#reportTo').value){reportRange={from:new Date($('#reportFrom').value+'T00:00:00'),to:new Date($('#reportTo').value+'T23:59:59'),label:`${$('#reportFrom').value} → ${$('#reportTo').value}`}}renderReports();if(remoteToken)loadRemoteEvents()});
 function csvEsc(v){v=String(v??'');return/[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v}
 function downloadFile(name,text,type='text/csv'){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500)}
 $('#downloadHistory').addEventListener('click',()=>{const rows=[['Timestamp','User','Action','Target','Details'],...reportRows().map(h=>[h.timestamp,h.userName,h.actionLabel,h.targetName,h.details])];downloadFile('TablePing_History.csv',rows.map(r=>r.map(csvEsc).join(',')).join('\n'))});
@@ -631,12 +916,28 @@ $('#modalClose').addEventListener('click',closeModal);$('#modalBack').addEventLi
 function openAreaModal(cb){openModal('Add dining area',`<label>Area name<input id="newArea" placeholder="Rooftop / Family Hall"></label><button id="saveArea" class="btn primary full" style="margin-top:10px">Add area</button>`);$('#saveArea').addEventListener('click',()=>{const v=$('#newArea').value.trim();if(v){cb(v);closeModal()}})}
 function openBatchModal(cb){openModal('Add table range',`<div class="grid2"><label>Series / prefix<input id="bPrefix" value="F"></label><label>Seats each<input id="bSeats" type="number" min="1" max="100" value="4"></label></div><div class="grid2" style="margin-top:8px"><label>From<input id="bFrom" type="number" min="1" value="1"></label><label>To<input id="bTo" type="number" min="1" max="100" value="4"></label></div><button id="saveBatch" class="btn primary full" style="margin-top:10px">Add range</button>`);$('#saveBatch').addEventListener('click',()=>{const p=$('#bPrefix').value.trim().toUpperCase(),f=Number($('#bFrom').value),to=Number($('#bTo').value),seats=Number($('#bSeats').value);if(!p||f<1||to<f||to-f>100||seats<1||seats>100)return;const lines=[];for(let i=f;i<=to;i++)lines.push(`${p}${i}-${seats} seats`);cb(lines.join('\n'));closeModal()})}
 function openAddTable(cb){openModal('Add table',`<div class="grid2"><label>Name<input id="aName" placeholder="P1"></label><label>Seats<input id="aSeats" type="number" min="1" max="100" value="4"></label></div><label style="margin-top:8px">Area<select id="aArea">${state.areas.map(a=>`<option>${esc(a)}</option>`).join('')}</select></label><button id="saveTable" class="btn primary full" style="margin-top:10px">Add table</button>`);$('#saveTable').addEventListener('click',()=>{const name=$('#aName').value.trim();if(!name||state.tables.some(t=>t.name.toLowerCase()===name.toLowerCase()))return;const series=(name.match(/^([A-Za-z]+)/)||[])[1]?.toUpperCase()||'MAIN';cb({id:uid('t'),name,seats:Math.max(1,Math.min(100,Number($('#aSeats').value)||1)),series,area:$('#aArea').value,status:'free',guest:null,start:null,reservation:null,mergeGroup:null});closeModal()})}
-function openAddUser(cb){if(state.users.length>=state.license.maxUsers)return toast('5-user limit reached');openModal('Add Staff',`<div class="stack"><label>Name<input id="uName" placeholder="Reception 2"></label><div class="notice">Role: Staff · One Admin account is included.</div><label>PIN<input id="uPin" inputmode="numeric" maxlength="6" placeholder="4–6 digits"></label><button id="saveUser" class="btn primary">Add User</button></div>`);$('#saveUser').addEventListener('click',()=>{const name=$('#uName').value.trim(),pin=$('#uPin').value.trim();if(!name||!/^\d{4,6}$/.test(pin))return;const u={id:uid('u'),name,role:'Staff',pin};state.users.push(u);logEvent('addUser','User added','user',u.id,u.name,'Staff');save();closeModal();cb();toast('User added')})}
+function openAddUser(cb){
+  if(!remoteToken)return toast('Complete setup and login first');
+  if(state.users.length>=state.license.maxUsers)return toast('5-user limit reached');
+  openModal('Add Staff',`<div class="stack"><label>Name<input id="uName" placeholder="Reception 2"></label><div class="notice">Role: Staff · One Admin account is included.</div><label>PIN<input id="uPin" inputmode="numeric" maxlength="6" placeholder="4–6 digits"></label><button id="saveUser" class="btn primary">Add User</button><div id="userSaveMsg" class="notice hidden"></div></div>`);
+  $('#saveUser').addEventListener('click',async()=>{
+    const name=$('#uName').value.trim(),pin=$('#uPin').value.trim();
+    if(!name||!/^\d{4,6}$/.test(pin))return message($('#userSaveMsg'),'Enter a name and 4–6 digit PIN.','bad');
+    $('#saveUser').disabled=true;
+    try{
+      const d=await rpc('tp_add_user',{p_token:remoteToken,p_name:name,p_pin:pin});
+      if(!d?.ok)throw new Error(d?.error||'Unable to add user');
+      await refreshRemote(true);
+      closeModal();cb();toast('User added');
+    }catch(e){message($('#userSaveMsg'),e.message||'Unable to add user.','bad')}
+    finally{$('#saveUser').disabled=false}
+  });
+}
 
 document.addEventListener('click',e=>{
   const el=e.target.closest('[data-action]');if(!el)return;const a=el.dataset.action;
   if(a==='setup-del-area'){if(state.areas.length<=1)return;const old=state.areas[Number(el.dataset.i)];state.areas.splice(Number(el.dataset.i),1);state.tables.filter(t=>t.area===old).forEach(t=>t.area=state.areas[0]);save();renderSetupAreas()}
-  else if(a==='setup-del-user'){state.users=state.users.filter(u=>u.id!==el.dataset.id);save();renderSetupUsers()}
+  else if(a==='setup-del-user'){renderSetupUsers()}
   else if(a==='pick-user'){pendingLoginUser=el.dataset.id;$('#pinBox').classList.remove('hidden');$('#loginPin').focus()}
   else if(a==='area-filter'){state.activeArea=el.dataset.area;save();renderFloor()}
   else if(a==='open-unit'){const k=el.dataset.kind+':'+el.dataset.id;if(selectMode){selected.has(k)?selected.delete(k):selected.add(k);renderFloor()}else{el.dataset.kind==='group'?openGroup(el.dataset.id):openTable(el.dataset.id)}}
@@ -664,30 +965,55 @@ document.addEventListener('click',e=>{
   else if(a==='move-to-unit')executeMove(el.dataset.srcKind,el.dataset.srcId,el.dataset.kind,el.dataset.id)
   else if(a==='manage-del-table'){if(!isAdmin())return;state.tables=state.tables.filter(t=>t.id!==el.dataset.id);save();renderAll()}
   else if(a==='manage-del-area'){if(!isAdmin()||state.areas.length<=1)return;const old=state.areas[Number(el.dataset.i)];state.areas.splice(Number(el.dataset.i),1);state.tables.filter(t=>t.area===old).forEach(t=>t.area=state.areas[0]);save();renderAll()}
-  else if(a==='manage-del-user'){if(!isAdmin())return;state.users=state.users.filter(u=>u.id!==el.dataset.id);save();renderAll()}
+  else if(a==='manage-del-user'){if(!isAdmin())return;(async()=>{try{const d=await rpc('tp_delete_user',{p_token:remoteToken,p_user_id:el.dataset.id});if(!d?.ok)throw new Error(d?.error||'Delete failed');await refreshRemote(true);toast('User removed')}catch(e){toast(e.message||'Delete failed')}})()}
 });
 
 window.addEventListener('storage',e=>{if(e.key===KEY){state=load();route()}});
 
-try{
-  repairLegacyDining();
-  setReportPreset('today');
-  renderSetup();
-  route();
-}catch(err){
-  console.error('TablePing startup error',err);
+async function bootstrap(){
   try{
-    localStorage.removeItem(KEY);
+    repairLegacyDining();
+    setReportPreset('today');
+    renderSetup();
+    if(remoteToken){
+      try{
+        const d=await rpc('tp_get_state',{p_token:remoteToken});
+        if(d?.ok){
+          mergeRemotePayload(d);
+          startAutoRefresh();
+          route();
+          return;
+        }
+      }catch(e){console.error(e)}
+      remoteToken='';sessionStorage.removeItem('tp_remote_token');
+    }
+    if(state.activated&&state.license.restaurantCode&&state.license.key){
+      try{
+        const d=await rpc('tp_check_license',{p_code:state.license.restaurantCode,p_license:state.license.key});
+        if(d?.ok){
+          state.setup=!!d.setupCompleted;
+          state.locked=true;state.selectedUser=null;
+          state.users=(d.users||[]).map(u=>({...u,protected:u.role==='Admin'}));
+          state.shop={name:d.entity?.name||state.shop.name,contactName:d.entity?.contact||'',contactPhone:d.entity?.phone||'',dining:Number(d.entity?.diningMinutes)||60};
+          state.allowSharing=!!d.entity?.allowSharing;
+          state.theme={primary:d.entity?.primaryColor||state.theme.primary,secondary:d.entity?.secondaryColor||state.theme.secondary};
+          cacheLocal();
+        }
+      }catch(e){console.error(e)}
+    }
+    route();
+  }catch(err){
+    console.error('TablePing startup error',err);
     state=clone(base);
-    reportRange=null;
+    remoteToken='';
+    sessionStorage.removeItem('tp_remote_token');
+    cacheLocal();
     setReportPreset('today');
     renderSetup();
     route();
-  }catch(fatal){
-    console.error('TablePing recovery error',fatal);
-    document.body.innerHTML='<div style="font-family:system-ui;padding:24px"><h2>TablePing</h2><p>Unable to start this local build. Clear this site\'s browser storage and reload.</p></div>';
   }
 }
+bootstrap();
 })();
 </script>
 </body>
