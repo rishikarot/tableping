@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-title" content="TablePing">
 
 
-<title>TablePing v1.3.4 — Supabase</title>
+<title>TablePing v1.4.0 — Supabase</title>
 <style>
 :root{
   --primary:#20312b;--secondary:#a9c7b7;--psoft:#eef3f0;--ssoft:#f1f6f3;
@@ -408,7 +408,7 @@ body.offlineMode #appScreen textarea{pointer-events:none;opacity:.72}
 }
 
 
-/* v1.3.4 — table cards are status surfaces, not white cards with tiny badges */
+/* v1.4.0 — table cards are status surfaces, not white cards with tiny badges */
 .tile::after{display:none!important}
 .tile{
   min-height:104px!important;
@@ -504,6 +504,120 @@ body.composerFocused .quickMenu{display:none!important}
   .composerIcon{width:32px!important;height:32px!important}
   .composerSend{width:34px!important;height:34px!important}
   .guestComposer input{min-height:34px!important;font-size:12.5px!important}
+}
+
+
+/* v1.4.0 minimalist UI inspired by the supplied mobile mock */
+:root{--bg:#f5f6f4;--card:#fff;--line:#e6e8e5;--soft:#f7f8f6}
+body{background:var(--bg)!important}
+.topbar{position:sticky;top:0;z-index:30;padding:0 14px;background:linear-gradient(180deg,var(--bg),rgba(245,246,244,.95) 72%,rgba(245,246,244,.65))}
+.topin.topCard{position:relative;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px 12px;align-items:center;background:rgba(255,255,255,.92);border:1px solid var(--line);border-radius:18px;padding:14px 14px 12px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 3px 16px rgba(25,35,29,.05)}
+.brandBlock{min-width:0}
+.brandLogo{width:50px!important;height:50px!important;border-radius:15px!important;background:linear-gradient(180deg,#1d1f25,#111319)!important;color:#fff;font-size:18px!important;font-weight:900}
+.shop{font-size:15px!important;letter-spacing:-.015em}
+.sub{font-size:12px!important;color:#8d9491!important}
+.topActions{gap:9px;align-items:center}
+.syncChip{min-height:32px!important;padding:0 13px!important;background:#ecfaf1!important;color:#188f56!important;border-color:#b9e3c9!important;font-size:11px!important;font-weight:800!important;border-radius:999px!important}
+.syncDot{background:#39c97e!important}
+.iconBtn{width:34px;height:34px;border:1px solid var(--line);border-radius:11px;background:#fff;display:flex;align-items:center;justify-content:center;color:#818985}
+.iconBtn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.ghostBtn{background:#fff!important;border:1px solid var(--line)!important;border-radius:12px!important;font-size:11px!important;font-weight:800!important;padding:0 13px!important;min-height:36px!important}
+.topVersion{grid-column:1/-1;margin-top:-2px;font-size:9px!important;color:#a0a6a3!important}
+.topVersion a{color:#98a09c;text-decoration:none;font-weight:600}
+.offlineStrip{margin:8px 14px 0!important;border-radius:12px!important}
+
+.wrap{padding:10px 14px 92px!important}
+.statusHint{display:none!important}
+.sectionHead{margin:10px 0 10px!important}
+.sectionHead h2{font-size:18px!important;letter-spacing:-.02em}
+.sectionHead .tiny{font-size:10px!important}
+.sectionMetaRow h3{font-size:15px!important}
+.sectionMetaRow .tiny{font-size:11px!important}
+
+.metrics{display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px!important;padding:2px 0 12px!important}
+.metric{border-radius:14px!important;padding:0!important;gap:6px!important}
+.metricCount{width:44px!important;height:44px!important;border-radius:50%!important;border:1px solid var(--line)!important;background:#fbfbfb!important;font-size:15px!important;font-weight:900!important}
+.metricLabel{font-size:9px!important;color:#6f7572!important;letter-spacing:-.01em!important}
+.metric.active .metricCount{box-shadow:0 0 0 2px rgba(32,49,43,.05)!important}
+.metric[data-status-filter="all"] .metricCount{background:#fafafa!important;color:#5e6360!important}
+.metric[data-status-filter="free"] .metricCount{background:#edf9f1!important;color:#2f7b4d!important;border-color:#ccead5!important}
+.metric[data-status-filter="dining"] .metricCount{background:#eef4ff!important;color:#3a6ea9!important;border-color:#d5e2fb!important}
+.metric[data-status-filter="reserved"] .metricCount{background:#fff8e9!important;color:#966c19!important;border-color:#eedca5!important}
+.metric[data-status-filter="cleaning"] .metricCount{background:#f6effb!important;color:#7d55a5!important;border-color:#e3d5ef!important}
+.metric[data-status-filter="waiting"] .metricCount{background:#fff0ef!important;color:#b2525d!important;border-color:#f1d3d7!important}
+
+.ops{gap:12px!important}
+.floorControls{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.chips{gap:8px!important}
+.chip{min-height:38px!important;padding:0 16px!important;border-radius:999px!important;font-size:11px!important;font-weight:800!important;background:#fff!important;border-color:#dde1de!important;color:#424846!important}
+.chip.active{background:#171921!important;color:#fff!important;border-color:#171921!important}
+.viewToggle{display:flex;align-items:center;background:#fff;border:1px solid #e0e4e1;border-radius:14px;padding:3px}
+.viewModeBtn{min-height:34px!important;border:0!important;border-radius:11px!important;background:transparent!important;padding:0 12px!important;font-size:11px!important;font-weight:800!important;color:#7b827f!important}
+.viewModeBtn.active{background:#f0f2f0!important;color:#262c2a!important}
+.viewModeBtn span{font-size:13px;margin-right:4px}
+.btn.sm{min-height:36px!important;border-radius:12px!important;font-size:11px!important;padding:0 14px!important}
+
+.floorgrid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important}
+.tile{background:#fff!important;min-height:146px!important;border-radius:18px!important;padding:14px!important;box-shadow:0 1px 0 rgba(0,0,0,.02),0 8px 20px rgba(27,34,29,.035)!important}
+.tileTop{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.tname{font-size:21px!important;line-height:1!important;letter-spacing:-.04em!important;font-weight:950!important;color:#1c2120!important}
+.areaMeta{margin-top:10px;font-size:11px;letter-spacing:.08em;color:#adb2b0;font-weight:800}
+.metricLine{display:flex;align-items:flex-end;justify-content:space-between;gap:8px;margin-top:18px}
+.metricLine span{font-size:12px;color:#686f6d;font-weight:600}
+.metricLine b{font-size:20px;font-weight:900;color:#1b1f1f;letter-spacing:-.02em;white-space:nowrap}
+.metricLine b em{font-style:normal;font-size:12px;color:#9ca3a1;font-weight:700}
+.barWrap{margin-top:10px}
+.lineBar{width:100%!important;height:6px!important;border-radius:999px!important;background:#ecefeb!important;overflow:hidden}
+.lineBar .capacityFill{height:100%!important;border-radius:999px!important}
+.tile.free .lineBar .capacityFill{background:#45b783!important}
+.tile.dining .lineBar .capacityFill{background:#f4a20b!important}
+.tile.reserved .lineBar .capacityFill{background:#e2b246!important}
+.tile.cleaning .lineBar .capacityFill{background:#a785cb!important}
+.tileFoot{margin-top:10px;display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:18px}
+.tmeta{font-size:10px!important;color:#a2a8a5!important;font-weight:700!important}
+.sharedTag{background:#e6f6ef!important;color:#1c8a5c!important;font-size:10px!important;padding:5px 8px!important;border-radius:999px!important;font-weight:900!important}
+.tileTime{display:inline-flex;align-items:center;gap:5px;min-height:28px;padding:0 10px;border-radius:999px;font-size:11px;font-weight:800;white-space:nowrap;border:1px solid transparent;background:#fff}
+.tileDot{width:7px;height:7px;border-radius:50%;flex:0 0 auto;background:currentColor;opacity:.95}
+.tileTime.free{color:#2f7b4d;background:#edf9f1;border-color:#ccead5}
+.tileTime.dining{color:#a66a06;background:#fff5dd;border-color:#efd59b}
+.tileTime.reserved{color:#9a6d18;background:#fff8e7;border-color:#ecdcae}
+.tileTime.cleaning{color:#7a55a1;background:#f6effb;border-color:#e2d5ef}
+.groupBox{border-radius:18px!important;padding:13px!important}
+.badge{border-radius:999px!important}
+
+.tableListView{display:flex;flex-direction:column;gap:8px}
+.tableListRow{border-radius:16px!important;box-shadow:0 1px 0 rgba(0,0,0,.02)!important;padding:12px 14px!important}
+.listName,.groupListName{font-size:16px!important;font-weight:900!important;letter-spacing:-.02em}
+.listArea{font-size:11px!important;color:#9ea5a3!important;font-weight:700!important}
+.listOccupancy{font-size:12px!important;color:#4f5653!important}
+.listCapacity,.groupListMeta{font-size:10px!important;color:#a2a8a5!important}
+.statusTag{padding:6px 9px!important;border-radius:999px!important;font-weight:800!important}
+
+.bottomDock{padding:0 16px calc(12px + env(safe-area-inset-bottom))!important}
+.dockInner{width:min(760px,100%)!important}
+.guestComposer{min-height:58px!important;grid-template-columns:42px 42px minmax(0,1fr) 42px!important;gap:4px!important;padding:6px!important;border-radius:18px!important;border:1px solid #e4e7e5!important;background:rgba(255,255,255,.96)!important;box-shadow:0 10px 28px rgba(26,35,30,.08)!important}
+.composerIcon{width:42px!important;height:42px!important;border-radius:14px!important;background:#f4f5f4!important;color:#707775!important}
+.composerSend{width:42px!important;height:42px!important;border-radius:50%!important;background:#171921!important;color:#fff!important}
+.guestComposer input{min-height:40px!important;padding:8px 6px!important;font-size:12px!important}
+.guestComposer input::placeholder{color:#a8aead!important}
+body.composerFocused .guestComposer{grid-template-columns:minmax(0,1fr) 42px!important;min-height:52px!important;border-radius:16px!important;padding:5px 6px 5px 12px!important}
+body.composerFocused .guestComposer input{font-size:13px!important}
+.quickMenu{width:min(420px,calc(100% - 24px))!important;bottom:84px!important;border-radius:18px!important}
+.quickMenuGrid{gap:6px!important}
+.quickMenuItem{min-height:68px!important;border-radius:14px!important}
+.quickMenuItem b{font-size:10px!important}
+
+@media(min-width:900px){
+  .wrap{padding-left:18px!important;padding-right:18px!important}
+  .floorgrid{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+  .topVersion{position:absolute;left:78px;bottom:10px;margin-top:0}
+}
+@media(max-width:640px){
+  .topActions{gap:8px}
+  .ghostBtn{padding:0 11px!important}
+  .metricCount{width:42px!important;height:42px!important}
+  .floorControls{align-items:flex-start}
+  .viewToggle{align-self:flex-start}
 }
 
 </style>
@@ -668,13 +782,25 @@ E8-4 seats</textarea></label>
 
 <!-- APP -->
 <div id="appScreen" class="hidden">
-<header class="topbar"><div class="topin">
-  <div class="row grow"><button id="brandHomeBtn" class="brandHome" type="button" aria-label="Home" title="Home"><span class="logo" style="width:28px;height:28px;border-radius:9px">T</span></button><div class="grow"><div id="topShop" class="shop"></div><div id="topUser" class="sub"></div><div class="tiny muted">My view · v1.3.4</div></div></div>
-  <div class="row">
-    <button id="saveBtn" class="syncChip syncing" title="Refresh latest data"><span class="syncDot"></span><span id="syncText">Connecting</span></button>
-    <button id="logoutTopBtn" class="btn sm">Log out</button>
+<header class="topbar">
+  <div class="topin topCard">
+    <div class="row grow brandBlock">
+      <button id="brandHomeBtn" class="brandHome" type="button" aria-label="Home" title="Home"><span class="logo brandLogo">T</span></button>
+      <div class="grow">
+        <div id="topShop" class="shop"></div>
+        <div id="topUser" class="sub"></div>
+      </div>
+    </div>
+    <div class="row topActions">
+      <button id="saveBtn" class="syncChip syncing" title="Refresh latest data"><span class="syncDot"></span><span id="syncText">Connecting</span></button>
+      <button id="alertTopBtn" class="iconBtn" type="button" aria-label="Alerts" title="Alerts">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4a4 4 0 0 0-4 4v1.3c0 .9-.3 1.8-.8 2.6L6 14h12l-1.2-2.1c-.5-.8-.8-1.7-.8-2.6V8a4 4 0 0 0-4-4"/><path d="M9.8 18a2.5 2.5 0 0 0 4.4 0"/></svg>
+      </button>
+      <button id="logoutTopBtn" class="btn sm ghostBtn">Logout</button>
+    </div>
+    <div class="topVersion tiny muted">v1.4.0 · Powered by <a href="https://www.letmedoit.in" target="_blank" rel="noopener">LetMeDoIt</a></div>
   </div>
-</div></header>
+</header>
 <div id="offlineStrip" class="offlineStrip hidden">Offline · showing last saved data</div>
 
 <main class="wrap">
@@ -691,10 +817,16 @@ E8-4 seats</textarea></label>
   <div class="ops">
     <aside class="desktopSide"><div class="card"><div class="row between"><h3>Waiting</h3><span id="waitSideCount" class="small muted"></span></div><div id="waitSide" class="list" style="margin-top:8px"></div></div></aside>
     <div>
-      <div class="sectionHead"><div><h2>Tables</h2><div class="tiny muted">Tap a table to seat or manage</div></div><div class="row"><button id="selectBtn" class="btn sm">Select</button><button id="reserveTopBtn" class="hidden">Reserve</button><button id="guestTopBtn" class="hidden">+ Guest</button></div></div>
-      <div class="floorControls"><div id="areaChips" class="chips"></div><div class="viewToggle"><button id="tileModeBtn" class="viewModeBtn active">▦ Tiles</button><button id="listModeBtn" class="viewModeBtn">≡ List</button></div></div>
+      <div class="sectionHead"><div><h2>Tables</h2><div class="tiny muted">Tap table to seat or manage</div></div><div class="row"><button id="selectBtn" class="btn sm">Select</button><button id="reserveTopBtn" class="hidden">Reserve</button><button id="guestTopBtn" class="hidden">+ Guest</button></div></div>
+      <div class="floorControls">
+        <div id="areaChips" class="chips"></div>
+        <div class="viewToggle">
+          <button id="tileModeBtn" class="viewModeBtn active"><span>▦</span> Tiles</button>
+          <button id="listModeBtn" class="viewModeBtn"><span>≡</span> List</button>
+        </div>
+      </div>
       <div id="combinedBox" class="groupBox hidden"><div class="row between"><div><h3>Combined Tables</h3><div class="tiny muted">Temporary combinations</div></div><span id="combinedCount" class="badge"></span></div><div id="combinedTiles" class="floorgrid" style="margin-top:8px"></div><div id="combinedList" class="tableListView hidden"></div></div>
-      <div class="row between" style="margin:10px 0 7px"><h3>Physical Tables</h3><span id="physicalCount" class="tiny muted"></span></div>
+      <div class="row between sectionMetaRow" style="margin:10px 0 7px"><div><h3 id="physicalTitle">Physical Tables</h3><div id="physicalSub" class="tiny muted"></div></div><span id="physicalCount" class="tiny muted"></span></div>
       <div id="floorGrid" class="floorgrid"></div>
       <div id="floorList" class="tableListView hidden"></div>
       <div id="bulkBar" class="bulkbar hidden"><div class="row between wraprow"><b><span id="selectedCount">0</span> selected</b><div class="row wraprow"><button id="bulkFree" class="btn sm">Free</button><button id="bulkClean" class="btn sm">Clean</button><button id="bulkReserve" class="btn sm">Reserve</button><button id="bulkCancel" class="btn sm">Cancel</button></div></div></div>
@@ -773,7 +905,7 @@ E8-4 seats</textarea></label>
       <button id="moreDockBtn" class="composerIcon composerMore" type="button" aria-label="More options" aria-expanded="false" title="More">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
       </button>
-      <input id="quickGuest" autocomplete="off" enterkeyhint="send" aria-label="Quick add guest" placeholder="Add guest… John 4">
+      <input id="quickGuest" autocomplete="off" enterkeyhint="send" aria-label="Quick add guest" placeholder="Name, phone, seats (e.g., John 4)">
       <button id="quickSendBtn" class="composerSend" type="submit" aria-label="Add guest" title="Add guest" disabled>
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5m-6 6 6-6 6 6"/></svg>
       </button>
@@ -784,7 +916,7 @@ E8-4 seats</textarea></label>
 
 
 <div id="publicFooter" class="publicFooter">
-  v1.3.4<span>·</span>Powered by
+  v1.4.0<span>·</span>Powered by
   <a href="https://www.letmedoit.in" target="_blank" rel="noopener">LetMeDoIt</a>
 </div>
 
@@ -804,7 +936,7 @@ const base={activated:false,setup:false,locked:true,selectedUser:null,license:{r
 let state=load(),setupStep=1,toastTimer=null,selectMode=false,selected=new Set(),reportRange=null;
 const SB_URL='https://bfmsoerewmiqianxmcck.supabase.co';
 const SB_KEY='sb_publishable_v8jc47i36pfQIkQ2gXC0MA_V0hWBld9';
-const APP_VERSION='1.3.4';
+const APP_VERSION='1.4.0';
 let remoteToken=sessionStorage.getItem('tp_remote_token')||'';
 let remoteRevision=0;
 let remoteEvents=[];
@@ -1376,27 +1508,29 @@ function statusTimeText(u){
 function compactMembers(u){const a=u.members||[];if(a.length<=3)return a.join(' + ')||u.name;return`${a[0]} + ${a[1]} +${a.length-2}`}
 function tileHTML(u){
   const used=u.usedSeats||0,free=u.freeSeats??u.seats,pct=u.seats?Math.min(100,Math.round(used/u.seats*100)):0;
-  const st=statusTimeText(u);
-  const status=`<span class="tileStatus ${u.status}">${statusLabel(u.status)}${st?`<em>· ${st}</em>`:''}</span>`;
+  const st=statusTimeText(u),dot='<span class="tileDot"></span>';
+  const pill=`<span class="tileTime ${u.status}">${dot}${st||statusLabel(u.status)}</span>`;
   if(u.kind==='group'){
-    const cap=u.status==='free'?`${u.seats}`:`${used} / ${u.seats}`;
+    const secondary = u.status==='free'
+      ? `<div class="metricLine"><span>Seats</span><b>${u.seats}</b></div>`
+      : `<div class="metricLine"><span>${free>0?`${free} Seat${free>1?'s':''} Free`:'Seats'}</span><b>${used}/${u.seats}${free===0?' <em>(Full)</em>':''}</b></div>`;
     return`<button class="tile groupTile ${u.status} ${selected.has('group:'+u.id)?'selected':''}" data-action="open-unit" data-kind="group" data-id="${u.id}">
-      <div class="groupTileTop"><span class="groupLabel">Combined</span>${status}</div>
-      <div class="groupNames">${esc(compactMembers(u))}</div>
-      <div class="compactUse"><b>${cap}</b><span>${u.status==='free'?'seats':'in use'}</span></div>
-      ${u.status!=='free'?`<div class="compactFree">${free} free</div>`:''}
-      <div class="capacityBar compactBar"><div class="capacityFill" style="width:${pct}%"></div></div>
-      <div class="groupFoot"><span>${esc(shortArea(u.area))}</span><span>${u.members?.length||0} tables</span></div>
+      <div class="tileTop"><div class="tname">${esc(compactMembers(u))}</div>${pill}</div>
+      <div class="areaMeta">COMBINED</div>
+      ${secondary}
+      <div class="barWrap"><div class="capacityBar lineBar"><div class="capacityFill" style="width:${pct}%"></div></div></div>
+      <div class="tileFoot"><span class="tmeta">${esc(shortArea(u.area))}</span><span class="sharedTag">${u.members?.length||0} tables</span></div>
     </button>`;
   }
-  const center=u.status==='free'
-    ?`<div class="compactUse"><b>${u.seats}</b><span>seats</span></div>`
-    :`<div class="compactUse"><b>${used} / ${u.seats}</b><span>in use</span></div><div class="compactFree">${free} free</div>`;
-  const extra=u.shared&&state.allowSharing?'Shared':'';
+  const metric = u.status==='free'
+    ? `<div class="metricLine"><span>Seats</span><b>${u.seats}</b></div>`
+    : `<div class="metricLine"><span>${free>0?`${free} Seat${free>1?'s':''} Free`:'Seats'}</span><b>${used}/${u.seats}${free===0?' <em>(Full)</em>':''}</b></div>`;
   return`<button class="tile ${u.status} ${selected.has('table:'+u.id)?'selected':''}" data-action="open-unit" data-kind="table" data-id="${u.id}">
-    <div class="trow"><span class="tname">${esc(u.name)}</span>${status}</div>
-    <div class="seatCenter">${center}<div class="capacityBar compactBar"><div class="capacityFill" style="width:${pct}%"></div></div></div>
-    <div class="tileBottom"><span class="tmeta">${esc(shortArea(u.area))}</span>${extra?`<span class="sharedTag">${extra}</span>`:''}</div>
+    <div class="tileTop"><div class="tname">${esc(u.name)}</div>${pill}</div>
+    <div class="areaMeta">${esc(shortArea(u.area).toUpperCase())}</div>
+    ${metric}
+    <div class="barWrap"><div class="capacityBar lineBar"><div class="capacityFill" style="width:${u.status==='free'?0:pct}%"></div></div></div>
+    <div class="tileFoot"><span class="tmeta">${u.series?esc(u.series):''}</span>${u.shared&&state.allowSharing?'<span class="sharedTag">Shared</span>':''}</div>
   </button>`;
 }
 function statusLabel(s){return s==='reserved'?'Reserved':s==='dining'?'Dining':s==='cleaning'?'Cleaning':'Free'}
@@ -1404,11 +1538,17 @@ function listHTML(u){
   const used=u.usedSeats||0,free=u.freeSeats??u.seats,st=statusTimeText(u);
   const tag=`<span class="statusTag ${u.status}">${statusLabel(u.status)}${st?` · ${st}`:''}</span>`;
   if(u.kind==='group'){
-    const sub=u.status==='free'?`${u.seats} seats available`:`${used}/${u.seats} in use · ${free} free`;
-    return`<button class="tableListRow ${u.status} ${selected.has('group:'+u.id)?'selected':''}" data-action="open-unit" data-kind="group" data-id="${u.id}"><div class="groupListName">${esc(compactMembers(u))}</div><div class="listMain"><div class="listArea">Combined · ${esc(shortArea(u.area))}</div><div class="listOccupancy">${sub}</div><div class="groupListMeta">${u.members?.length||0} physical tables</div></div>${tag}</button>`;
+    const sub=u.status==='free'?`${u.seats} seats available`:`${free} free · ${used}/${u.seats} in use`;
+    return`<button class="tableListRow ${u.status} ${selected.has('group:'+u.id)?'selected':''}" data-action="open-unit" data-kind="group" data-id="${u.id}">
+      <div class="listName">${esc(compactMembers(u))}</div>
+      <div class="listMain"><div class="listArea">Combined · ${esc(shortArea(u.area))}</div><div class="listOccupancy">${sub}</div><div class="listCapacity">${u.members?.length||0} tables</div></div>${tag}
+    </button>`;
   }
-  const sub=u.status==='reserved'?esc(reservationLabel(u.reservation)):u.status==='cleaning'?'Waiting for cleanup':u.status==='dining'?`${used}/${u.seats} in use · ${free} free`:`${u.seats} seats available`;
-  return`<button class="tableListRow ${u.status} ${selected.has('table:'+u.id)?'selected':''}" data-action="open-unit" data-kind="table" data-id="${u.id}"><div class="listName">${esc(u.name)}</div><div class="listMain"><div class="listArea">${esc(shortArea(u.area))}</div><div class="listOccupancy">${sub}</div><div class="listCapacity">${u.seats} total seats</div></div>${tag}</button>`;
+  const sub=u.status==='reserved'?esc(reservationLabel(u.reservation)):u.status==='cleaning'?'Ready for cleanup':u.status==='dining'?`${free} free · ${used}/${u.seats} in use`:`${u.seats} seats available`;
+  return`<button class="tableListRow ${u.status} ${selected.has('table:'+u.id)?'selected':''}" data-action="open-unit" data-kind="table" data-id="${u.id}">
+    <div class="listName">${esc(u.name)}</div>
+    <div class="listMain"><div class="listArea">${esc(shortArea(u.area))}</div><div class="listOccupancy">${sub}</div><div class="listCapacity">${u.series?esc(u.series):`${u.seats} total seats`}</div></div>${tag}
+  </button>`;
 }
 $('#loginPin').addEventListener('keydown',e=>{if(e.key==='Enter')$('#loginBtn').click()});
 $('#loginUsername').addEventListener('keydown',e=>{if(e.key==='Enter')$('#loginPin').focus()});
