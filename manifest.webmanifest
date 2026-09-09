@@ -1,28 +1,22 @@
 {
-  "name": "TablePing \u2013 Smart Seating",
+  "id": "./",
+  "name": "TablePing",
   "short_name": "TablePing",
-  "description": "Smart restaurant waitlist and seating management.",
+  "description": "Simple seating. Happier guests.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
-  "orientation": "portrait-primary",
-  "background_color": "#f7f7f5",
-  "theme_color": "#37352f",
-  "lang": "en",
-  "categories": [
-    "business",
-    "productivity",
-    "food"
-  ],
+  "background_color": "#faf7f2",
+  "theme_color": "#214e3d",
   "icons": [
     {
-      "src": "icons/icon-192.png",
+      "src": "icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
-      "src": "icons/icon-512.png",
+      "src": "icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
