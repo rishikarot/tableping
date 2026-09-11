@@ -1,5 +1,5 @@
 /* Cache only the TablePing shell; restaurant data is fetched from Supabase and is never cached here. */
-const CACHE='tableping-shell-v2.8.0';
+const CACHE='tableping-shell-v2.8.1';
 const ASSETS=['./','./index.html','./welcome-art.png','./tableping-brand-v21.png','./manifest.webmanifest','./icon-192.png','./icon-512.png'];
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)))});
 self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('tableping-shell-')&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
